@@ -1,0 +1,14 @@
+@import './variables.scss';
+
+body{
+    background: $dark-grey;
+    color: $white;
+    font-family: Segoe WPC,Segoe UI,sans-serif;
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+}
+
+@import './components.scss';
+@import './scrollbars.scss';
+

@@ -1,0 +1,54 @@
+@import './variables.scss';
+
+.button {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background: $dark-grey;
+    color: $white;
+    border: 1px solid $medium-grey;
+    outline: none;
+    cursor: pointer;
+    &:hover {
+        background-color: $medium-grey;
+        
+    }
+    .icon {
+        font-size: 16px;
+    }
+
+    .icon + *  {
+        margin-left: 5px;
+    }
+}
+
+.button-bar {
+    display: flex;
+    flex-direction: row;
+    .button{
+        &:first-child {
+            border-top-right-radius: 0; 
+            border-bottom-right-radius: 0; 
+        }
+        &:last-child {
+            border-top-left-radius: 0; 
+            border-bottom-left-radius: 0; 
+    
+        }
+        &:not(:first-child)
+        {
+            border-left: none;
+
+        }
+        &:not(:first-child):not(:last-child)
+        {
+            border-radius: 0;
+        }
+    }
+
+    &.right-align{
+        justify-content: flex-end;
+    }
+}

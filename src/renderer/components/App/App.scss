@@ -1,0 +1,41 @@
+@import '../../styles/variables.scss';
+@import './layout.scss';
+
+
+.project-name {
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid $medium-grey;
+    border-radius: 4px;
+    background: $dark-grey;
+}
+
+.project-modified-status {
+    padding: 2px;
+}
+
+
+.code-editor-tabs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    .tabs-headers {
+
+    }
+
+    .tabs-contents {
+        position: absolute;
+        top: 29px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}
+

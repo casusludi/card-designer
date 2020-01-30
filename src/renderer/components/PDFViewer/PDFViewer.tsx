@@ -1,6 +1,7 @@
 'use strict'
 import React from 'react';
-import { Document, Page } from 'react-pdf/dist/entry.webpack';
+import { Document, Page,pdfjs } from 'react-pdf/dist/entry.webpack';
+//pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import './PDFViewer.scss'
 
@@ -14,16 +15,24 @@ export type PDFViewerProps = {
 export type PDFViewerState = {
     numPages: Number | null,
     doc: any,
-    pageNumber: Number,
+    zoom: number,
     filePath: string,
 }
+
+const zooms = [
+    { label: '50%', value: 0.50 },
+    { label: '75%', value: 0.75 },
+    { label: '100%', value: 1 },
+    { label: '150%', value: 1.5 },
+    { label: '200%', value: 2 }
+];
 
 export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewerState> {
 
     state = {
         numPages: null,
+        zoom: 1,
         doc: null,
-        pageNumber: 1,
         filePath: this.props.filePath,
     }
 
@@ -32,6 +41,7 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
     private doc: any | null = null;
 
     onDocumentLoadSuccess = (pdf: any) => {
+        console.log(pdf);
         this.setState({ numPages: pdf.numPages });
     }
 
@@ -47,8 +57,8 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
         });
     }
 
-    componentWillUnmount(){
-        if(this.fileWatcher){
+    componentWillUnmount() {
+        if (this.fileWatcher) {
             this.fileWatcher.close();
         }
     }
@@ -63,18 +73,29 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
     }
 
     render() {
-        const { pageNumber, numPages } = this.state;
-
         return (
             <div className="PDFViewer">
-                <Document
-                    file={this.state.filePath}
-                    onLoadSuccess={this.onDocumentLoadSuccess}
-                    ref={(ref) => { this.doc = ref; }}
-                >
-                    <Page pageNumber={pageNumber} scale={1} />
-                </Document>
-                <p>Page {pageNumber} of {numPages}</p>
+                <div className="PDFViewer__header">
+                    <div>page count : {this.state.numPages}  </div>
+                    <div>
+                        <label htmlFor="zoom"> Zoom : </label>
+                        <select id="zoom" value={this.state.zoom} onChange={e => this.setState({ zoom: parseFloat(e.target.value) })} >
+                            {zooms.map((o, k) => <option key={k} value={o.value}>{o.label}</option>)}
+                        </select></div>
+                </div>
+                <div className="PDFViewer__viewport">
+                    <Document
+                        className="PDFViewer__scrollcontent"
+                        file={this.state.filePath}
+                        onLoadSuccess={this.onDocumentLoadSuccess}
+                        ref={(ref) => { this.doc = ref; }}
+                    >
+                        {Array.from(Array(this.state.numPages), (e, i) =>
+                            <Page pageNumber={i + 1} key={i} scale={this.state.zoom} renderTextLayer={false} renderAnnotationLayer={false} />
+                        )}
+                    </Document>
+                </div>
+
             </div>
         );
     }

@@ -1,0 +1,88 @@
+@import '../../styles/variables.scss';
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 100vw;
+    //background-color: chartreuse;
+    
+}
+
+.layout__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: $darkest-grey;
+    border-bottom: 1px solid $medium-grey;
+}
+
+.layout__body {
+    display: flex;
+    flex: 1 0 100%;
+    //background-color: yellow;
+}
+
+.layout__footer {
+    flex: 0 0 20px;
+    border-top: 1px solid $medium-grey;
+}
+
+.viewer{
+    flex: 1 0;
+    //background-color: orange;
+    background-color: $darkest-grey;
+    position: relative;
+}
+/*
+.viewer__viewport{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto; 
+    
+}
+
+.viewer__scrollcontent{
+    margin: 15px;
+}*/
+
+.viewer-tabset {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.viewer-tabitem {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+
+.editor{
+    //background-color: purple;
+    width: 500px;
+    position: relative;
+    border-left: 1px solid $medium-grey;
+}
+
+.editor__width-adjuster {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: ew-resize;
+}
+
+
+
+

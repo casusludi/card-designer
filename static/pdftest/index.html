@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vanilla</title>
+  <script src="./pdf.js"></script>
+  <script src="./index.js"></script>
+  <style>
+    #the-canvas {
+      border: 1px solid black;
+      direction: ltr;
+    }
+  </style>
+</head>
+<body>
+  <h1>PDF.js Previous/Next example</h1>
+
+  <div>
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+    &nbsp; &nbsp;
+    <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+  </div>
+
+  <canvas id="the-canvas"></canvas>
+
+</body>
+
+</html>

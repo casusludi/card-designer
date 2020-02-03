@@ -28,6 +28,13 @@ function createMainWindow() {
   }
 
   if (isDevelopment) {
+    
+    /*window.loadURL(formatUrl({
+      pathname:  'static/pdftest/index.html',
+      protocol: 'file',
+      slashes: true
+    }))*/
+    //window.loadURL(`https://mozilla.github.io/pdf.js/web/viewer.html#page=2`)
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
   }
   else {

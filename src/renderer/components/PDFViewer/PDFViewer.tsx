@@ -6,6 +6,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import './PDFViewer.scss'
 
 import chokidar, { FSWatcher } from 'chokidar';
+import PDFDocument from './PDFDocument';
 
 
 export type PDFViewerProps = {
@@ -51,7 +52,7 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
         this.fileWatcher = chokidar.watch(this.state.filePath).on('change', (event, path) => {
             clearTimeout(timerId);
             timerId = setTimeout(() => {
-                if (this.doc) this.doc.loadDocument();
+                if (this.doc) this.doc.fetch();
             }, latency)
 
         });
@@ -84,7 +85,8 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
                         </select></div>
                 </div>
                 <div className="PDFViewer__viewport">
-                    <Document
+                    <PDFDocument src={this.state.filePath} ref={(ref) => { this.doc = ref; }} />
+                    {/*<Document
                         className="PDFViewer__scrollcontent"
                         file={this.state.filePath}
                         onLoadSuccess={this.onDocumentLoadSuccess}
@@ -93,7 +95,7 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
                         {Array.from(Array(this.state.numPages), (e, i) =>
                             <Page pageNumber={i + 1} key={i} scale={this.state.zoom} renderTextLayer={false} renderAnnotationLayer={false} />
                         )}
-                    </Document>
+                        </Document>*/}
                 </div>
 
             </div>

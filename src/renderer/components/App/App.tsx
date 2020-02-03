@@ -1,9 +1,11 @@
 'use strict'
 import React, { Component } from 'react';
+import PDFComponent from '../PDFViewer/PDFComponent';
 import PDFViewer from '../PDFViewer/PDFViewer';
 import './App.scss';
 
-const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
+//const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
+const FILE_TEST: string = `./clients.pdf`;
 
 type AppState = {
 	editorWidth:number
@@ -79,7 +81,11 @@ export default class App extends Component<void,AppState> {
 				<div className="layout__body">
 					<main className="viewer">
 						<div className="viewer-tabset">
-							<div className="viewer-tabitem"> <PDFViewer filePath={FILE_TEST} /></div>
+							<div className="viewer-tabitem">
+								
+								 {/*<PDFComponent src={FILE_TEST} />*/}
+								 <PDFViewer filePath={FILE_TEST} />
+							</div>
 						</div>
 					</main>
 					<aside className="editor" style={{width:`${this.state.editorWidth}px`}} >

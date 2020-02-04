@@ -751,13 +751,6 @@
     "@babel/plugin-transform-react-jsx-self" "^7.8.3"
     "@babel/plugin-transform-react-jsx-source" "^7.8.3"
 
-"@babel/runtime@^7.0.0":
-  version "7.8.3"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.8.3.tgz#0811944f73a6c926bb2ad35e918dcc1bfab279f1"
-  integrity sha512-fVHx1rzEmwB130VTkLnxR+HmxcTjGzH12LYQcFFoBwakMd3aOMD4OsRN7tGG/UOYE2ektgFrS8uACAoRk1CY0w==
-  dependencies:
-    regenerator-runtime "^0.13.2"
-
 "@babel/template@^7.8.3":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.8.3.tgz#e02ad04fe262a657809327f578056ca15fd4d1b8"
@@ -891,7 +884,7 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.25.tgz#792c0afb798f1dd681dce9c4b4c431f7245a0a42"
   integrity sha512-nf1LMGZvgFX186geVZR1xMZKKblJiRfiASTHw85zED2kI1yDKHDwTKMdkaCbTlXoRKlGKaDfYywt+V0As30q3w==
 
-"@types/pdfjs-dist@*":
+"@types/pdfjs-dist@^2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@types/pdfjs-dist/-/pdfjs-dist-2.1.3.tgz#68b6bbbe5ef0cdab7f8301f5a85a5a33b9c2080b"
   integrity sha512-aGyFfB4Q8QjaSR3cBTiJfnFXBU6SXQaBVM7ADfBaZzq4L7EGbjuSoqXfHJofZmLFBfKzZ9b+9nXO2FfUIsw77w==
@@ -911,14 +904,6 @@
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.5.tgz#5de610b04a35d07ffd8f44edad93a71032d9aaa7"
   integrity sha512-BX6RQ8s9D+2/gDhxrj8OW+YD4R+8hj7FEM/OJHGNR0KipE1h1mSsf39YeyC81qafkq+N3rU3h3RFbLSwE5VqUg==
   dependencies:
-    "@types/react" "*"
-
-"@types/react-pdf@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-pdf/-/react-pdf-4.0.3.tgz#a95030f72208196ff61c80b40fe8dfe06de4bec0"
-  integrity sha512-Ru0kxZGN4RU3YygwS7whLTupTIwc/YZhllHCNhI2qn7rx1j3KkvOM55CUkXev5OcKrSVLVVa6+zCebNTSYx2HA==
-  dependencies:
-    "@types/pdfjs-dist" "*"
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^16.9.19":
@@ -4837,11 +4822,6 @@ lodash.memoize@^4.1.2:
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
 
-lodash.once@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
-  integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
-
 lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
@@ -4916,11 +4896,6 @@ make-dir@^3.0.0:
   integrity sha512-grNJDhb8b1Jm1qeqW5R/O63wUo4UXo2v2HMic6YT9i/HBlF93S8jkMgH7yugvY9ABDShH4VZMn8I+U8+fCNegw==
   dependencies:
     semver "^6.0.0"
-
-make-event-props@^1.1.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/make-event-props/-/make-event-props-1.2.0.tgz#96b87d88919533b8f8934b58b4c3d5679459a0cf"
-  integrity sha512-BmWFkm/jZzVH9A0tEBdkjAARUz/eha+5IRyfOndeSMKRadkgR5DawoBHoRwLxkYmjJOI5bHkXKpaZocxj+dKgg==
 
 mamacro@^0.0.3:
   version "0.0.3"
@@ -5022,11 +4997,6 @@ meow@^3.7.0:
     read-pkg-up "^1.0.1"
     redent "^1.0.0"
     trim-newlines "^1.0.0"
-
-merge-class-names@^1.1.1:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/merge-class-names/-/merge-class-names-1.3.0.tgz#c4cdc1a981a81dd9afc27aa4287e912a337c5dee"
-  integrity sha512-k0Qaj36VBpKgdc8c188LEZvo6v/zzry/FUufwopWbMSp6/knfVFU/KIB55/hJjeIpg18IH2WskXJCRnM/1BrdQ==
 
 merge-descriptors@1.0.1:
   version "1.0.1"
@@ -5793,14 +5763,6 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-pdfjs-dist@2.1.266:
-  version "2.1.266"
-  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.1.266.tgz#cded02268b389559e807f410d2a729db62160026"
-  integrity sha512-Jy7o1wE3NezPxozexSbq4ltuLT0Z21ew/qrEiAEeUZzHxMHGk4DUV1D7RuCXg5vJDvHmjX1YssN+we9QfRRgXQ==
-  dependencies:
-    node-ensure "^0.0.0"
-    worker-loader "^2.0.0"
-
 pdfjs-dist@^2.2.228:
   version "2.2.228"
   resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.2.228.tgz#777b068a0a16c96418433303807c183058b47aaa"
@@ -6407,18 +6369,6 @@ react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-pdf@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-pdf/-/react-pdf-4.1.0.tgz#fcb874f28050fe9593c4e04652c7bff94bb1acf9"
-  integrity sha512-SYwkWc+vRQHfrpDls3DOgn4G+wT0mYGJRor20e28GPRW8VB+6o8WqZ4QZxsl50z+dKM7UscXFnK/02eN3NXi2g==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    lodash.once "^4.1.1"
-    make-event-props "^1.1.0"
-    merge-class-names "^1.1.1"
-    pdfjs-dist "2.1.266"
-    prop-types "^15.6.2"
-
 react@^16.12.0:
   version "16.12.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.12.0.tgz#0c0a9c6a142429e3614834d5a778e18aa78a0b83"
@@ -6549,11 +6499,6 @@ regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
-
-regenerator-runtime@^0.13.2:
-  version "0.13.3"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.3.tgz#7cf6a77d8f5c6f60eb73c5fc1955b2ceb01e6bf5"
-  integrity sha512-naKIZz2GQ8JWh///G7L3X6LaQUAMp2lvb1rvwwsURe/VXwD6VMfr+/1NuNw3ag8v2kY1aQ/go5SNn79O9JU7yw==
 
 regenerator-transform@^0.14.0:
   version "0.14.1"

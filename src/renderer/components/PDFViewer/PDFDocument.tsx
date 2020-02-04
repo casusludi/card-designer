@@ -1,15 +1,15 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import pdfjs from 'pdfjs-dist';
+pdfjs.GlobalWorkerOptions.workerSrc = './pdf.worker.js';
 //@ts-ignore
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+//import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 import { approximateFraction, getOutputScale, roundToDivide, CSS_UNITS } from './PDFUtils';
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 export type PDFDocumentProps = {
-    src:string,
-    selectedPages:Array<number>,
-    scale:number
+    src: string,
+    selectedPages: Array<number>,
+    scale: number
 }
 
 export default class PDFDocument extends React.Component<PDFDocumentProps> {
@@ -26,34 +26,35 @@ export default class PDFDocument extends React.Component<PDFDocumentProps> {
         this.fetch();
     }
 
-    async fetch(){
+    async fetch() {
         const loadingTask = pdfjs.getDocument(this.props.src);
 
         const doc = await loadingTask.promise;
-        const pageCount:Array<number> = Array(doc.numPages);
-        
-        this.pageRefs = Array.from(pageCount, () => React.createRef());
-        this.pages = await Promise.all(Array.from(pageCount, async (e, i) => await doc.getPage(i+1)))
-        .then(pages => pages.map( (page,i) => <PDFPage key={i} ref={ this.pageRefs[i]} page={page} scale={this.props.scale} />))
+        const pageCount: Array<number> = Array(doc.numPages);
 
-       // await this.updatePages();
+        this.pageRefs = Array.from(pageCount, () => React.createRef());
+        this.pages = await Promise.all(Array.from(pageCount, async (e, i) => await doc.getPage(i + 1)))
+            .then(pages => pages.map((page, i) => <PDFPage key={i} ref={this.pageRefs[i]} page={page} scale={this.props.scale} />))
+
         this.forceUpdate();
     }
 
-    async updatePages(){
-     
+    updatePages() {
+        this.pages = this.pages.map((p, i) => <PDFPage key={i} ref={this.pageRefs[i]} page={p.props.page} scale={this.props.scale} />)
+        this.forceUpdate();
     }
 
     componentDidUpdate(prevProps: PDFDocumentProps) {
         if (this.props.scale != prevProps.scale) {
+            console.log("scale update")
             this.updatePages();
         }
     }
 
-    render(){
-        
+    render() {
+
         return (
-            <div>
+            <div className="PDFDocument">
                 {this.pages}
             </div>
         )
@@ -63,7 +64,7 @@ export default class PDFDocument extends React.Component<PDFDocumentProps> {
 
 type PDFPageProps = {
     scale: number,
-    page:pdfjs.PDFPageProxy
+    page: pdfjs.PDFPageProxy
 }
 
 
@@ -72,24 +73,21 @@ class PDFPage extends React.Component<PDFPageProps> {
     public static defaultProps = {
         scale: 1
     };
-    
+
     private canvas: HTMLCanvasElement | null = null;
-    private isRendering:Boolean = false;
-    
-    public async update(){
-        if(this.isRendering)return;
+    private isRendering: Boolean = false;
+
+    public async update() {
+        if (this.isRendering) return;
         this.isRendering = true;
-        //if(!this.canvasRef) return;
-        const canvas: any = this.canvas;//this.canvasRef.current;
+
+        const canvas: any = this.canvas;
         if (canvas) {
-     
-        const {page} = this.props;
+            const { page } = this.props;
 
-        const viewport = page.getViewport({ scale: this.props.scale * CSS_UNITS });
+            const viewport = page.getViewport({ scale: this.props.scale * CSS_UNITS });
 
-        // Prepare canvas using PDF page dimensions
-        
-
+            // Prepare canvas using PDF page dimensions
             // Use the viewport calculation from https://github.com/mozilla/pdf.js/blob/d6754d1e22fb7b3eb98ace8ce671eac094a4859d/web/pdf_page_view.js#L589
             // for a better rendering
 
@@ -118,12 +116,12 @@ class PDFPage extends React.Component<PDFPageProps> {
             const renderTask = page.render(renderContext);
 
             await renderTask.promise;
-            this.isRendering = false;
+
         }
+        this.isRendering = false;
     };
 
-    componentDidMount(){
-
+    componentDidMount() {
         this.update();
     }
 
@@ -132,10 +130,10 @@ class PDFPage extends React.Component<PDFPageProps> {
             this.update();
         }
     }
-    
-    render(){
+
+    render() {
         return (
-            <canvas ref={ref => {
+            <canvas className="PDFPage" ref={ref => {
                 this.canvas = ref;
                 this.update()
             }} />

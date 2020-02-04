@@ -14,10 +14,5 @@ module.exports = {
                 }
             }
         ]
-    },
-    /*nameplugins: [
-        new webpack.ProvidePlugin({
-            jsxFactory: ['react-dom', 'jsxFactory']
-        })
-    ]*/
+    }
 }

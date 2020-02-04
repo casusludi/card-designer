@@ -1,6 +1,5 @@
 'use strict'
 import React, { Component } from 'react';
-import PDFComponent from '../PDFViewer/PDFComponent';
 import PDFViewer from '../PDFViewer/PDFViewer';
 import './App.scss';
 
@@ -22,7 +21,7 @@ function makePositionAdjuster(type:PositionType,initialValue:number,initialMouse
 			document.body.style.cursor = "ew-resize";
 			document.addEventListener('mousemove', adjustEditorWidthMouseMove);
 			document.addEventListener('mouseup', adjustEditorWidthMouseUp);
-			const _enterFrameId = window.setInterval(adjustEditorWidthEnterFrame,100);
+			const _enterFrameId = window.setInterval(adjustEditorWidthEnterFrame,33);
 
 
 			function adjustEditorWidthMouseMove(evt:MouseEvent){
@@ -45,7 +44,7 @@ function makePositionAdjuster(type:PositionType,initialValue:number,initialMouse
 			}
 }
 
-export default class App extends Component<void,AppState> {
+export default class App extends Component<{},AppState> {
 
 	state = {
 		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500")

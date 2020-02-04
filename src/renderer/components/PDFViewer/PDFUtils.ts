@@ -1,9 +1,6 @@
-import pdfjs from 'pdfjs-dist';
-//@ts-ignore
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 // use utils function from https://github.com/mozilla/pdf.js/blob/d6754d1e22fb7b3eb98ace8ce671eac094a4859d/web/ui_utils.js#L258
+
 export const CSS_UNITS = 96.0 / 72.0;
 
 export function getOutputScale(ctx: any) {
@@ -73,49 +70,3 @@ export function roundToDivide(x: any, div: any) {
     const r = x % div;
     return r === 0 ? x : Math.round(x - r + div);
 }
-
-export const fetchPDFDocument = async (src:String) => {
-    const loadingTask = pdfjs.getDocument(src);
-
-    const pdf = await loadingTask.promise;
-
-    return {
-        async render(canvas:HTMLCanvasElement,pageIndex:number,scale:number=1){
-
-            const page = await pdf.getPage(pageIndex);
-            const viewport = page.getViewport({ scale: scale * CSS_UNITS });
-        
-            // Use the viewport calculation from https://github.com/mozilla/pdf.js/blob/d6754d1e22fb7b3eb98ace8ce671eac094a4859d/web/pdf_page_view.js#L589
-            // for a better rendering
-        
-            const ctx = canvas.getContext("2d", { alpha: false });
-            const outputScale = getOutputScale(ctx);
-        
-            const sfx = approximateFraction(outputScale.sx);
-            const sfy = approximateFraction(outputScale.sy);
-            canvas.width = roundToDivide(viewport.width * outputScale.sx, sfx[0]);
-            canvas.height = roundToDivide(viewport.height * outputScale.sy, sfy[0]);
-            canvas.style.width = roundToDivide(viewport.width, sfx[1]) + "px";
-            canvas.style.height = roundToDivide(viewport.height, sfy[1]) + "px";
-        
-        
-            // Rendering area
-            const transform = !outputScale.scaled
-                ? null
-                : [outputScale.sx, 0, 0, outputScale.sy, 0, 0];
-            const renderContext = {
-                canvasContext: ctx,
-                transform,
-                viewport: viewport,
-                enableWebGL: false,
-                renderInteractiveForms: false,
-            };
-        
-            //@ts-ignore
-            const renderTask = page.render(renderContext);
-        
-            await renderTask.promise;
-        }
-    }
-
-};

@@ -6,8 +6,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = './pdf.worker.js';
 import { approximateFraction, getOutputScale, roundToDivide, CSS_UNITS } from './PDFUtils';
 
 
+
+
+export type PDFSource = string | Uint8Array | Buffer | null;
+
 export type PDFDocumentProps = {
-    src: string | Uint8Array ,
+    src: PDFSource ,
     selectedPages: Array<number>,
     scale: number
 }
@@ -27,6 +31,7 @@ export default class PDFDocument extends React.Component<PDFDocumentProps> {
     }
 
     async fetch() {
+        if(!this.props.src) return;
         const loadingTask = pdfjs.getDocument(this.props.src);
 
         const doc = await loadingTask.promise;

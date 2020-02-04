@@ -4,14 +4,17 @@ import PDFViewer from '../PDFViewer/PDFViewer';
 import makeHTMLToPDFConverter from '../../utils/HTMLToPDFConverter';
 import './App.scss';
 import fs from 'fs';
+import { PDFSource } from '../PDFViewer/PDFDocument';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
 const HTML_FILE_TEST: string = `./tmp/clients.html`;
 
+
+
 type AppState = {
 	editorWidth:number,
-	pdfToView:string | Uint8Array
+	pdfToView:PDFSource
 }
 
 enum PositionType {
@@ -55,6 +58,11 @@ export default class App extends Component<{},AppState> {
 		pdfToView: PDF_FILE_TEST
 	}
 
+	private converter:any;
+
+	async componentDidMount(){
+		this.converter = await makeHTMLToPDFConverter();
+	}
 
 	startAdjustEditorWidth(evt:React.MouseEvent){
 		makePositionAdjuster(
@@ -86,8 +94,6 @@ export default class App extends Component<{},AppState> {
 					<main className="viewer">
 						<div className="viewer-tabset">
 							<div className="viewer-tabitem">
-								
-								 {/*<PDFComponent src={FILE_TEST} />*/}
 								 <PDFViewer src={this.state.pdfToView} />
 							</div>
 						</div>
@@ -104,10 +110,13 @@ export default class App extends Component<{},AppState> {
 	}
 
 	async testPDFConverter() {
-		const converter = makeHTMLToPDFConverter();
+	
 		//@ts-ignore
 		const filePath = __static+'/'+HTML_FILE_TEST;
-		const data = await converter.convert(fs.readFileSync(filePath).toString());
+		//@ts-ignore
+		// fix crash of Electron when convert html to pdf : https://github.com/electron/electron/issues/20700
+		const INTERNAL_STATIC_PROTOCOL = 'cardmaker-internal';
+		const data = await this.converter.convert(fs.readFileSync(filePath).toString(),'cardmaker-internal:/');
 		this.setState({
 			pdfToView: data
 		})

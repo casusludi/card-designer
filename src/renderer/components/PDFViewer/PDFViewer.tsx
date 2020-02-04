@@ -2,18 +2,17 @@
 import React from 'react';
 import './PDFViewer.scss'
 
-import chokidar, { FSWatcher } from 'chokidar';
-import PDFDocument from './PDFDocument';
+import PDFDocument, { PDFSource } from './PDFDocument';
 
 export type PDFViewerProps = {
-    src: string | Uint8Array
+    src: PDFSource
 };
 
 export type PDFViewerState = {
-    numPages: Number | null,
-    doc: any,
-    scale: number,
-    src: string | Uint8Array,
+    numPages: Number | null
+    doc: any
+    scale: number
+    src: PDFSource
 }
 
 const scales = [
@@ -33,34 +32,8 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
         src: this.props.src,
     }
 
-    private fileWatcher: FSWatcher | null = null;
-
-    private doc: PDFDocument | null = null;
-
-    componentDidMount() {
-        /*const latency = 100;
-        let timerId: any;
-        this.fileWatcher = chokidar.watch(this.state.filePath).on('change', (event, path) => {
-            clearTimeout(timerId);
-            timerId = setTimeout(() => {
-                if (this.doc) this.doc.fetch();
-            }, latency)
-
-        });*/
-    }
-
-    componentWillUnmount() {
-       /* if (this.fileWatcher) {
-            this.fileWatcher.close();
-        }*/
-    }
-
     componentDidUpdate(prevProps: PDFViewerProps, prevState: PDFViewerState) {
-        if (/*this.fileWatcher && */this.props.src != this.state.src) {
-            /*if (prevState.filePath) {
-                this.fileWatcher.unwatch(prevState.filePath);
-            }
-            this.fileWatcher.add(this.state.filePath)*/
+        if (this.props.src != this.state.src) {
             this.setState({src:this.props.src})
         }
 
@@ -82,7 +55,7 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
                         </select></div>
                 </div>
                 <div className="PDFViewer__viewport" onMouseUp={evt => this.startGrabbingViewPort(evt)}>
-                    <PDFDocument src={this.state.src} scale={this.state.scale} ref={(ref) => { this.doc = ref; }} />
+                    <PDFDocument src={this.state.src} scale={this.state.scale} />
                 </div>
 
             </div>

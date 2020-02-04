@@ -1,13 +1,17 @@
 'use strict'
 import React, { Component } from 'react';
 import PDFViewer from '../PDFViewer/PDFViewer';
+import makeHTMLToPDFConverter from '../../utils/HTMLToPDFConverter';
 import './App.scss';
+import fs from 'fs';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
-const FILE_TEST: string = `./clients.pdf`;
+const PDF_FILE_TEST: string = `./tmp/events.pdf`;
+const HTML_FILE_TEST: string = `./tmp/clients.html`;
 
 type AppState = {
-	editorWidth:number
+	editorWidth:number,
+	pdfToView:string | Uint8Array
 }
 
 enum PositionType {
@@ -47,7 +51,8 @@ function makePositionAdjuster(type:PositionType,initialValue:number,initialMouse
 export default class App extends Component<{},AppState> {
 
 	state = {
-		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500")
+		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
+		pdfToView: PDF_FILE_TEST
 	}
 
 
@@ -83,18 +88,29 @@ export default class App extends Component<{},AppState> {
 							<div className="viewer-tabitem">
 								
 								 {/*<PDFComponent src={FILE_TEST} />*/}
-								 <PDFViewer filePath={FILE_TEST} />
+								 <PDFViewer src={this.state.pdfToView} />
 							</div>
 						</div>
 					</main>
 					<aside className="editor" style={{width:`${this.state.editorWidth}px`}} >
 						<div className="editor__width-adjuster" onMouseDown={evt => this.startAdjustEditorWidth(evt)} ></div>
-						{/*editorTabsVdom*/}
+
+						<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button>
 					</aside>
 				</div>
 				<footer className="layout__footer"></footer>
 			</div>
 		);
+	}
+
+	async testPDFConverter() {
+		const converter = makeHTMLToPDFConverter();
+		//@ts-ignore
+		const filePath = __static+'/'+HTML_FILE_TEST;
+		const data = await converter.convert(fs.readFileSync(filePath).toString());
+		this.setState({
+			pdfToView: data
+		})
 	}
 }
 

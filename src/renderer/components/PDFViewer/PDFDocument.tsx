@@ -7,7 +7,7 @@ import { approximateFraction, getOutputScale, roundToDivide, CSS_UNITS } from '.
 
 
 export type PDFDocumentProps = {
-    src: string,
+    src: string | Uint8Array ,
     selectedPages: Array<number>,
     scale: number
 }
@@ -45,10 +45,15 @@ export default class PDFDocument extends React.Component<PDFDocumentProps> {
     }
 
     componentDidUpdate(prevProps: PDFDocumentProps) {
+        if (this.props.src != prevProps.src) {
+            this.fetch();
+        }
+
         if (this.props.scale != prevProps.scale) {
-            console.log("scale update")
             this.updatePages();
         }
+
+
     }
 
     render() {

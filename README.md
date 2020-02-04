@@ -26,3 +26,6 @@
         - multi-images boxes
     - better layout management
     - UI base on the previous json 
+
+## better user pref storage system
+    -

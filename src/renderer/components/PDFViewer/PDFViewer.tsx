@@ -6,14 +6,14 @@ import chokidar, { FSWatcher } from 'chokidar';
 import PDFDocument from './PDFDocument';
 
 export type PDFViewerProps = {
-    filePath: string
+    src: string | Uint8Array
 };
 
 export type PDFViewerState = {
     numPages: Number | null,
     doc: any,
     scale: number,
-    filePath: string,
+    src: string | Uint8Array,
 }
 
 const scales = [
@@ -30,7 +30,7 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
         numPages: null,
         scale: 1,
         doc: null,
-        filePath: this.props.filePath,
+        src: this.props.src,
     }
 
     private fileWatcher: FSWatcher | null = null;
@@ -38,7 +38,7 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
     private doc: PDFDocument | null = null;
 
     componentDidMount() {
-        const latency = 100;
+        /*const latency = 100;
         let timerId: any;
         this.fileWatcher = chokidar.watch(this.state.filePath).on('change', (event, path) => {
             clearTimeout(timerId);
@@ -46,22 +46,24 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
                 if (this.doc) this.doc.fetch();
             }, latency)
 
-        });
+        });*/
     }
 
     componentWillUnmount() {
-        if (this.fileWatcher) {
+       /* if (this.fileWatcher) {
             this.fileWatcher.close();
-        }
+        }*/
     }
 
     componentDidUpdate(prevProps: PDFViewerProps, prevState: PDFViewerState) {
-        if (this.fileWatcher && prevState.filePath != this.state.filePath) {
-            if (prevState.filePath) {
+        if (/*this.fileWatcher && */this.props.src != this.state.src) {
+            /*if (prevState.filePath) {
                 this.fileWatcher.unwatch(prevState.filePath);
             }
-            this.fileWatcher.add(this.state.filePath)
+            this.fileWatcher.add(this.state.filePath)*/
+            this.setState({src:this.props.src})
         }
+
     }
 
     startGrabbingViewPort(event: React.MouseEvent<HTMLDivElement, MouseEvent>){
@@ -80,7 +82,7 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
                         </select></div>
                 </div>
                 <div className="PDFViewer__viewport" onMouseUp={evt => this.startGrabbingViewPort(evt)}>
-                    <PDFDocument src={this.state.filePath} scale={this.state.scale} ref={(ref) => { this.doc = ref; }} />
+                    <PDFDocument src={this.state.src} scale={this.state.scale} ref={(ref) => { this.doc = ref; }} />
                 </div>
 
             </div>

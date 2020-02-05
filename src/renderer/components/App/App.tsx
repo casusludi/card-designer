@@ -5,6 +5,8 @@ import './App.scss';
 import fs from 'fs';
 import { PDFSource } from '../PDFViewer/PDFDocument';
 import {convertHtmlToPdf} from '../../utils';
+import { AuthService, makeAuth, AuthType } from '../../services/auth';
+import { GlobalSettings } from '../../../types';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
@@ -15,6 +17,10 @@ const HTML_FILE_TEST: string = `./tmp/clients.html`;
 type AppState = {
 	editorWidth:number,
 	pdfToView:PDFSource
+}
+
+export type AppProps = {
+	settings: GlobalSettings
 }
 
 enum PositionType {
@@ -51,17 +57,18 @@ function makePositionAdjuster(type:PositionType,initialValue:number,initialMouse
 			}
 }
 
-export default class App extends Component<{},AppState> {
+export default class App extends Component<AppProps,AppState> {
 
 	state = {
 		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
 		pdfToView: PDF_FILE_TEST
 	}
 
-
+	private auth:AuthService|null = null;
 
 	async componentDidMount(){
-
+		this.auth = makeAuth(AuthType.GOOGLE,this.props.settings);
+		this.auth?.signIn();
 	}
 
 	startAdjustEditorWidth(evt:React.MouseEvent){

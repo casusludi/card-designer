@@ -1,20 +1,17 @@
 'use strict'
 
-import { app,protocol, BrowserWindow } from 'electron'
+import { app,protocol, BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
 import settings from '../../settings/globals.json';
+import makeServe, { Serve } from './serve';
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const INTERNAL_STATIC_PROTOCOL = 'cardmaker-internal';
 
-
-protocol.registerSchemesAsPrivileged([
-  { scheme: INTERNAL_STATIC_PROTOCOL, privileges: { standard: true, secure: true  } }
-])
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow:BrowserWindow|null;
+let serve:Serve|null;
 
 function createMainWindow() {
   const window = new BrowserWindow({
@@ -30,22 +27,23 @@ function createMainWindow() {
   window.setMenu(null);
 
   if (isDevelopment) {
-    window.webContents.openDevTools()
-  }
+    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`).then(() => {
+      window.webContents.openDevTools()
+    })
 
-  if (isDevelopment) {
-    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
   }
   else {
     window.loadURL(formatUrl({
       pathname: path.join(__dirname, 'index.html'),
       protocol: 'file',
       slashes: true
-    }))
+    })) 
   }
 
   window.on('closed', () => {
     mainWindow = null
+    //serve?.close();
+    serve = null;
   })
 
   window.webContents.on('devtools-opened', () => {
@@ -74,20 +72,25 @@ app.on('activate', () => {
 })
 
 // create main BrowserWindow when electron is ready
-app.on('ready', () => {
+app.on('ready', async () => {
   
   protocol.registerStringProtocol(settings.customScheme, function(request:any,callback:any) {
     // do nothing : just force Windows to associate the scheme with this app
   })
-  // fix crash of Electron when convert html to pdf : https://github.com/electron/electron/issues/20700
-  protocol.registerFileProtocol(INTERNAL_STATIC_PROTOCOL, (request, callback) => {
-    const url = request.url.substr(INTERNAL_STATIC_PROTOCOL.length+2);
-    //@ts-ignore
-    const file = { path: path.normalize(`${__static}/${url}`) }
-    callback(file)
-  })
   
+  serve = await makeServe(1983);
+  mainWindow = createMainWindow();
 
-  mainWindow = createMainWindow()
+  ipcMain.handle('html-to-pdf', async (event, id: string, html: string, base: string) => {
+    return await serve?.convertToPdf(id,html,base)
+  })
+
+  ipcMain.handle('serve', (event, id: string, html: string, base: string) => {
+    return serve?.serve(id,html,base)
+  })
+
+  ipcMain.handle('unserve', (event, id: string) => {
+    return serve?.unserve(id)
+  })
  
 })

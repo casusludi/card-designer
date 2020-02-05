@@ -1,10 +1,10 @@
 'use strict'
 import React, { Component } from 'react';
 import PDFViewer from '../PDFViewer/PDFViewer';
-import makeHTMLToPDFConverter from '../../utils/HTMLToPDFConverter';
 import './App.scss';
 import fs from 'fs';
 import { PDFSource } from '../PDFViewer/PDFDocument';
+import {convertHtmlToPdf} from '../../utils';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
@@ -58,10 +58,10 @@ export default class App extends Component<{},AppState> {
 		pdfToView: PDF_FILE_TEST
 	}
 
-	private converter:any;
+
 
 	async componentDidMount(){
-		this.converter = await makeHTMLToPDFConverter();
+
 	}
 
 	startAdjustEditorWidth(evt:React.MouseEvent){
@@ -114,9 +114,7 @@ export default class App extends Component<{},AppState> {
 		//@ts-ignore
 		const filePath = __static+'/'+HTML_FILE_TEST;
 		//@ts-ignore
-		// fix crash of Electron when convert html to pdf : https://github.com/electron/electron/issues/20700
-		const INTERNAL_STATIC_PROTOCOL = 'cardmaker-internal';
-		const data = await this.converter.convert(fs.readFileSync(filePath).toString(),'cardmaker-internal:/');
+		const data = await convertHtmlToPdf(fs.readFileSync(filePath).toString(),__static);
 		this.setState({
 			pdfToView: data
 		})

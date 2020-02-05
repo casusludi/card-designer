@@ -1,5 +1,5 @@
 {
-    "customScheme":"casusludi.deckcardsmaker",
+    "customScheme":"casusludi.cardmaker",
     "googleapi":{
         "clientId":"351534077002-qbpiejk4u8l4q1r10udt02gaqr3p6428.apps.googleusercontent.com",
         "scope":"profile email https://www.googleapis.com/auth/spreadsheets.readonly"

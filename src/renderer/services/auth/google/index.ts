@@ -2,8 +2,8 @@ import { parse } from 'url'
 import { remote } from 'electron'
 import axios from 'axios'
 import qs from 'qs';
-import {google,sheets_v4} from 'googleapis';
-import { User, UserStatus } from '..';
+
+import { User, UserStatus, UNKNOW_USER } from '../index';
 
 const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
@@ -11,19 +11,20 @@ const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 
 const USER_STORAGE_KEY:string = `google:user`;
 
+
 async function signIn(clientId:string,redirectUri:string,scope:string):Promise<User> {
 
     const userRaw:string|null = localStorage.getItem(USER_STORAGE_KEY);
     if(!userRaw){
         const code:any = await signInWithPopup(clientId,redirectUri,scope)
         const tokens = await fetchAccessTokens(code,clientId,redirectUri)
-        const { id, email, name } = await fetchGoogleProfile(tokens.access_token);
+        const { id, name } = await fetchGoogleProfile(tokens.access_token);
         
         const providerUser:User = {
             uid: id,
-            email,
             name,
-            tokens
+            tokens,
+            status: UserStatus.CONNECTED
         }
         localStorage.setItem(USER_STORAGE_KEY,JSON.stringify(providerUser));
         return providerUser
@@ -40,21 +41,18 @@ async function signOut():Promise<boolean>{
     return true;
 }
 
-function getUserStatus():UserStatus{
-    return localStorage.getItem(USER_STORAGE_KEY)?UserStatus.CONNECTED:UserStatus.DISCONNECTED;
-}
-
-function getUserIfExist():User|null{
+function getUser():User{
     const userRaw:string|null = localStorage.getItem(USER_STORAGE_KEY);
     if(userRaw){
         return JSON.parse(userRaw);
     }
-    return null;
+    return UNKNOW_USER
 }
 
 
 function signInWithPopup(clientId:string,redirectUri:string,scope:string) {
     return new Promise((resolve, reject) => {
+
         const authWindow = new remote.BrowserWindow({
             width: 500,
             height: 600,
@@ -119,28 +117,6 @@ async function fetchGoogleProfile(accessToken:string) {
     return response.data
 }
 
-export async function getSpreadSheets(tokens:any){
-    const oauth2Client = new google.auth.OAuth2();
-    oauth2Client.setCredentials(tokens);
-
-    const sheets = new sheets_v4.Sheets({auth:oauth2Client});
-    sheets.spreadsheets.get({
-        spreadsheetId: '1PUqBcaJnlpFxFWzJX6ZxAJX049_1uPjPGp1S5vpX4M0'
-    }).then(function(response) {
-        console.log(response)
-    }, function(response) {
-        console.log('Error: ' + response.result.error.message);
-    });
-    /*sheets.spreadsheets.values.get({
-        spreadsheetId: '1PUqBcaJnlpFxFWzJX6ZxAJX049_1uPjPGp1S5vpX4M0',
-        range:'talents!A2:E'
-      }, (err:any, res:any) => {
-        if(err) return console.log(err);
-        console.log('sheet results',res);
-
-    });*/
-}
-
 import { AuthService } from "..";
 
 export default function makeGoogleAuth(
@@ -148,11 +124,10 @@ export default function makeGoogleAuth(
     redirectUrl:string,
     scope:string
     ):AuthService{
-
+        
         return {
             signIn:()=> signIn(clientId,redirectUrl,scope),
             signOut,
-            getUserStatus,
-            getUserIfExist
+            getUser
         }
 }

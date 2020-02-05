@@ -1,4 +1,5 @@
-
+import makeGoogleAuth from './Google';
+import { GlobalSettings } from '../../../types';
 
 export type AuthServiceMap = {
     [name: string]: AuthService
@@ -8,8 +9,7 @@ export type AuthServiceMap = {
 export type AuthService = {
     signIn(): Promise<User>
     signOut(): Promise<Boolean>
-    getUserIfExist(): User|null
-    getUserStatus(): UserStatus
+    getUser(): User
 }
 
 export enum AuthActionName {
@@ -36,9 +36,9 @@ export enum UserStatus {
 
 export type User = {
     uid: string,
-    email: string,
     name: string,
-    tokens: any
+    tokens: any,
+    status: UserStatus
 }
 
 
@@ -52,12 +52,17 @@ export enum AuthType {
     GOOGLE
 }
 
-import makeGoogleAuth from './google';
-import { GlobalSettings } from '../../../types';
+export const UNKNOW_USER:User = {
+    uid:"",
+    name:"",
+    tokens:"",
+    status: UserStatus.DISCONNECTED
+}
+
 
 export function makeAuth(type:AuthType,settings:GlobalSettings):AuthService|null{
     switch(type){
-        case AuthType.GOOGLE : makeGoogleAuth(
+        case AuthType.GOOGLE : return makeGoogleAuth(
             settings.googleapi.clientId,
             `${settings.customScheme}:redirect`,
             settings.googleapi.scope

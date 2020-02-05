@@ -1,7 +1,7 @@
 {
-    "customScheme":"casusludi.cardmaker",
+    "customScheme":"casusludi.cardmakerstudio",
     "googleapi":{
-        "clientId":"351534077002-qbpiejk4u8l4q1r10udt02gaqr3p6428.apps.googleusercontent.com",
-        "scope":"profile email https://www.googleapis.com/auth/spreadsheets.readonly"
+        "clientId":"351534077002-na59942t8cha7jak6i6eltbmklrip0fb.apps.googleusercontent.com",
+        "scope":"profile https://www.googleapis.com/auth/spreadsheets.readonly"
     }
 }

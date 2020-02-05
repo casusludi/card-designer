@@ -5,8 +5,10 @@ import './App.scss';
 import fs from 'fs';
 import { PDFSource } from '../PDFViewer/PDFDocument';
 import {convertHtmlToPdf} from '../../utils';
-import { AuthService, makeAuth, AuthType } from '../../services/auth';
+import { AuthService, makeAuth, AuthType, User, UNKNOW_USER } from '../../services/Auth';
 import { GlobalSettings } from '../../../types';
+import { GoogleBar } from '../Google/GoogleBar';
+import {fetchFromGSheet} from '../../services/DataFetch/GSheet/GSheet';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
@@ -16,7 +18,8 @@ const HTML_FILE_TEST: string = `./tmp/clients.html`;
 
 type AppState = {
 	editorWidth:number,
-	pdfToView:PDFSource
+	pdfToView:PDFSource,
+	user:User | null
 }
 
 export type AppProps = {
@@ -61,14 +64,39 @@ export default class App extends Component<AppProps,AppState> {
 
 	state = {
 		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
-		pdfToView: PDF_FILE_TEST
+		pdfToView: PDF_FILE_TEST,
+		user:UNKNOW_USER
 	}
 
 	private auth:AuthService|null = null;
 
 	async componentDidMount(){
 		this.auth = makeAuth(AuthType.GOOGLE,this.props.settings);
-		this.auth?.signIn();
+		if(this.auth){
+			this.setState({
+				user: this.auth.getUser()
+			})
+		}
+	
+	}
+
+	async authSignIn() {
+		if(this.auth){
+			const user = await this.auth.signIn();
+			this.setState({user});
+		}
+	}
+
+	async authSignOut() {
+		if(this.auth){
+			await this.auth.signOut();
+			this.setState({user:UNKNOW_USER});
+		}
+	}
+
+	async fetchFromGSheet(){
+		const data = await fetchFromGSheet('1ERJe7kgsTBq5v886cZ-TdF9CmsoYgDS8n3aniv0p_cA',this.state.user.tokens);
+		console.log(data);
 	}
 
 	startAdjustEditorWidth(evt:React.MouseEvent){
@@ -92,10 +120,12 @@ export default class App extends Component<AppProps,AppState> {
 						<button className="button" ><i className="icon far fa-folder-open"></i></button>
 						<button className="button" ><i className="icon far fa-save"></i></button>
 					</div>
-					<div className="button-bar right-align">
-						<button className="button"><i className="icon fas fa-download"></i><span>Google Sheets</span></button>
-						{/*googleAuth*/}
-					</div>
+					<GoogleBar className="right-align"  
+						user={this.state.user}
+						signInAction={() => this.authSignIn()}
+						signOutAction={() => this.authSignOut()}
+						fetchAction={() => this.fetchFromGSheet()}
+					/>
 				</header>
 				<div className="layout__body">
 					<main className="viewer">

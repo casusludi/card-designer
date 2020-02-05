@@ -82,6 +82,7 @@ export default async function makeServe(port:number): Promise<Serve>{
 
     const server = http.createServer(requestListener);
     server.listen(port);
+    console.log(`server listen at ${port}`);
 
     return {
         serve(id:string,html:string,base:string){

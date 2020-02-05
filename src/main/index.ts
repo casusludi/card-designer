@@ -2,6 +2,7 @@
 
 import { app,protocol, BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
+import getPort from 'get-port';
 import { format as formatUrl } from 'url'
 import settings from '../../settings/globals.json';
 import makeServe, { Serve } from './serve';
@@ -77,8 +78,13 @@ app.on('ready', async () => {
   protocol.registerStringProtocol(settings.customScheme, function(request:any,callback:any) {
     // do nothing : just force Windows to associate the scheme with this app
   })
-  
-  serve = await makeServe(1983);
+  const port = await getPort();
+
+  global.sharedVars = {
+    servePort: port
+  }
+
+  serve = await makeServe(port);
   mainWindow = createMainWindow();
 
   ipcMain.handle('html-to-pdf', async (event, id: string, html: string, base: string) => {

@@ -9,6 +9,7 @@ export type AuthServiceMap = {
 export type AuthService = {
     signIn(): Promise<User>
     signOut(): Promise<Boolean>
+    refreshToken(): Promise<User>
     getUser(): User
 }
 
@@ -55,7 +56,9 @@ export enum AuthType {
 export const UNKNOW_USER:User = {
     uid:"",
     name:"",
-    tokens:"",
+    tokens:{
+        
+    },
     status: UserStatus.DISCONNECTED
 }
 

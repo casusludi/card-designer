@@ -6,7 +6,8 @@ import qs from 'qs';
 import { User, UserStatus, UNKNOW_USER } from '../index';
 
 const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
-const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
+//const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
+const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
 const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 
 const USER_STORAGE_KEY:string = `google:user`;
@@ -107,6 +108,33 @@ async function fetchAccessTokens(code:string,clientId:string,redirectUri:string)
     return response.data
 }
 
+async function refreshAccessToken(refreshToken:string,clientId:string) {
+    const response = await axios.post(GOOGLE_TOKEN_URL, qs.stringify({
+        refresh_token:refreshToken,
+        client_id: clientId,
+        grant_type: 'refresh_token',
+    }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+    return response.data
+}
+
+async function refreshAccessTokenWithUser(user:User, clientId:string):Promise<User>{
+    const {refresh_token} = user.tokens;
+    if(refresh_token){
+        const result = await refreshAccessToken(refresh_token,clientId);
+        user.tokens.access_token = result.access_token;
+        user.tokens.expires_in = result.expires_in;
+        localStorage.setItem(USER_STORAGE_KEY,JSON.stringify(user));
+     
+    }else{
+        throw new Error("refreshAccessTokenWithUser: Invalid User")
+    }
+    return user;
+}
+
 async function fetchGoogleProfile(accessToken:string) {
     const response = await axios.get(GOOGLE_PROFILE_URL, {
         headers: {
@@ -128,6 +156,7 @@ export default function makeGoogleAuth(
         return {
             signIn:()=> signIn(clientId,redirectUrl,scope),
             signOut,
+            refreshToken: () => refreshAccessTokenWithUser(getUser(),clientId),
             getUser
         }
 }

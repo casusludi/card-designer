@@ -95,6 +95,10 @@ export default class App extends Component<AppProps,AppState> {
 	}
 
 	async fetchFromGSheet(){
+		if(this.auth){
+			const user = await this.auth.refreshToken();
+			this.setState({user});
+		}
 		const data = await fetchFromGSheet('1ERJe7kgsTBq5v886cZ-TdF9CmsoYgDS8n3aniv0p_cA',this.state.user.tokens);
 		console.log(data);
 	}

@@ -1,6 +1,5 @@
 'use strict'
 import React, { Component } from 'react';
-import PDFViewer from '../PDFViewer/PDFViewer';
 import './App.scss';
 import fs from 'fs';
 import { PDFSource } from '../PDFViewer/PDFDocument';
@@ -11,6 +10,7 @@ import { GoogleBar } from '../Google/GoogleBar';
 import {fetchFromGSheet} from '../../services/DataFetch/GSheet/GSheet';
 import EditorPanel from '../EditorPanel/EditorPanel';
 import PreviewPanel from '../PreviewPanel/PreviewPanel';
+import {openProjectFromDialog, Project} from '../../services/Project';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
@@ -19,9 +19,10 @@ const HTML_FILE_TEST: string = `./tmp/clients.html`;
 
 
 type AppState = {
-	editorWidth:number,
-	pdfToView:PDFSource,
+	editorWidth:number
+	pdfToView:PDFSource
 	user:User | null
+	project:Project | null
 }
 
 export type AppProps = {
@@ -67,7 +68,8 @@ export default class App extends Component<AppProps,AppState> {
 	state = {
 		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
 		pdfToView: PDF_FILE_TEST,
-		user:UNKNOW_USER
+		user:UNKNOW_USER,
+		project: null
 	}
 
 	private auth:AuthService|null = null;
@@ -105,6 +107,12 @@ export default class App extends Component<AppProps,AppState> {
 		console.log(data);
 	}
 
+	async openProject(){
+		const project = await openProjectFromDialog();
+		console.log(project);
+		if(project)this.setState({project});
+	}
+
 	startAdjustEditorWidth(evt:React.MouseEvent){
 		makePositionAdjuster(
 			PositionType.Vertical,
@@ -123,7 +131,7 @@ export default class App extends Component<AppProps,AppState> {
 					{/*<div className="project-name">{state.project && state.project.name} {state.projectModified && <span className="project-modified-status"> &#9679;</span>}</div>*/}
 					<div className="button-bar right-align">
 						<button className="button" ><i className="icon far fa-file"></i></button>
-						<button className="button" ><i className="icon far fa-folder-open"></i></button>
+						<button className="button" onClick={() => this.openProject()} ><i className="icon far fa-folder-open"></i></button>
 						<button className="button" ><i className="icon far fa-save"></i></button>
 					</div>
 					<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button> 
@@ -146,7 +154,7 @@ export default class App extends Component<AppProps,AppState> {
 					</main>
 					<aside className="editor" style={{width:`${this.state.editorWidth}px`}} >
 						<div className="editor__width-adjuster" onMouseDown={evt => this.startAdjustEditorWidth(evt)} ></div>
-						<EditorPanel />
+						<EditorPanel project={this.state.project} />
 					</aside>
 				</div>
 				<footer className="layout__footer"></footer>

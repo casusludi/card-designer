@@ -9,6 +9,7 @@ import { AuthService, makeAuth, AuthType, User, UNKNOW_USER } from '../../servic
 import { GlobalSettings } from '../../../types';
 import { GoogleBar } from '../Google/GoogleBar';
 import {fetchFromGSheet} from '../../services/DataFetch/GSheet/GSheet';
+import Editor from '../Editor/Editor';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
@@ -143,6 +144,7 @@ export default class App extends Component<AppProps,AppState> {
 						<div className="editor__width-adjuster" onMouseDown={evt => this.startAdjustEditorWidth(evt)} ></div>
 
 						<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button>
+						<Editor />
 					</aside>
 				</div>
 				<footer className="layout__footer"></footer>

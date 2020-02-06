@@ -10,6 +10,7 @@
     color: $white;
     border: 1px solid $medium-grey;
     outline: none;
+    user-select: none;
     cursor: pointer;
     &:hover:not([disabled]) {
         background-color: $medium-grey;

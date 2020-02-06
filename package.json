@@ -52,6 +52,7 @@
     "webpack": "^4.41.5"
   },
   "dependencies": {
+    "ace-builds": "^1.4.8",
     "axios": "^0.19.2",
     "chokidar": "^3.3.1",
     "get-port": "^5.1.1",
@@ -60,6 +61,7 @@
     "pdfjs-dist": "^2.2.228",
     "qs": "^6.9.1",
     "react": "^16.12.0",
+    "react-ace": "^8.0.0",
     "react-dom": "^16.12.0",
     "uuid": "^3.4.0"
   },

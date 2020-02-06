@@ -1,0 +1,31 @@
+@import '../../styles/variables.scss';
+
+.EditorPanel__Tabs{
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 43px;
+}
+
+.EditorPanel__ActionBar {
+    border-top: 1px solid $medium-grey;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.EditorPanelAutoRenderCheckBox {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+
+    label {
+        user-select: none;
+    }
+}

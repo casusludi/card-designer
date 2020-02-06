@@ -1,0 +1,67 @@
+@import '../../../styles/variables.scss';
+
+$pastel-on-dark-bg-color: #2C2828;
+
+.TabNav {
+    background-color:  $pastel-on-dark-bg-color;
+    position: relative;
+}
+
+.TabNav__headers {
+    border-bottom: 2px solid $darkest-grey;
+    & > *:not(:first-child){
+        margin-left: 1px;
+    }
+}
+
+.TabNav__contents {
+    background-color:  $pastel-on-dark-bg-color;
+    position: absolute;
+    top: 26px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.TabNavItem__header {
+    padding: 5px 10px;
+    background: $medium-grey;
+    color: $light-grey;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    &:hover {
+        background-color: $medium-grey;
+        
+    }
+
+    &.selected {
+        background: $darkest-grey;
+        color: $white;
+    }
+}
+
+.TabNavItem__content {
+    position: absolute;
+    top:0;
+    left:0;
+    right: 0;
+    bottom: 0;
+}
+
+.TabNav_header-bottom {
+    
+    .TabNav__headers{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        border-bottom: none;
+        border-top: 2px solid $darkest-grey;
+    }
+
+    .TabNav__contents {
+        top: 0;
+        bottom: 26px;
+    }
+}

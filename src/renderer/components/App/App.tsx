@@ -9,7 +9,8 @@ import { AuthService, makeAuth, AuthType, User, UNKNOW_USER } from '../../servic
 import { GlobalSettings } from '../../../types';
 import { GoogleBar } from '../Google/GoogleBar';
 import {fetchFromGSheet} from '../../services/DataFetch/GSheet/GSheet';
-import Editor from '../Editor/Editor';
+import EditorPanel from '../EditorPanel/EditorPanel';
+import PreviewPanel from '../PreviewPanel/PreviewPanel';
 
 //const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
@@ -125,6 +126,7 @@ export default class App extends Component<AppProps,AppState> {
 						<button className="button" ><i className="icon far fa-folder-open"></i></button>
 						<button className="button" ><i className="icon far fa-save"></i></button>
 					</div>
+					<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button> 
 					<GoogleBar className="right-align"  
 						user={this.state.user}
 						signInAction={() => this.authSignIn()}
@@ -136,15 +138,15 @@ export default class App extends Component<AppProps,AppState> {
 					<main className="viewer">
 						<div className="viewer-tabset">
 							<div className="viewer-tabitem">
-								 <PDFViewer src={this.state.pdfToView} />
+								<PreviewPanel 
+									finalPreview={this.state.pdfToView}
+								/>
 							</div>
 						</div>
 					</main>
 					<aside className="editor" style={{width:`${this.state.editorWidth}px`}} >
 						<div className="editor__width-adjuster" onMouseDown={evt => this.startAdjustEditorWidth(evt)} ></div>
-
-						<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button>
-						<Editor />
+						<EditorPanel />
 					</aside>
 				</div>
 				<footer className="layout__footer"></footer>

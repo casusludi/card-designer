@@ -11,6 +11,7 @@ import "ace-builds/src-noconflict/theme-pastel_on_dark";
 import "ace-builds/src-noconflict/ext-language_tools";
 import { UndoManager } from "ace-builds";
 import _ from "lodash";
+import './CodeEditor.scss';
 
 export type CodeEditorProps = {
     code: string

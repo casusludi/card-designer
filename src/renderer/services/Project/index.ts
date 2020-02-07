@@ -81,12 +81,8 @@ export async function openProjectFromDialog(): Promise<Project | null> {
 
     });
     if (!result.canceled && result.filePaths.length > 0) {
-        try {
-            const projectPath = result.filePaths[0];
-            return loadProjectFromPath(projectPath);
-        } catch (error) {
-            remote.dialog.showErrorBox('Invalid Carmaker Project', error.message)
-        }
+        const projectPath = result.filePaths[0];
+        return loadProjectFromPath(projectPath);
     }
 
     return null;

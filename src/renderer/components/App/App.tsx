@@ -26,7 +26,8 @@ type AppState = {
 }
 
 export type AppProps = {
-	settings: GlobalSettings
+	settings: GlobalSettings,
+	project:Project | null
 }
 
 enum PositionType {
@@ -69,7 +70,7 @@ export default class App extends Component<AppProps,AppState> {
 		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
 		pdfToView: PDF_FILE_TEST,
 		user:UNKNOW_USER,
-		project: null
+		project: this.props.project
 	}
 
 	private auth:AuthService|null = null;

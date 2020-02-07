@@ -7,6 +7,7 @@ import _ from 'lodash';
 const fsreadFile = promisify(fs.readFile);
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json'
+const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path'
 
 export type ProjectConfigTemplate = {
     hbs:string
@@ -78,17 +79,31 @@ export async function openProjectFromDialog(): Promise<Project | null> {
     if (!result.canceled && result.filePaths.length > 0) {
         try {
             const projectPath = result.filePaths[0];
-            const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
-            const rawData =  await fsreadFile(configFilePath).catch(() => { throw new Error(`${CARDMAKER_CONFIG_FILE} missing.`) });
-            const config: ProjectConfig = JSON.parse(rawData.toString());
-            return await loadProjectFromConfig(config,projectPath);
-
+            return loadProjectFromPath(projectPath);
         } catch (error) {
             remote.dialog.showErrorBox('Invalid Carmaker Project', error.message)
         }
     }
 
     return null;
+}
+
+export async function openLastProject():Promise<Project|null>{
+    const projectPath = window.localStorage.getItem(LAST_PROJECT_PATH_STORAGE_KEY);
+    if(projectPath){
+        return loadProjectFromPath(projectPath);
+    }
+    return null;
+}
+
+export async function loadProjectFromPath(projectPath:string){
+    const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
+    const rawData =  await fsreadFile(configFilePath).catch(() => { throw new Error(`${CARDMAKER_CONFIG_FILE} missing.`) });
+    const config: ProjectConfig = JSON.parse(rawData.toString());
+    return await loadProjectFromConfig(config,projectPath).then( project => {
+        window.localStorage.setItem(LAST_PROJECT_PATH_STORAGE_KEY,projectPath);
+        return project;
+    });
 }
 
 export async function loadProjectFromConfig(config:ProjectConfig,projectPath:string){

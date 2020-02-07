@@ -2,9 +2,8 @@ import React from "react";
 import CodeEditor from "./CodeEditor/CodeEditor"
 import TabNav, { TabNavItem } from "../Misc/TabNav/TabNav";
 import "./EditorPanel.scss";
-import { Project } from "../../services/Project";
+import { Project, ProjectConfig } from "../../services/Project";
 import ConfigEditor from "./ConfigEditor/ConfigEditor";
-import { config } from "ace-builds";
 
 export type EditorPanelProps = {
     project:Project|null
@@ -26,16 +25,19 @@ export default class EditorPanel extends React.Component<EditorPanelProps,Editor
         }
     }
 
+    onConfigValidChange(config:ProjectConfig){
+        console.log(config)
+    }
+
     render(){
-        console.log(this.state.project)
         return (
             <div className="EditorPanel full-space">
                 {this.state.project?
                 <React.Fragment>
                     <TabNav className="EditorPanel__Tabs" >
+                        <TabNavItem label="Config"><ConfigEditor config={this.state.project.config} onValidChange={this.onConfigValidChange.bind(this)} /></TabNavItem>
                         <TabNavItem label="Templates"><CodeEditor id="template-editor" className="full-space" mode="handlebars"  code="<div>Templates editor</div>" /></TabNavItem>
                         <TabNavItem label="Layouts"><CodeEditor id="layout-editor" className="full-space" mode="handlebars"  code="<div>Layouts editor</div>" /></TabNavItem>
-                        <TabNavItem label="Config"><ConfigEditor config={this.state.project.config} /></TabNavItem>
                     </TabNav>
                     <div className="EditorPanel__ActionBar">
                         <button type="button" className="button">Render</button>
@@ -48,7 +50,7 @@ export default class EditorPanel extends React.Component<EditorPanelProps,Editor
                     </div>
                 </React.Fragment>
                 :<div className="EditorPanel_projectNotFound">
-                    No project found        
+                    No Project Found   
                 </div>}
             </div>
         )

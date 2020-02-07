@@ -3,11 +3,13 @@ import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
 import _ from 'lodash';
+import {Validator} from 'jsonschema';
+import projectSchema from './project.schema.json';
 
 const fsreadFile = promisify(fs.readFile);
 
-const CARDMAKER_CONFIG_FILE = 'cardmaker.json'
-const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path'
+const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
+const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
 
 export type ProjectConfigTemplate = {
     hbs:string
@@ -42,6 +44,8 @@ export type Project = {
     layouts: { [key: string]: ProjectTemplate }
     files:{[key:string]:ProjectFile}
 }
+
+const schemaValidator = new Validator();
 
 async function loadTemplate(projectPath:string,id:string,template:ProjectConfigTemplate,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
    
@@ -100,6 +104,14 @@ export async function loadProjectFromPath(projectPath:string){
     const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
     const rawData =  await fsreadFile(configFilePath).catch(() => { throw new Error(`${CARDMAKER_CONFIG_FILE} missing.`) });
     const config: ProjectConfig = JSON.parse(rawData.toString());
+    const validationResult = schemaValidator.validate(config,projectSchema);
+    if(validationResult.errors.length > 0){
+        const messages = _.chain(validationResult.errors)
+            .map(e => '• '+e.message)
+            .join(`\n`)
+            .value();
+            throw new Error(`${CARDMAKER_CONFIG_FILE} validation failed : \n${messages}`)
+    }
     return await loadProjectFromConfig(config,projectPath).then( project => {
         window.localStorage.setItem(LAST_PROJECT_PATH_STORAGE_KEY,projectPath);
         return project;

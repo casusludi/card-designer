@@ -1,0 +1,222 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/root.json",
+    "type": "object",
+    "title": "The Root Schema",
+    "required": [
+      "templates",
+      "layouts",
+      "sources"
+    ],
+    "properties": {
+      "templates": {
+        "$id": "#/properties/templates",
+        "type": "object",
+        "title": "The Templates Schema",
+        "required": [
+          "clients",
+          "events",
+          "methodes"
+        ],
+        "properties": {
+          "clients": {
+            "$id": "#/properties/templates/properties/clients",
+            "type": "object",
+            "title": "The Clients Schema",
+            "required": [
+              "hbs",
+              "styles"
+            ],
+            "properties": {
+              "hbs": {
+                "$id": "#/properties/templates/properties/clients/properties/hbs",
+                "type": "string",
+                "title": "The Hbs Schema",
+                "default": "",
+                "examples": [
+                  "templates/clients.hbs"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "styles": {
+                "$id": "#/properties/templates/properties/clients/properties/styles",
+                "type": "string",
+                "title": "The Styles Schema",
+                "default": "",
+                "examples": [
+                  "styles/card.css"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "events": {
+            "$id": "#/properties/templates/properties/events",
+            "type": "object",
+            "title": "The Events Schema",
+            "required": [
+              "hbs",
+              "styles"
+            ],
+            "properties": {
+              "hbs": {
+                "$id": "#/properties/templates/properties/events/properties/hbs",
+                "type": "string",
+                "title": "The Hbs Schema",
+                "default": "",
+                "examples": [
+                  "templates/events.hbs"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "styles": {
+                "$id": "#/properties/templates/properties/events/properties/styles",
+                "type": "string",
+                "title": "The Styles Schema",
+                "default": "",
+                "examples": [
+                  "styles/card.css"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "methodes": {
+            "$id": "#/properties/templates/properties/methodes",
+            "type": "object",
+            "title": "The Methodes Schema",
+            "required": [
+              "hbs",
+              "styles"
+            ],
+            "properties": {
+              "hbs": {
+                "$id": "#/properties/templates/properties/methodes/properties/hbs",
+                "type": "string",
+                "title": "The Hbs Schema",
+                "default": "",
+                "examples": [
+                  "templates/methodes.hbs"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "styles": {
+                "$id": "#/properties/templates/properties/methodes/properties/styles",
+                "type": "string",
+                "title": "The Styles Schema",
+                "default": "",
+                "examples": [
+                  "styles/card.css"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          }
+        }
+      },
+      "layouts": {
+        "$id": "#/properties/layouts",
+        "type": "object",
+        "title": "The Layouts Schema",
+        "required": [
+          "pro",
+          "basic"
+        ],
+        "properties": {
+          "pro": {
+            "$id": "#/properties/layouts/properties/pro",
+            "type": "object",
+            "title": "The Pro Schema",
+            "required": [
+              "hbs",
+              "styles"
+            ],
+            "properties": {
+              "hbs": {
+                "$id": "#/properties/layouts/properties/pro/properties/hbs",
+                "type": "string",
+                "title": "The Hbs Schema",
+                "default": "",
+                "examples": [
+                  "layouts/pro.hbs"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "styles": {
+                "$id": "#/properties/layouts/properties/pro/properties/styles",
+                "type": "string",
+                "title": "The Styles Schema",
+                "default": "",
+                "examples": [
+                  "styles/pro.css"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          },
+          "basic": {
+            "$id": "#/properties/layouts/properties/basic",
+            "type": "object",
+            "title": "The Basic Schema",
+            "required": [
+              "hbs",
+              "styles"
+            ],
+            "properties": {
+              "hbs": {
+                "$id": "#/properties/layouts/properties/basic/properties/hbs",
+                "type": "string",
+                "title": "The Hbs Schema",
+                "default": "",
+                "examples": [
+                  "layouts/basic.hbs"
+                ],
+                "pattern": "^(.*)$"
+              },
+              "styles": {
+                "$id": "#/properties/layouts/properties/basic/properties/styles",
+                "type": "string",
+                "title": "The Styles Schema",
+                "default": "",
+                "examples": [
+                  "styles/basic.css"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          }
+        }
+      },
+      "sources": {
+        "$id": "#/properties/sources",
+        "type": "object",
+        "title": "The Sources Schema",
+        "required": [
+          "gsheets"
+        ],
+        "properties": {
+          "gsheets": {
+            "$id": "#/properties/sources/properties/gsheets",
+            "type": "object",
+            "title": "The Gsheets Schema",
+            "required": [
+              "sheetId"
+            ],
+            "properties": {
+              "sheetId": {
+                "$id": "#/properties/sources/properties/gsheets/properties/sheetId",
+                "type": "string",
+                "title": "The Sheetid Schema",
+                "default": "",
+                "examples": [
+                  "1ERJe7kgsTBq5v886cZ-TdF9CmsoYgDS8n3aniv0p_cA"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          }
+        }
+      }
+    }
+  }

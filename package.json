@@ -62,6 +62,7 @@
     "chokidar": "^3.3.1",
     "get-port": "^5.1.1",
     "googleapis": "^47.0.0",
+    "jsonschema": "^1.2.5",
     "lodash": "^4.17.15",
     "pdfjs-dist": "^2.2.228",
     "qs": "^6.9.1",

@@ -159,7 +159,7 @@ class App extends Component<AppProps,AppState> {
 					</main>
 					<aside className="editor" style={{width:`${this.state.editorWidth}px`}} >
 						<div className="editor__width-adjuster" onMouseDown={evt => this.startAdjustEditorWidth(evt)} ></div>
-						<EditorPanel project={this.props.project} />
+						<EditorPanel project={this.props.project} width={this.state.editorWidth} />
 					</aside>
 				</div>
 				<footer className="layout__footer"></footer>

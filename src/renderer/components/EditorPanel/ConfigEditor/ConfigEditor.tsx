@@ -6,6 +6,7 @@ import { ProjectConfig } from "../../../services/Project";
 export type ConfigEditorProps = {
     config:ProjectConfig
     onValidChange?:(config:ProjectConfig) => void
+    width?:number
 }
 
 export type ConfigEditorState = {
@@ -29,7 +30,7 @@ export default class ConfigEditor extends React.Component<ConfigEditorProps,Conf
 
         return (
             <div className="ConfigEditor full-space">
-                <CodeEditor id="config-editor" className="full-space" mode="json" onValidChange={this.onValidChange.bind(this)}  code={JSON.stringify(this.state.config,null,4)} />
+                <CodeEditor id="config-editor" className="full-space" width={this.props.width} mode="json" onValidChange={this.onValidChange.bind(this)}  code={JSON.stringify(this.state.config,null,4)} />
             </div>
         )
     }

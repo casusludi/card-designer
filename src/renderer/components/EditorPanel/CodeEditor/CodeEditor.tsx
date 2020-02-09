@@ -18,13 +18,14 @@ export type CodeEditorProps = {
     mode: string
     id: string
     className?: string
-    onValidChange?:(code:string) => void
-    debouncedValidationTime:number
+    onValidChange?: (code: string) => void
+    debouncedValidationTime: number
+    width?:number
 }
 
 export type CodeEditorState = {
     code: string
-    validCode: string|null
+    validCode: string | null
 }
 
 export default class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
@@ -40,20 +41,27 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
 
     private editor: IEditorProps | null = null;
 
-    private onValidChangeDebounced : ((code: string) => void) | null = null
+    private onValidChangeDebounced: ((code: string) => void) | null = null
+
+    resize(){
+        if(this.editor){
+            this.editor.resize();
+            this.editor.renderer.updateFull();
+        }
+    }
 
     onChange(newValue: any, e: any) {
         //console.log('onChange', e);
         this.setState({ code: newValue })
     }
 
-    onValidate(annotations:IAnnotation[]) {
-        if(this.editor){
-            if(annotations.length == 0){
+    onValidate(annotations: IAnnotation[]) {
+        if (this.editor) {
+            if (annotations.length == 0) {
                 const code = this.editor.getSession().getValue();
-                if(code != this.state.validCode){
-                    this.setState({validCode:code});
-                    if(this.onValidChangeDebounced){
+                if (code != this.state.validCode) {
+                    this.setState({ validCode: code });
+                    if (this.onValidChangeDebounced) {
                         this.onValidChangeDebounced(code);
                     }
                 }
@@ -65,17 +73,20 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
         if (prevProps.code != this.props.code && this.editor != null) {
             this.editor.getSession().setUndoManager(new UndoManager());
         }
-        if((
+        if ((
             prevProps.onValidChange != this.props.onValidChange
             || prevProps.debouncedValidationTime != this.props.debouncedValidationTime
         )
-        && this.props.onValidChange){
-            this.onValidChangeDebounced = _.debounce(this.props.onValidChange,this.props.debouncedValidationTime);
+            && this.props.onValidChange) {
+            this.onValidChangeDebounced = _.debounce(this.props.onValidChange, this.props.debouncedValidationTime);
+        }
+        if(this.props.width != prevProps.width){
+            this.resize();
         }
     }
 
     backGroundOnClick() {
-        if(this.editor){
+        if (this.editor) {
             this.editor.gotoLine(this.editor.session.getLength());
             this.editor.focus();
         }
@@ -85,21 +96,21 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
         return (
             <div className={"CodeEditor" + (this.props.className ? ' ' + this.props.className : '')}>
                 <div className="CodeEditor__background full-space" onClick={this.backGroundOnClick.bind(this)} ></div>
-                <AceEditor
-
-                    onLoad={(e => this.editor = e)}
-                    mode={this.props.mode}
-                    theme="pastel_on_dark"
-                    enableBasicAutocompletion={true}
-                    enableLiveAutocompletion={true}
-                    width='100%'
-                    maxLines={Infinity}
-                    editorProps={{ $blockScrolling: Infinity }}
-                    value={this.state.code}
-                    onChange={this.onChange.bind(this)}
-                    onValidate = {this.onValidate.bind(this)}
-                    name={this.props.id}
-                />
+                    <AceEditor
+                        onLoad={(e => this.editor = e)}
+                        mode={this.props.mode}
+                        theme="pastel_on_dark"
+                        enableBasicAutocompletion={true}
+                        enableLiveAutocompletion={true}
+                        wrapEnabled={true}
+                        width={''}
+                        maxLines={Infinity}
+                        editorProps={{ $blockScrolling: Infinity }}
+                        value={this.state.code}
+                        onChange={this.onChange.bind(this)}
+                        onValidate={this.onValidate.bind(this)}
+                        name={this.props.id}
+                    />
             </div>
         );
     }

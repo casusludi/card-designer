@@ -7,6 +7,7 @@ import ConfigEditor from "./ConfigEditor/ConfigEditor";
 
 export type EditorPanelProps = {
     project:Project|null
+    width:number
 }
 
 export type EditorPanelState = {
@@ -35,9 +36,9 @@ export default class EditorPanel extends React.Component<EditorPanelProps,Editor
                 {this.state.project?
                 <React.Fragment>
                     <TabNav className="EditorPanel__Tabs" >
-                        <TabNavItem label="Config"><ConfigEditor config={this.state.project.config} onValidChange={this.onConfigValidChange.bind(this)} /></TabNavItem>
-                        <TabNavItem label="Templates"><CodeEditor id="template-editor" className="full-space" mode="handlebars"  code="<div>Templates editor</div>" /></TabNavItem>
-                        <TabNavItem label="Layouts"><CodeEditor id="layout-editor" className="full-space" mode="handlebars"  code="<div>Layouts editor</div>" /></TabNavItem>
+                        <TabNavItem label="Config"><ConfigEditor width={this.props.width} config={this.state.project.config} onValidChange={this.onConfigValidChange.bind(this)} /></TabNavItem>
+                        <TabNavItem label="Templates"><CodeEditor id="template-editor" width={this.props.width} className="full-space" mode="handlebars"  code="<div>Templates editor</div>" /></TabNavItem>
+                        <TabNavItem label="Layouts"><CodeEditor id="layout-editor" width={this.props.width} className="full-space" mode="handlebars"  code="<div>Layouts editor</div>" /></TabNavItem>
                     </TabNav>
                     <div className="EditorPanel__ActionBar">
                         <button type="button" className="button">Render</button>

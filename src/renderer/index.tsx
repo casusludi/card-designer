@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware} from 'redux'
 import createSagaMiddleware from 'redux-saga';
+import {AuthType, User, UNKNOW_USER} from './services/Auth';
+import Global from './AppGlobal';
+import {EnumDictionary} from '../types';
 
 import reducers from './redux/reducers';
 import rootSaga from './redux/saga';
@@ -10,21 +13,29 @@ import rootSaga from './redux/saga';
 import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import './styles/index.scss';
 
-import settings from '../../settings/globals.json';
 
 import App from './components/App/App';
 import { openLastProject, Project } from './services/Project';
 
+export type Users = EnumDictionary<AuthType,User>;
+
 export interface ApplicationState{
-    project:Project |null
+    users:Users
+    project:Project | null
 }
+
 
 async function main() {
     const project = await openLastProject();
-    
+
+    const googleAuth = Global.getAuth(AuthType.GOOGLE);
+    const googleUser = googleAuth?.getUser() || UNKNOW_USER;
 
     const initialState:ApplicationState = {
-        project
+        project,
+        users:{
+            [AuthType.GOOGLE]: googleUser
+        }
     }
 
     const sagaMiddleware = createSagaMiddleware()
@@ -33,7 +44,7 @@ async function main() {
 
     ReactDOM.render(
         <Provider store={store}>
-            <App settings={settings} />
+            <App />
         </Provider>,
         document.getElementById('app')
     );

@@ -68,11 +68,7 @@
             "$id": "#/properties/sources/properties/gsheets/properties/sheetId",
             "type": "string",
             "title": "The Sheetid Schema",
-            "default": "",
-            "examples": [
-              "1ERJe7kgsTBq5v886cZ-TdF9CmsoYgDS8n3aniv0p_cA"
-            ],
-            "pattern": "^(.*)$"
+            "default": ""
           }
         }
       }

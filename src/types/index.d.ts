@@ -5,3 +5,7 @@ export type GlobalSettings = {
         scope:string
     }
 }
+
+export type EnumDictionary<T extends string | symbol | number, U> = {
+    [K in T]?: U;
+};

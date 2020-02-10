@@ -5,17 +5,17 @@ import './App.scss';
 import fs from 'fs';
 import { PDFSource } from '../PDFViewer/PDFDocument';
 import {convertHtmlToPdf} from '../../utils';
-import { AuthService, makeAuth, AuthType, User, UNKNOW_USER } from '../../services/Auth';
-import { GlobalSettings } from '../../../types';
+import { AuthType } from '../../services/Auth';
 import { GoogleBar } from '../Google/GoogleBar';
-import {fetchFromGSheet} from '../../services/DataFetch/GSheet/GSheet';
 import EditorPanel from '../EditorPanel/EditorPanel';
 import PreviewPanel from '../PreviewPanel/PreviewPanel';
 import {Project} from '../../services/Project';
-import { ApplicationState } from '../..';
-import { openProjectFromDialog } from '../../redux/actions';
+import { ApplicationState, Users } from '../..';
+import { openProjectFromDialog, fetchData } from '../../redux/project/actions';
+import { Dispatch } from 'redux';
+import { signIn, signOut } from '../../redux/auth/actions';
+import { ProjectSourceType } from '../../services/Project/Sources';
 
-//const FILE_TEST: string = `C:\\Users\\Pierre\\projets\\casusludi\\orangeda\\export\\basic\\clients.pdf`;
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
 const HTML_FILE_TEST: string = `./tmp/clients.html`;
 
@@ -24,13 +24,12 @@ const HTML_FILE_TEST: string = `./tmp/clients.html`;
 type AppState = {
 	editorWidth:number
 	pdfToView:PDFSource
-	user:User | null
 }
 
 export type AppProps = {
-	settings: GlobalSettings,
-	project:Project | null,
-	openProjectFromDialog: () => void
+	project:Project | null
+	users:Users
+	dispatch: Dispatch
 }
 
 enum PositionType {
@@ -71,51 +70,31 @@ class App extends Component<AppProps,AppState> {
 
 	state = {
 		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
-		pdfToView: PDF_FILE_TEST,
-		user:UNKNOW_USER
+		pdfToView: PDF_FILE_TEST
 	}
 
-	private auth:AuthService|null = null;
-
 	async componentDidMount(){
-		this.auth = makeAuth(AuthType.GOOGLE,this.props.settings);
-		if(this.auth){
-			this.setState({
-				user: this.auth.getUser()
-			})
-		}
+
 	
 	}
 
 	async authSignIn() {
-		if(this.auth){
-			const user = await this.auth.signIn();
-			this.setState({user});
-		}
+		this.props.dispatch(signIn(AuthType.GOOGLE));
+
 	}
 
 	async authSignOut() {
-		if(this.auth){
-			await this.auth.signOut();
-			this.setState({user:UNKNOW_USER});
-		}
+		this.props.dispatch(signOut(AuthType.GOOGLE));
 	}
 
 	async fetchFromGSheet(){
-		if(this.auth){
-			const user = await this.auth.refreshToken();
-			this.setState({user});
+		if(this.props.project){
+			this.props.dispatch(fetchData(this.props.project,ProjectSourceType.GSHEETS,this.props.users[AuthType.GOOGLE]))
 		}
-		const data = await fetchFromGSheet('1ERJe7kgsTBq5v886cZ-TdF9CmsoYgDS8n3aniv0p_cA',this.state.user.tokens);
-		console.log(data);
 	}
 
 	openProjectFromDialog(){
-		//const project = await openProjectFromDialog();
-		//console.log(project);
-		//if(project)this.setState({project});
-		this.props.openProjectFromDialog();
-
+		this.props.dispatch(openProjectFromDialog())
 	}
 
 	startAdjustEditorWidth(evt:React.MouseEvent){
@@ -141,7 +120,7 @@ class App extends Component<AppProps,AppState> {
 					</div>
 					<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button> 
 					<GoogleBar className="right-align"  
-						user={this.state.user}
+						user={this.props.users[AuthType.GOOGLE]}
 						signInAction={() => this.authSignIn()}
 						signOutAction={() => this.authSignOut()}
 						fetchAction={() => this.fetchFromGSheet()}
@@ -180,17 +159,15 @@ class App extends Component<AppProps,AppState> {
 }
 
 function mapStateToProps(state:ApplicationState){
-	console.log("mapStateToProps",state)
+	console.log("mapStateToProps",state);
 	return {
-		project: state.project
+		project: state.project,
+		users: state.users
 	}
 
 }
 
 
 export default connect(
-	mapStateToProps,
-	{
-		openProjectFromDialog:() => openProjectFromDialog()
-	}
+	mapStateToProps
 )(App)

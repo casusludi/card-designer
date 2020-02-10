@@ -4,7 +4,7 @@ import { UserStatus, User } from '../../services/Auth';
 
 export type GoogleBarProps = {
     className?: string
-    user: User
+    user: User|null|undefined
     signInAction: () => void
     signOutAction: () => void
     fetchAction: () => void
@@ -13,11 +13,13 @@ export type GoogleBarProps = {
 export function GoogleBar(props: GoogleBarProps) {
     return (
         <nav className={"button-bar" + (props.className ? " " + props.className : "")}>
-            <button disabled={props.user.status != UserStatus.CONNECTED} className="button" onClick={() => props.fetchAction()}><i className="icon fas fa-download"></i><span>Google Sheets</span></button>
-            {<GoogleAuthButton connected={props.user.status == UserStatus.CONNECTED} label={props.user.name} onClick={() => {
-                switch (props.user.status) {
-                    case UserStatus.DISCONNECTED: props.signInAction(); break;
-                    case UserStatus.CONNECTED: props.signOutAction(); break;
+            <button disabled={!!props.user && props.user.status != UserStatus.CONNECTED} className="button" onClick={() => props.fetchAction()}><i className="icon fas fa-download"></i><span>Google Sheets</span></button>
+            {<GoogleAuthButton connected={!!props.user && props.user.status == UserStatus.CONNECTED} label={props.user?props.user.name:""} onClick={() => {
+                if(props.user){
+                    switch (props.user.status) {
+                        case UserStatus.DISCONNECTED: props.signInAction(); break;
+                        case UserStatus.CONNECTED: props.signOutAction(); break;
+                    }
                 }
             }} />}
         </nav>

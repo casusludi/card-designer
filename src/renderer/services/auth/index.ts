@@ -1,5 +1,5 @@
 import makeGoogleAuth from './Google';
-import { GlobalSettings } from '../../../types';
+import { GlobalSettings, EnumDictionary } from '../../../types';
 
 export type AuthServiceMap = {
     [name: string]: AuthService
@@ -50,7 +50,7 @@ export type Response = {
 }
 
 export enum AuthType {
-    GOOGLE
+    GOOGLE = "GOOGLE"
 }
 
 export const UNKNOW_USER:User = {
@@ -62,6 +62,8 @@ export const UNKNOW_USER:User = {
     status: UserStatus.DISCONNECTED
 }
 
+export type AuthServices = EnumDictionary<AuthType,AuthService|null>;
+
 
 export function makeAuth(type:AuthType,settings:GlobalSettings):AuthService|null{
     switch(type){
@@ -72,4 +74,15 @@ export function makeAuth(type:AuthType,settings:GlobalSettings):AuthService|null
         )
     }
     return null;
+}
+
+export function makeAuthManager(settings:GlobalSettings): (type:AuthType) => AuthService|null|undefined {
+    const services:AuthServices = {}
+
+    return function getAuth(type:AuthType) : AuthService | null | undefined{
+        if(!services[type]){
+            services[type] = makeAuth(type,settings);
+        }
+        return services[type];
+    }
 }

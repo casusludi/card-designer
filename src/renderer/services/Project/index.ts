@@ -5,11 +5,16 @@ import { promisify } from 'util';
 import _ from 'lodash';
 import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
+import { EnumDictionary } from '../../../types';
+import { ProjectSourceType } from './Sources';
 
 const fsreadFile = promisify(fs.readFile);
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
+
+export const PROJECT_CACHE_FOLDER = '.cache';
+
 
 export type ProjectConfigTemplate = {
     hbs:string
@@ -19,7 +24,7 @@ export type ProjectConfigTemplate = {
 export type ProjectConfig = {
     templates: { [key: string]: ProjectConfigTemplate }
     layouts: { [key: string]: ProjectConfigTemplate }
-    data: {
+    sources: {
         gsheets?: {
             sheetId: string
         }
@@ -29,6 +34,12 @@ export type ProjectConfig = {
 export type ProjectFile = {
     path:string,
     content:string
+}
+
+export type ProjectSourceData = {
+    type:ProjectSourceType
+    cacheFilePath:string
+    data:any
 }
 
 export type ProjectTemplate = {
@@ -43,6 +54,7 @@ export type Project = {
     templates: { [key: string]: ProjectTemplate }
     layouts: { [key: string]: ProjectTemplate }
     files:{[key:string]:ProjectFile}
+    sources:EnumDictionary<ProjectSourceType,ProjectSourceData>
 }
 
 const schemaValidator = new Validator();
@@ -123,7 +135,8 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
         config,
         templates: _.keyBy(templates, o => o.id),
         layouts: _.keyBy(layouts, o => o.id),
-        files
+        files,
+        sources:{}
     }
     return project
 }

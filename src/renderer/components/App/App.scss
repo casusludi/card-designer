@@ -12,30 +12,18 @@
     background: $dark-grey;
 }
 
-.project-modified-status {
-    padding: 2px;
+
+.project-bar {
+    display: flex;
+    align-items: center;
 }
 
+.project-bar__name {
+    padding: 0 5px;
+}
 
-.code-editor-tabs {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    .tabs-headers {
-
-    }
-
-    .tabs-contents {
-        position: absolute;
-        top: 29px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+.project-bar__modified {
+    padding: 2px;
+    font-style: italic;
 }
 

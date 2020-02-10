@@ -18,6 +18,11 @@
     border-bottom: 1px solid $medium-grey;
 }
 
+.layout__header-title {
+    display: flex;
+    align-items: center;
+}
+
 .layout__body {
     display: flex;
     flex: 1 0 100%;

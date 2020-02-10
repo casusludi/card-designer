@@ -9,6 +9,7 @@
     "layouts",
     "sources"
   ],
+  "additionalProperties": false,
   "properties": {
     "templates": {
       "$id": "#/properties/templates",
@@ -29,46 +30,70 @@
           }
         }
       }
-    }
-  },
-  "layouts": {
-    "$id": "#/properties/layouts",
-    "type": "object",
-    "title": "The Layouts Schema",
-    "additionalProperties": {
+    },
+    "layouts": {
+      "$id": "#/properties/layouts",
       "type": "object",
-      "required": [
-        "hbs",
-        "styles"
-      ],
-      "properties": {
-        "hbs": {
-          "type": "string"
-        },
-        "styles": {
-          "type": "string"
-        }
-      }
-    }
-  },
-  "sources": {
-    "$id": "#/properties/sources",
-    "type": "object",
-    "title": "The Sources Schema",
-    "properties": {
-      "gsheets": {
-        "$id": "#/properties/sources/properties/gsheets",
+      "title": "The Layouts Schema",
+      "additionalProperties": {
         "type": "object",
-        "title": "The Gsheets Schema",
         "required": [
-          "sheetId"
+          "hbs",
+          "styles"
         ],
         "properties": {
-          "sheetId": {
-            "$id": "#/properties/sources/properties/gsheets/properties/sheetId",
-            "type": "string",
-            "title": "The Sheetid Schema",
-            "default": ""
+          "hbs": {
+            "type": "string"
+          },
+          "styles": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sources": {
+      "$id": "#/properties/sources",
+      "type": "object",
+      "title": "The Sources Schema",
+      "additionalProperties": false,
+      "properties": {
+        "gsheets": {
+          "$id": "#/properties/sources/properties/gsheets",
+          "type": "object",
+          "title": "The Gsheets Schema",
+          "required": [
+            "sheetId"
+          ],
+          "properties": {
+            "sheetId": {
+              "$id": "#/properties/sources/properties/gsheets/properties/sheetId",
+              "type": "string",
+              "title": "The Sheetid Schema",
+              "default": ""
+            }
+          }
+        },
+        "mockup": {
+          "$id": "#/properties/sources/properties/mockup",
+          "type": "array",
+          "title": "The Mockup Schema",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "cards"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }

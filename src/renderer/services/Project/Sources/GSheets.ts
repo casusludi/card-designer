@@ -67,8 +67,8 @@ export async function fetchFromGSheet(id:string,tokens:any){
                 }
 
                 const ret:any = {
-                    title: sheetsByRange[o.range].title,
-                    values
+                    id: sheetsByRange[o.range].title,
+                    cards:values
                 };
                 return ret;
             }

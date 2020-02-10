@@ -9,8 +9,9 @@ export function projectReducer(state:Project|null = null,action:ProjectActionTyp
             if(!state) return null;
             return {
                 ...state,
-                sources : {
-                    ...state.sources,
+                modified: true,
+                data : {
+                    ...state.data,
                     [action.sourceType]: action.data
                 }
             } 

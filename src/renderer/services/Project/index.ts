@@ -1,14 +1,14 @@
 import { remote } from 'electron';
 import path from 'path';
-import fs from 'fs';
-import { promisify } from 'util';
+
 import _ from 'lodash';
 import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
-import { ProjectSourceType } from './Sources';
+import { ProjectSourceType, getCachedData } from './Sources';
+import { fsreadFile } from '../../utils';
 
-const fsreadFile = promisify(fs.readFile);
+
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
@@ -21,13 +21,19 @@ export type ProjectConfigTemplate = {
     styles:string
 }
 
+export type ProjectDataItem = {
+    id: string,
+    cards: Array<any>
+}
+
 export type ProjectConfig = {
     templates: { [key: string]: ProjectConfigTemplate }
     layouts: { [key: string]: ProjectConfigTemplate }
     sources: {
         gsheets?: {
             sheetId: string
-        }
+        },
+        mockup?:Array<ProjectDataItem>
     }
 }
 
@@ -38,8 +44,8 @@ export type ProjectFile = {
 
 export type ProjectSourceData = {
     type:ProjectSourceType
-    cacheFilePath:string
-    data:any
+    cacheFilePath:string|null
+    data:Array<ProjectDataItem>
 }
 
 export type ProjectTemplate = {
@@ -49,12 +55,14 @@ export type ProjectTemplate = {
 }
 
 export type Project = {
+    name:string,
+    modified:boolean,
     path: string,
     config: ProjectConfig,
     templates: { [key: string]: ProjectTemplate }
     layouts: { [key: string]: ProjectTemplate }
     files:{[key:string]:ProjectFile}
-    sources:EnumDictionary<ProjectSourceType,ProjectSourceData>
+    data:EnumDictionary<ProjectSourceType,ProjectSourceData>
 }
 
 const schemaValidator = new Validator();
@@ -130,13 +138,19 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
     const files = {};
     const templates = await Promise.all(_.map(config.templates, (o,k) => loadTemplate(projectPath,k,o,files)))
     const layouts = await Promise.all(_.map(config.layouts, (o,k) => loadTemplate(projectPath,k,o,files)))
+   
+    const name = _.upperFirst(path.basename(projectPath));
     const project: Project = {
+        modified: false,
+        name,
         path: projectPath,
         config,
         templates: _.keyBy(templates, o => o.id),
         layouts: _.keyBy(layouts, o => o.id),
         files,
-        sources:{}
+        data:{}
     }
+    const rawCacheData = await Promise.all(_.map(config.sources, (o,k) => getCachedData(project,k)))
+    project.data = _.chain(rawCacheData).reject(o => !o).keyBy(o => o?o.type:"UNDEFINED").value();
     return project
 }

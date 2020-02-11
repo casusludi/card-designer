@@ -70,12 +70,14 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
     }
 
     componentDidUpdate(prevProps: CodeEditorProps) {
+        
         if (prevProps.code != this.props.code && this.editor != null) {
             this.editor.getSession().setUndoManager(new UndoManager());
         }
         if ((
             prevProps.onValidChange != this.props.onValidChange
             || prevProps.debouncedValidationTime != this.props.debouncedValidationTime
+            || !this.onValidChangeDebounced
         )
             && this.props.onValidChange) {
             this.onValidChangeDebounced = _.debounce(this.props.onValidChange, this.props.debouncedValidationTime);

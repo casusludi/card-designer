@@ -134,8 +134,7 @@ export async function loadProjectFromPath(projectPath:string){
     });
 }
 
-export async function loadProjectFromConfig(config:ProjectConfig,projectPath:string){
-    const files = {};
+export async function loadProjectFromConfig(config:ProjectConfig,projectPath:string, files:{[key:string]:ProjectFile} = {}){
     const templates = await Promise.all(_.map(config.templates, (o,k) => loadTemplate(projectPath,k,o,files)))
     const layouts = await Promise.all(_.map(config.layouts, (o,k) => loadTemplate(projectPath,k,o,files)))
    

@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware} from 'redux'
+import { createStore, applyMiddleware, compose} from 'redux'
+import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import {AuthType, User, UNKNOW_USER} from './services/Auth';
 import Global from './AppGlobal';
 import {EnumDictionary} from '../types';
 
-import reducers from './redux/reducers';
+import {appReducer} from './redux';
 import rootSaga from './redux/saga';
 
 import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
@@ -38,8 +39,20 @@ async function main() {
         }
     }
 
-    const sagaMiddleware = createSagaMiddleware()
-    const store = createStore(reducers,initialState,applyMiddleware(sagaMiddleware));
+    const sagaMiddleware = createSagaMiddleware({
+        onError(e:Error){
+            //@TODO improve erreor handling
+            console.error("Saga error: ")
+            console.error(e);  
+        }
+    })
+    const store = createStore(
+        appReducer,
+        initialState,
+        compose(
+            applyMiddleware(sagaMiddleware),
+            applyMiddleware(logger)
+        ));
     sagaMiddleware.run(rootSaga);
 
     ReactDOM.render(

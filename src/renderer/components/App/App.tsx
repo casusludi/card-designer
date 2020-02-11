@@ -11,10 +11,10 @@ import EditorPanel from '../EditorPanel/EditorPanel';
 import PreviewPanel from '../PreviewPanel/PreviewPanel';
 import { Project } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
-import { openProjectFromDialog, fetchData } from '../../redux/project/actions';
+import { projectOpenFromDialog, projectFetchData } from '../../redux/project';
 import { Dispatch } from 'redux';
-import { signIn, signOut } from '../../redux/auth/actions';
 import { ProjectSourceType } from '../../services/Project/Sources';
+import { authSignIn,authSignOut } from '../../redux/auth';
 
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
 const HTML_FILE_TEST: string = `./tmp/clients.html`;
@@ -79,22 +79,27 @@ class App extends Component<AppProps, AppState> {
 	}
 
 	async authSignIn() {
-		this.props.dispatch(signIn(AuthType.GOOGLE));
+		this.props.dispatch(authSignIn({authType:AuthType.GOOGLE}));
 
 	}
 
 	async authSignOut() {
-		this.props.dispatch(signOut(AuthType.GOOGLE));
+		this.props.dispatch(authSignOut({authType:AuthType.GOOGLE}));
 	}
 
 	async fetchFromGSheet() {
 		if (this.props.project) {
-			this.props.dispatch(fetchData(this.props.project, ProjectSourceType.GSHEETS, this.props.users[AuthType.GOOGLE]))
+			this.props.dispatch(projectFetchData({
+				project:this.props.project, 
+				sourceType:ProjectSourceType.GSHEETS, 
+				user:this.props.users[AuthType.GOOGLE]
+			}))
 		}
 	}
 
 	openProjectFromDialog() {
-		this.props.dispatch(openProjectFromDialog())
+		console.log(projectOpenFromDialog());
+		this.props.dispatch(projectOpenFromDialog())
 	}
 
 	startAdjustEditorWidth(evt: React.MouseEvent) {
@@ -149,7 +154,7 @@ class App extends Component<AppProps, AppState> {
 					</main>
 					<aside className="editor" style={{ width: `${this.state.editorWidth}px` }} >
 						<div className="editor__width-adjuster" onMouseDown={evt => this.startAdjustEditorWidth(evt)} ></div>
-						<EditorPanel project={this.props.project} width={this.state.editorWidth} />
+						<EditorPanel width={this.state.editorWidth} />
 					</aside>
 				</div>
 				<footer className="layout__footer"></footer>

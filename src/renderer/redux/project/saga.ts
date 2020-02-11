@@ -1,86 +1,56 @@
 import { call, put, takeLatest, all, takeEvery } from 'redux-saga/effects';
 import { openProjectFromDialog, ProjectSourceData } from '../../services/Project';
-import { PROJECT_OPEN_SUCCEEDED, PROJECT_OPEN_FAILED, OPEN_PROJECT_FROM_DIALOG, PROJECT_OPEN_CANCELLED, ProjectOpenFailed, ProjectActionTypes, ProjectFetchData, PROJECT_FETCH_DATA, PROJECT_FETCH_DATA_SUCCEEDED } from './types';
-import { remote } from 'electron';
-import { SHOW_ERROR_POPUP, ShowErrorPopup } from '../types';
-import { ProjectSourceType, fetchData, getSourceAuthType } from '../../services/Project/Sources';
-import { authRefresh, setUser } from '../auth/actions';
-import { AuthType } from '../../services/Auth';
+
+import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
-import { setData } from './actions';
+import { authUserChanged } from '../auth';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData } from '.';
 
 function* saga_openProjectFromDialog(action: any) {
     try {
         const project = yield call(openProjectFromDialog);
         if (project) {
-            yield put({
-                type: PROJECT_OPEN_SUCCEEDED,
-                project
-            })
+            yield put(projectOpenSucceeded({project:project}))
         } else {
-            yield put({
-                type: PROJECT_OPEN_CANCELLED
-            })
+            yield put(projectOpenCancelled())
         }
     } catch (e) {
-        yield put({
-            type: PROJECT_OPEN_FAILED,
-            message: e.message
-        })
+        yield put(projectOpenFailed(e))
     }
 }
 
 function* watchOpenProjectFromDialog() {
-    yield takeLatest(OPEN_PROJECT_FROM_DIALOG, saga_openProjectFromDialog)
+    yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog)
 }
 
-function* saga_projectOpenFailed(action: ProjectOpenFailed) {
-    yield put({
-        type: SHOW_ERROR_POPUP,
-        title: 'Invalid Carmaker Project',
-        message: action.message
-    })
-}
-
-function* watchProjectOpenFailed() {
-    yield takeLatest(PROJECT_OPEN_FAILED, saga_projectOpenFailed)
-}
-
-function* saga_fetchData(action: ProjectFetchData) {
+function* saga_fetchData(action: any) {
     try {
-        let user = action.user;
-        const authType = getSourceAuthType(action.sourceType);
+        let user = action.payload.user;
+        const authType = getSourceAuthType(action.payload.sourceType);
         if (authType) {
             const auth = AppGlobal.getAuth(authType)
             if (auth) {
                 const refreshedUser = yield call(auth.refreshToken);
                 user = refreshedUser;
-                yield put(setUser(authType, refreshedUser));
+                yield put(authUserChanged({authType, user:refreshedUser}));
             }
         }
-        
-        const data: ProjectSourceData = yield call(fetchData, action.project, action.sourceType, user)
-        yield put(setData(action.sourceType, data));
-        yield put({
-            type: PROJECT_FETCH_DATA_SUCCEEDED,
-            data
-        })
+
+        const data: ProjectSourceData = yield call(fetchData, action.payload.project, action.payload.sourceType, user)
+        yield put(projectDataChanged({sourceType:action.payload.sourceType, data}));
+      
     } catch (e) {
-        yield put({
-            type: PROJECT_FETCH_DATA,
-            message: e.message
-        })
+        yield put(projectFetchDataFailed(e))
     }
 }
 
 function* watchFetchData() {
-    yield takeEvery(PROJECT_FETCH_DATA, saga_fetchData);
+    yield takeEvery(projectFetchData.type, saga_fetchData);
 }
 
 export default function* projectSaga() {
     yield all([
         watchOpenProjectFromDialog(),
-        watchProjectOpenFailed(),
         watchFetchData()
     ])
 }

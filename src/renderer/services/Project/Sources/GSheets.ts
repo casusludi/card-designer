@@ -17,7 +17,7 @@ function indexToLetters(index:number){
 export async function fetchFromGSheet(id:string,tokens:any){
 
     const oauth2Client = new google.auth.OAuth2();
-    oauth2Client.setCredentials(tokens);
+    oauth2Client.setCredentials({...tokens});
 
     const gsheets = new sheets_v4.Sheets({auth:oauth2Client});
     const {data:infos} = await gsheets.spreadsheets.get({

@@ -8,7 +8,7 @@ import {AuthType, User, UNKNOW_USER} from './services/Auth';
 import Global from './AppGlobal';
 import {EnumDictionary} from '../types';
 
-import {appReducer} from './redux';
+import {appReducer, globalAddUncaughtError} from './redux';
 import rootSaga from './redux/saga';
 
 import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
@@ -41,9 +41,9 @@ async function main() {
 
     const sagaMiddleware = createSagaMiddleware({
         onError(e:Error){
-            //@TODO improve erreor handling
             console.error("Saga error: ")
             console.error(e);  
+            store.dispatch(globalAddUncaughtError(e));
         }
     })
     const store = createStore(

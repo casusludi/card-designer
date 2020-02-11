@@ -4,8 +4,6 @@ import { ProjectSourceType } from '../../services/Project/Sources';
 import { User } from '../../services/Auth';
 import { withError } from '../../utils/redux';
 import _ from 'lodash';
-import { stat } from 'fs';
-
 
 export type ProjectDataChangedPayload = {
     data: ProjectSourceData,

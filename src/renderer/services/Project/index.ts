@@ -6,7 +6,7 @@ import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData } from './Sources';
-import { fsreadFile } from '../../utils';
+import { fsreadFile, fswriteFile } from '../../utils';
 
 
 
@@ -152,4 +152,13 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
     const rawCacheData = await Promise.all(_.map(config.sources, (o,k) => getCachedData(project,k)))
     project.data = _.chain(rawCacheData).reject(o => !o).keyBy(o => o?o.type:"UNDEFINED").value();
     return project
+}
+
+export async function saveProject(project:Project){
+    const projectPath = project.path;
+    const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
+    const configRawData = JSON.stringify(project.config,null,4);
+    const filesToSave = _.map(project.files, f => fswriteFile(f.path,f.content))
+    filesToSave.push(fswriteFile(configFilePath,configRawData))
+    return Promise.all(filesToSave)
 }

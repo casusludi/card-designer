@@ -1,10 +1,10 @@
-import { call, put, takeLatest, all, takeEvery } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData } from '../../services/Project';
+import { call, put, takeLatest, all, takeEvery, select } from 'redux-saga/effects';
+import { openProjectFromDialog, ProjectSourceData, saveProject } from '../../services/Project';
 
 import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved } from '.';
 
 function* saga_openProjectFromDialog(action: any) {
     try {
@@ -48,9 +48,24 @@ function* watchFetchData() {
     yield takeEvery(projectFetchData.type, saga_fetchData);
 }
 
+function* saga_saveProject(action:any){
+    try{
+        const project = yield select(state => state.project);
+        yield call(saveProject,project);
+        yield put(projectSaved());
+    }catch(e){
+        yield projectSavingFailed(e);
+    }
+}
+
+function* watchSaveProject(){
+    yield takeLatest(projectSaving.type,saga_saveProject)
+}
+
 export default function* projectSaga() {
     yield all([
         watchOpenProjectFromDialog(),
-        watchFetchData()
+        watchFetchData(),
+        watchSaveProject()
     ])
 }

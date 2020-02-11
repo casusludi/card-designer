@@ -11,3 +11,4 @@ export async function convertHtmlToPdf(id:string,html:string,base:string):Promis
 }
 
 export const fsreadFile = promisify(fs.readFile);
+export const fswriteFile = promisify(fs.writeFile);

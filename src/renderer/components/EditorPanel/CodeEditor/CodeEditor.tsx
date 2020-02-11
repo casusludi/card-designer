@@ -71,7 +71,7 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
 
     componentDidUpdate(prevProps: CodeEditorProps) {
         
-        if (prevProps.code != this.props.code && this.editor != null) {
+        if (prevProps.code != this.props.code && this.state.code != this.props.code && this.editor != null) {
             this.editor.getSession().setUndoManager(new UndoManager());
         }
         if ((

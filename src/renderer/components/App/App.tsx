@@ -11,7 +11,7 @@ import EditorPanel from '../EditorPanel/EditorPanel';
 import PreviewPanel from '../PreviewPanel/PreviewPanel';
 import { Project } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
-import { projectOpenFromDialog, projectFetchData } from '../../redux/project';
+import { projectOpenFromDialog, projectFetchData, projectSaving } from '../../redux/project';
 import { Dispatch } from 'redux';
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { authSignIn,authSignOut } from '../../redux/auth';
@@ -122,7 +122,7 @@ class App extends Component<AppProps, AppState> {
 						<div className="button-bar">
 							<button className="button" ><i className="icon far fa-file"></i></button>
 							<button className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
-							<button className="button" ><i className="icon far fa-save"></i></button>
+							<button className="button" disabled={!this.props.project?.modified} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
 						</div>
 						<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button>
 						

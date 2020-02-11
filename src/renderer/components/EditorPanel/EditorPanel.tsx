@@ -7,6 +7,7 @@ import ConfigEditor from "./ConfigEditor/ConfigEditor";
 import { connect } from "react-redux";
 import { ApplicationState } from "../..";
 import { Dispatch } from "redux";
+import { projectConfigChanged } from "../../redux/project";
 
 export type EditorPanelProps = {
     project:Project|null
@@ -17,7 +18,7 @@ export type EditorPanelProps = {
 function EditorPanel(props:EditorPanelProps){
 
     function onConfigValidChange(config:ProjectConfig){
-        console.log(config)
+        props.dispatch(projectConfigChanged({config}));
     }
 
     return (

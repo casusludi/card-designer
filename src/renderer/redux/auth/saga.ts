@@ -55,10 +55,10 @@ function* saga_authRefresh(action: any) {
         const auth = AppGlobal.getAuth(action.payload.authType);
         if (auth) {
             const user = yield call(auth.refreshToken);
-            yield put( yield put(authUserChanged({
+            yield put(authUserChanged({
                 authType:action.payload.authType, 
                 user:user
-            })))
+            }))
         }
     } catch (e) {
         yield put(authTokenRefreshFailed(e))

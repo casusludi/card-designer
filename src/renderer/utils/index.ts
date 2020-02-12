@@ -12,3 +12,10 @@ export async function convertHtmlToPdf(id:string,html:string,base:string):Promis
 
 export const fsreadFile = promisify(fs.readFile);
 export const fswriteFile = promisify(fs.writeFile);
+
+export function firstKeyOfObject(obj:Object|undefined|null):any {
+    if(!obj) return null;
+    return Object.keys(obj)
+      .sort() 
+      .slice(0, 1)[0]
+}

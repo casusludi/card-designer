@@ -24,7 +24,7 @@ export default function ConfigEditor(props:ConfigEditorProps) {
 
     return (
         <div className="ConfigEditor full-space">
-            <CodeEditor id="config-editor" className="full-space" width={props.width} mode="json" onValidChange={onValidChange}  code={JSON.stringify(props.config,null,4)} />
+            <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onValidChange}  code={JSON.stringify(props.config,null,4)} />
         </div>
     )
     

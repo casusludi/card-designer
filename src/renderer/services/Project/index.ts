@@ -54,14 +54,23 @@ export type ProjectTemplate = {
     styles:string
 }
 
+// currently the same thing as ProjectTemplate but ProjectTemplate evoluate later
+export type ProjectLayout = {
+    id:string
+    hbs:string
+    styles:string
+}
+
+export type ProjectFiles = {[key:string]:ProjectFile}
+
 export type Project = {
     name:string,
     modified:boolean,
     path: string,
     config: ProjectConfig,
     templates: { [key: string]: ProjectTemplate }
-    layouts: { [key: string]: ProjectTemplate }
-    files:{[key:string]:ProjectFile}
+    layouts: { [key: string]: ProjectLayout }
+    files:ProjectFiles
     data:EnumDictionary<ProjectSourceType,ProjectSourceData>
 }
 

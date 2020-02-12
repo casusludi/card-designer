@@ -51,7 +51,7 @@ $pastel-on-dark-bg-color: #2C2828;
 
 .TabNav_header-bottom {
     
-    .TabNav__headers{
+    & > .TabNav__headers{
         position: absolute;
         bottom: 0;
         right: 0;
@@ -60,7 +60,7 @@ $pastel-on-dark-bg-color: #2C2828;
         border-top: 2px solid $darkest-grey;
     }
 
-    .TabNav__contents {
+    & > .TabNav__contents {
         top: 0;
         bottom: 26px;
     }

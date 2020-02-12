@@ -15,14 +15,18 @@ import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import './styles/index.scss';
 
 
-import App from './components/App/App';
+import App, { AppUI } from './components/App/App';
 import { openLastProject, Project } from './services/Project';
+import _ from 'lodash';
+import { firstKeyOfObject } from './utils';
+
 
 export type Users = EnumDictionary<AuthType,User>;
 
 export interface ApplicationState{
     users:Users
-    project:Project | null
+    project:Project | null,
+    ui:AppUI
 }
 
 
@@ -36,6 +40,16 @@ async function main() {
         project,
         users:{
             [AuthType.GOOGLE]: googleUser
+        },
+        ui:{
+            editor:{
+                selectedTemplate:project?.templates[firstKeyOfObject(project?.templates)],
+                selectedLayout:project?.layouts[firstKeyOfObject(project?.layouts)],
+            },
+            preview:{
+                pdf:null,
+                html:null
+            }
         }
     }
 
@@ -54,6 +68,7 @@ async function main() {
             applyMiddleware(logger)
         ));
     sagaMiddleware.run(rootSaga);
+    
 
     ReactDOM.render(
         <Provider store={store}>

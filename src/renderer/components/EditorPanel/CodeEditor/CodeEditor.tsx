@@ -9,14 +9,14 @@ import "ace-builds/src-noconflict/mode-css";
 import "ace-builds/src-noconflict/mode-handlebars";
 import "ace-builds/src-noconflict/theme-pastel_on_dark";
 import "ace-builds/src-noconflict/ext-language_tools";
-import { UndoManager } from "ace-builds";
+import { UndoManager, EditSession } from "ace-builds";
 import _ from "lodash";
 import './CodeEditor.scss';
+import uuidv1 from "uuid/v1";
 
 export type CodeEditorProps = {
     code: string
     mode: string
-    id: string
     className?: string
     onValidChange?: (code: string) => void
     debouncedValidationTime: number
@@ -25,7 +25,8 @@ export type CodeEditorProps = {
 
 export type CodeEditorState = {
     code: string
-    validCode: string | null
+    validCode: string | null,
+    internalId:string
 }
 
 export default class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
@@ -36,7 +37,8 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
 
     state = {
         code: this.props.code,
-        validCode: null
+        validCode: null,
+        internalId: uuidv1()
     }
 
     private editor: IEditorProps | null = null;
@@ -69,11 +71,22 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
         }
     }
 
+   
+
     componentDidUpdate(prevProps: CodeEditorProps) {
-        
-        if (prevProps.code != this.props.code && this.state.code != this.props.code && this.editor != null) {
-            this.editor.getSession().setUndoManager(new UndoManager());
+
+        if (prevProps.code != this.props.code && this.state.code != this.props.code) {
+            this.setState({code:this.props.code})
+            // hack to clear undo manager.
+            // @TODO find a better way to clear undo without delay
+            setTimeout(() => {
+                if(this.editor){
+                    this.editor.getSession().setUndoManager(new UndoManager());
+                }
+            },1)
+            
         }
+        
         if ((
             prevProps.onValidChange != this.props.onValidChange
             || prevProps.debouncedValidationTime != this.props.debouncedValidationTime
@@ -85,6 +98,13 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
         if(this.props.width != prevProps.width){
             this.resize();
         }
+    }
+
+    editorOnLoad(editor:IEditorProps){
+        console.log("editorOnLoad")
+        this.editor = editor;
+
+
     }
 
     backGroundOnClick() {
@@ -99,7 +119,7 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
             <div className={"CodeEditor" + (this.props.className ? ' ' + this.props.className : '')}>
                 <div className="CodeEditor__background full-space" onClick={this.backGroundOnClick.bind(this)} ></div>
                     <AceEditor
-                        onLoad={(e => this.editor = e)}
+                        onLoad={this.editorOnLoad.bind(this)}
                         mode={this.props.mode}
                         theme="pastel_on_dark"
                         enableBasicAutocompletion={true}
@@ -111,7 +131,7 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
                         value={this.state.code}
                         onChange={this.onChange.bind(this)}
                         onValidate={this.onValidate.bind(this)}
-                        name={this.props.id}
+                        name={this.state.internalId}
                     />
             </div>
         );

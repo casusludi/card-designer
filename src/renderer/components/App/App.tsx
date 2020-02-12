@@ -9,7 +9,7 @@ import { AuthType } from '../../services/Auth';
 import { GoogleBar } from '../Google/GoogleBar';
 import EditorPanel from '../EditorPanel/EditorPanel';
 import PreviewPanel from '../PreviewPanel/PreviewPanel';
-import { Project } from '../../services/Project';
+import { Project, ProjectTemplate, ProjectLayout } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
 import { projectOpenFromDialog, projectFetchData, projectSaving } from '../../redux/project';
 import { Dispatch } from 'redux';
@@ -19,7 +19,20 @@ import { authSignIn,authSignOut } from '../../redux/auth';
 const PDF_FILE_TEST: string = `./tmp/events.pdf`;
 const HTML_FILE_TEST: string = `./tmp/clients.html`;
 
+export type AppUIPreview = {
+    pdf:PDFSource,
+    html:string|null
+}
 
+export type AppUI = {
+    editor:AppUIEditor,
+    preview:AppUIPreview
+}
+
+export type AppUIEditor = {
+    selectedTemplate:ProjectTemplate|undefined|null,
+    selectedLayout:ProjectLayout|undefined|null
+}
 
 type AppState = {
 	editorWidth: number
@@ -30,6 +43,7 @@ export type AppProps = {
 	project: Project | null
 	users: Users
 	dispatch: Dispatch
+	ui:AppUI
 }
 
 enum PositionType {
@@ -147,6 +161,7 @@ class App extends Component<AppProps, AppState> {
 						<div className="viewer-tabset">
 							<div className="viewer-tabitem">
 								<PreviewPanel
+									ui={this.props.ui.preview}
 									finalPreview={this.state.pdfToView}
 								/>
 							</div>
@@ -178,7 +193,8 @@ function mapStateToProps(state: ApplicationState) {
 	console.log("mapStateToProps", state);
 	return {
 		project: state.project,
-		users: state.users
+		users: state.users,
+		ui:state.ui
 	}
 
 }

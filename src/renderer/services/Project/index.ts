@@ -5,7 +5,7 @@ import _ from 'lodash';
 import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
-import { ProjectSourceType, getCachedData } from './Sources';
+import { ProjectSourceType, getCachedData, createDataFile } from './Sources';
 import { fsreadFile, fswriteFile } from '../../utils';
 
 
@@ -169,5 +169,11 @@ export async function saveProject(project:Project){
     const configRawData = JSON.stringify(project.config,null,4);
     const filesToSave = _.map(project.files, f => fswriteFile(f.path,f.content))
     filesToSave.push(fswriteFile(configFilePath,configRawData))
+    _.forIn(ProjectSourceType,(sourceType) => {
+        const file = createDataFile(project,sourceType);
+        if(file){
+            filesToSave.push(fswriteFile(file.path,file.content));
+        }
+    });
     return Promise.all(filesToSave)
 }

@@ -1,17 +1,19 @@
-import { Project, ProjectSourceData, PROJECT_CACHE_FOLDER } from "..";
+import { Project, ProjectSourceData, PROJECT_CACHE_FOLDER, ProjectFile } from "..";
 import { fetchFromGSheet } from "./GSheets";
 import { User, AuthType } from "../../Auth";
 import { fsreadFile } from "../../../utils";
 
 
 export enum ProjectSourceType {
+    NONE = 'none',
     GSHEETS = 'gsheets',
     MOCKUP = 'mockup'
 };
 
 const sourceAuthTypes = {
     [ProjectSourceType.GSHEETS]: AuthType.GOOGLE,
-    [ProjectSourceType.MOCKUP]: null
+    [ProjectSourceType.MOCKUP]: null,
+    [ProjectSourceType.NONE]: null
 }
 
 export async function fetchData(project: Project, sourceType: ProjectSourceType, user: User | null | undefined): Promise<ProjectSourceData> {
@@ -22,7 +24,7 @@ export async function fetchData(project: Project, sourceType: ProjectSourceType,
             const data = await fetchFromGSheet(project.config.sources.gsheets.sheetId, user.tokens);
             return {
                 data,
-                cacheFilePath: `${PROJECT_CACHE_FOLDER}/gsheets/${project.config.sources.gsheets.sheetId}.json`,
+                cacheFilePath: `${project.path}/${PROJECT_CACHE_FOLDER}/gsheets/${project.config.sources.gsheets.sheetId}.json`,
                 type: sourceType
             }
         case ProjectSourceType.MOCKUP:
@@ -41,6 +43,20 @@ export function getSourceAuthType(sourceType: ProjectSourceType): AuthType | nul
     return sourceAuthTypes[sourceType];
 }
 
+export function createDataFile(project:Project, sourceType: ProjectSourceType|string):ProjectFile|null{
+    switch (sourceType) {
+        case ProjectSourceType.GSHEETS:
+            if(!project.config.sources.gsheets) return null;
+            if(!project.data.gsheets) return null;
+            if(!project.data.gsheets.cacheFilePath) return null;
+            return {
+                path:project.data.gsheets.cacheFilePath,
+                content: JSON.stringify(project.data.gsheets.data,null,4)
+            }
+    }
+    return null;
+}
+
 export async function getCachedData(project: Project, sourceType: ProjectSourceType|string) {
     switch (sourceType) {
         case ProjectSourceType.GSHEETS:
@@ -50,7 +66,7 @@ export async function getCachedData(project: Project, sourceType: ProjectSourceT
                 const data = await fsreadFile(cacheFile);
                 return {
                     data: JSON.parse(data.toString()),
-                    cacheFilePath: `${PROJECT_CACHE_FOLDER}/gsheets/${project.config.sources.gsheets.sheetId}.json`,
+                    cacheFilePath: `${project.path}/${PROJECT_CACHE_FOLDER}/gsheets/${project.config.sources.gsheets.sheetId}.json`,
                     type: sourceType
                 }
             }catch(e){

@@ -19,6 +19,9 @@ import App, { AppUI } from './components/App/App';
 import { openLastProject, Project } from './services/Project';
 import _ from 'lodash';
 import { firstKeyOfObject } from './utils';
+import { ProjectSourceType } from './services/Project/Sources';
+import MouseTrap from 'mousetrap';
+import { projectSaving } from './redux/project';
 
 
 export type Users = EnumDictionary<AuthType,User>;
@@ -45,6 +48,7 @@ async function main() {
             editor:{
                 selectedTemplate:project?.templates[firstKeyOfObject(project?.templates)],
                 selectedLayout:project?.layouts[firstKeyOfObject(project?.layouts)],
+                selectedSourceType:ProjectSourceType.GSHEETS,
             },
             preview:{
                 pdf:null,
@@ -76,6 +80,14 @@ async function main() {
         </Provider>,
         document.getElementById('app')
     );
+
+    /**
+     * This shortcut is also defined in CodeEditor.tsx (Ace Editor dont propagate the key event)
+     * @TODO find a better implementation 
+     */
+    MouseTrap.bind('mod+s',() => {
+        store.dispatch(projectSaving())
+    })
 
 }
 

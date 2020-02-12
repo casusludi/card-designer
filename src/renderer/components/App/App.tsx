@@ -31,7 +31,8 @@ export type AppUI = {
 
 export type AppUIEditor = {
     selectedTemplate:ProjectTemplate|undefined|null,
-    selectedLayout:ProjectLayout|undefined|null
+    selectedLayout:ProjectLayout|undefined|null,
+    selectedSourceType:ProjectSourceType
 }
 
 type AppState = {

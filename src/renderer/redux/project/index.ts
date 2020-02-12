@@ -24,6 +24,7 @@ export const projectDataChanged = createAction<ProjectDataChangedPayload>('proje
 export const projectFetchData = createAction<ProjectFetchDataPayload>('projectData/fetch');
 export const projectFetchDataFailed = createAction('projectData/fetchFailed',withError());
 export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
+export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
 export const projectSaving = createAction('project/saving');
 export const projectSavingFailed = createAction('project/savingFailed',withError());
 export const projectSaved = createAction('project/saved');
@@ -50,6 +51,20 @@ export const projectReducer = createReducer<Project | null>(null, {
             config: action.payload.config
         }
     },
-    [projectSaved.type]: (state,action) => (state?{...state, modified:false}:null)
+    [projectSaved.type]: (state,action) => (state?{...state, modified:false}:null),
+    [projectFileChanged.type]: (state,action:PayloadAction<{fileId:string,content:string}>) => {
+        if (!state) return null;
+        return {
+            ...state,
+            modified: true,
+            files: {
+                ...state.files,
+                [action.payload.fileId]:{
+                    ...state.files[action.payload.fileId],
+                    content:action.payload.content
+                }
+            }
+        }
+    }
 })
 

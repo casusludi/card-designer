@@ -1,5 +1,5 @@
 import { call, put, takeLatest, all, takeEvery, select } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project } from '../../services/Project';
 
 import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
@@ -50,9 +50,11 @@ function* watchFetchData() {
 
 function* saga_saveProject(action:any){
     try{
-        const project = yield select(state => state.project);
-        yield call(saveProject,project);
-        yield put(projectSaved());
+        const project:Project = yield select(state => state.project);
+        if(project.modified){
+            yield call(saveProject,project);
+            yield put(projectSaved());
+        }
     }catch(e){
         yield projectSavingFailed(e);
     }

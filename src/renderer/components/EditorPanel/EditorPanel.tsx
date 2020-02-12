@@ -7,11 +7,12 @@ import ConfigEditor from "./ConfigEditor/ConfigEditor";
 import { connect } from "react-redux";
 import { ApplicationState } from "../..";
 import { Dispatch } from "redux";
-import { projectConfigChanged } from "../../redux/project";
+import { projectConfigChanged, projectFileChanged } from "../../redux/project";
 import _ from "lodash";
 import { AppUIEditor } from "../App/App";
-import { uiEditorSelectedTemplateChanged, uiEditorSelectedLayoutChanged } from "../../redux/ui";
+import { uiEditorSelectedTemplateChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedSourceTypeChanged } from "../../redux/ui";
 import TemplateEditor from "./TemplateEditor/TemplateEditor";
+import { ProjectSourceType } from "../../services/Project/Sources";
 
 export type EditorPanelProps = {
     project: Project | null
@@ -38,8 +39,14 @@ function EditorPanel(props: EditorPanelProps) {
         }
     }
 
-    function onFileChanged(fildId:String,content:string){
+    function selectedSourceTypeChanged(e:React.ChangeEvent<HTMLSelectElement>){
+        if(props.project){
+            props.dispatch(uiEditorSelectedSourceTypeChanged({sourceType:e.target.value as ProjectSourceType}))
+        }
+    }
 
+    function onFileChanged(fileId:string,content:string){
+        props.dispatch(projectFileChanged({fileId,content}));
     }
 
     return (
@@ -70,6 +77,12 @@ function EditorPanel(props: EditorPanelProps) {
                             <label htmlFor="ActionBar__LayoutSelect-select">Layout : </label>
                             <select id="ActionBar__LayoutSelect-select" defaultValue={props.ui.selectedLayout?.id} onChange={selectedLayoutChanged}>
                                 {_.map(props.project.layouts, (l, k) => <option value={l.id} key={l.id}>{l.id}</option>)}
+                            </select>
+                        </div>
+                        <div className="ActionBar__SourceSelect">
+                            <label htmlFor="ActionBar__SourceSelect-select">Source : </label>
+                            <select id="ActionBar__SourceSelect-select" defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged}>
+                                {_.map(ProjectSourceType, (l, k) => <option value={l} key={l}>{l}</option>)}
                             </select>
                         </div>
                         <div className="ActionBar__RenderingBox">

@@ -9,18 +9,23 @@ import "ace-builds/src-noconflict/mode-css";
 import "ace-builds/src-noconflict/mode-handlebars";
 import "ace-builds/src-noconflict/theme-pastel_on_dark";
 import "ace-builds/src-noconflict/ext-language_tools";
-import { UndoManager, EditSession } from "ace-builds";
+import { UndoManager } from "ace-builds";
 import _ from "lodash";
 import './CodeEditor.scss';
 import uuidv1 from "uuid/v1";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { projectSaving } from "../../../redux/project";
 
 export type CodeEditorProps = {
     code: string
     mode: string
     className?: string
     onValidChange?: (code: string) => void
-    debouncedValidationTime: number
-    width?:number
+    onChange?: (code: string) => void
+    debouncedChangeTime: number
+    width?:number,
+    dispatch: Dispatch
 }
 
 export type CodeEditorState = {
@@ -29,10 +34,10 @@ export type CodeEditorState = {
     internalId:string
 }
 
-export default class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
+class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
 
     static defaultProps = {
-        debouncedValidationTime: 500
+        debouncedChangeTime: 500
     }
 
     state = {
@@ -44,6 +49,7 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
     private editor: IEditorProps | null = null;
 
     private onValidChangeDebounced: ((code: string) => void) | null = null
+    private onChangeDebounced: ((code: string) => void) | null = null
 
     resize(){
         if(this.editor){
@@ -52,9 +58,11 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
         }
     }
 
-    onChange(newValue: any, e: any) {
-        //console.log('onChange', e);
+    onChange(newValue: any) {
         this.setState({ code: newValue })
+        if (this.onChangeDebounced) {
+            this.onChangeDebounced(newValue);
+        }
     }
 
     onValidate(annotations: IAnnotation[]) {
@@ -89,11 +97,19 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
         
         if ((
             prevProps.onValidChange != this.props.onValidChange
-            || prevProps.debouncedValidationTime != this.props.debouncedValidationTime
+            || prevProps.debouncedChangeTime != this.props.debouncedChangeTime
             || !this.onValidChangeDebounced
         )
             && this.props.onValidChange) {
-            this.onValidChangeDebounced = _.debounce(this.props.onValidChange, this.props.debouncedValidationTime);
+            this.onValidChangeDebounced = _.debounce(this.props.onValidChange, this.props.debouncedChangeTime);
+        }
+        if ((
+            prevProps.onChange != this.props.onChange
+            || prevProps.debouncedChangeTime != this.props.debouncedChangeTime
+            || !this.onChangeDebounced
+        )
+            && this.props.onChange) {
+            this.onChangeDebounced = _.debounce(this.props.onChange, this.props.debouncedChangeTime);
         }
         if(this.props.width != prevProps.width){
             this.resize();
@@ -101,9 +117,16 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
     }
 
     editorOnLoad(editor:IEditorProps){
-        console.log("editorOnLoad")
         this.editor = editor;
 
+        // define project saving, because externals shortcuts dont trigger ine the code panel
+        this.editor.commands.addCommand({
+            name: 'save',
+            bindKey: {win: "Ctrl-S", "mac": "Cmd-S"},
+            exec: () => {
+                this.props.dispatch(projectSaving())
+            }
+        })
 
     }
 
@@ -137,3 +160,5 @@ export default class CodeEditor extends React.Component<CodeEditorProps, CodeEdi
         );
     }
 }
+
+export default connect()(CodeEditor);

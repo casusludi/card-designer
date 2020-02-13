@@ -94,11 +94,11 @@ function EditorPanel(props: EditorPanelProps) {
                             </select>
                         </div>
                       
-                        <div className="ActionBar__RenderingBox">
+                        <div className="ActionBar__RenderingBox button-bar">
                             <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>
-                            <div className="EditorPanelAutoRenderCheckBox">
+                            <div className="button">
                                 <label htmlFor="EditorPanelAutoRenderCheckBox">
-                                    Auto Rendering:
+                                    Auto :
                                 </label>
                                 <input type="checkbox" id="EditorPanelAutoRenderCheckBox" name="EditorPanelAutoRenderCheckBox" />
                             </div>

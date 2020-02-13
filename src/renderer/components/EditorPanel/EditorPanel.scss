@@ -43,17 +43,10 @@
     }
 }
 
-.EditorPanelAutoRenderCheckBox {
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-
-    label {
-        user-select: none;
-    }
-}
 
 .ActionBar__RenderingBox {
     display: flex;
-    align-items: center;
+    label {
+        cursor: pointer;
+    }
 }

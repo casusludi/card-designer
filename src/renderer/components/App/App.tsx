@@ -144,7 +144,7 @@ class App extends Component<AppProps, AppState> {
 					<div className="layout__header-title">
 						Cardmaker Studio
 						{this.props.project && <div className="project-bar__name">
-							- {this.props.project.name}{this.props.project.modified && <span className="project-bar__modified">(not saved)</span>}
+							- {this.props.project.name}{this.props.project.modified && <span className="project-bar__modified">(not saved)<i className="icon fas fa-exclamation-triangle"></i></span>}
 						</div>}
 						
 					</div>

@@ -67,8 +67,8 @@
 }
 
 .MessagerAlert__error {
-    background-color: #f34545;
-    border: 1px solid #ff8181;
+    background-color: $medium-red;
+    border: 1px solid $light-red;
     border-radius: 2px;
     box-shadow: 4px 4px 2px #00000054;
     text-align: center;

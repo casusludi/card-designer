@@ -34,6 +34,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 5px;
+
+    & > .MessagerAlert__error{
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 20%;
+        right: 20%;
+    }
 }
 
 .EditorPanelAutoRenderCheckBox {

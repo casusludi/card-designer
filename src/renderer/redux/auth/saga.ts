@@ -25,12 +25,6 @@ function* saga_signIn(action: any) {
     }
 }
 
-
-function* watchSignIn() {
-    yield takeEvery(authSignIn.type, saga_signIn);
-}
-
-
 function* saga_signOut(action: any) {
     try {
         const auth = getAuth(action.payload.authType);
@@ -46,9 +40,6 @@ function* saga_signOut(action: any) {
     }
 }
 
-function* watchSignOut() {
-    yield takeEvery(authSignOut.type, saga_signOut);
-}
 
 function* saga_authRefresh(action: any) {
     try {
@@ -65,14 +56,11 @@ function* saga_authRefresh(action: any) {
     }
 }
 
-function* watchAuthRefresh() {
-    yield takeEvery(authTokenRefresh.type, saga_authRefresh)
-}
 
 export default function* authSaga() {
     yield all([
-        watchSignIn(),
-        watchSignOut(),
-        watchAuthRefresh()
+        yield takeEvery(authSignIn.type, saga_signIn),
+        yield takeEvery(authSignOut.type, saga_signOut),
+        yield takeEvery(authTokenRefresh.type, saga_authRefresh)
     ])
 }

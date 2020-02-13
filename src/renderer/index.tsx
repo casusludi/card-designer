@@ -39,6 +39,9 @@ async function main() {
     const googleAuth = Global.getAuth(AuthType.GOOGLE);
     const googleUser = googleAuth?.getUser() || UNKNOW_USER;
 
+    const selectedTemplate = project?.templates[firstKeyOfObject(project?.templates)]
+    const selectedSourceType = ProjectSourceType.GSHEETS;
+
     const initialState:ApplicationState = {
         project,
         users:{
@@ -46,9 +49,12 @@ async function main() {
         },
         ui:{
             editor:{
-                selectedTemplate:project?.templates[firstKeyOfObject(project?.templates)],
-                selectedLayout:project?.layouts[firstKeyOfObject(project?.layouts)],
-                selectedSourceType:ProjectSourceType.GSHEETS,
+                selectedSourceType,
+                selection:{
+                    template:selectedTemplate,
+                    layout: project?.layouts[firstKeyOfObject(project?.layouts)],
+                    data: (selectedTemplate && selectedTemplate.id)?_.find(project?.data[selectedSourceType]?.data,o => o.id == selectedTemplate.id):null
+                }
             },
             preview:{
                 pdf:null,

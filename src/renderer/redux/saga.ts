@@ -2,6 +2,7 @@ import { all,takeEvery } from 'redux-saga/effects';
 import projectSaga from './project/saga';
 import authSaga from './auth/saga';
 import { remote } from 'electron';
+import uiSaga from './ui/saga';
 
 
 
@@ -17,6 +18,7 @@ export default function* rootSaga() {
     yield all([
         projectSaga(),
         authSaga(),
+        uiSaga(),
         watchErrors()
     ])
 }

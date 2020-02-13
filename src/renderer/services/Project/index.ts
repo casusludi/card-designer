@@ -8,8 +8,6 @@ import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile } from './Sources';
 import { fsreadFile, fswriteFile } from '../../utils';
 
-
-
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
 
@@ -72,6 +70,12 @@ export type Project = {
     layouts: { [key: string]: ProjectLayout }
     files:ProjectFiles
     data:EnumDictionary<ProjectSourceType,ProjectSourceData>
+}
+
+export type ProjectSelection = {
+    template:ProjectTemplate|undefined|null,
+    layout:ProjectLayout|undefined|null,
+    data:ProjectDataItem|undefined|null
 }
 
 const schemaValidator = new Validator();
@@ -176,4 +180,12 @@ export async function saveProject(project:Project){
         }
     });
     return Promise.all(filesToSave)
+}
+
+export async function buildProject(project:Project,layoutName:string){
+
+}
+
+export async function renderProjectPreviewAsHtml(selection:ProjectSelection):Promise<string>{
+    return "";
 }

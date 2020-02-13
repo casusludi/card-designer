@@ -1,8 +1,8 @@
 import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { Project, ProjectSourceData, ProjectConfig } from '../../services/Project'
+import { Project, ProjectSourceData, ProjectConfig, ProjectSelection } from '../../services/Project'
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { User } from '../../services/Auth';
-import { withError } from '../../utils/redux';
+import { asError } from '../../utils/redux';
 import _ from 'lodash';
 
 export type ProjectDataChangedPayload = {
@@ -18,16 +18,19 @@ export type ProjectFetchDataPayload = {
 
 export const projectOpenFromDialog = createAction('project/openFromDialog');
 export const projectOpenSucceeded = createAction<{ project: Project }>('project/openSucceeded');
-export const projectOpenFailed = createAction('project/openFailed',withError());
+export const projectOpenFailed = createAction('project/openFailed',asError());
 export const projectOpenCancelled = createAction('project/openCancelled');
 export const projectDataChanged = createAction<ProjectDataChangedPayload>('projectData/changed');
 export const projectFetchData = createAction<ProjectFetchDataPayload>('projectData/fetch');
-export const projectFetchDataFailed = createAction('projectData/fetchFailed',withError());
+export const projectFetchDataFailed = createAction('projectData/fetchFailed',asError());
 export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
 export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
 export const projectSaving = createAction('project/saving');
-export const projectSavingFailed = createAction('project/savingFailed',withError());
+export const projectSavingFailed = createAction('project/savingFailed',asError());
 export const projectSaved = createAction('project/saved');
+export const projectRender = createAction<{selection:ProjectSelection}>('project/render');
+export const projectRenderFailed = createAction('project/renderFailed',asError());
+export const projectRendered = createAction('project/rendered');
 
 export const projectReducer = createReducer<Project | null>(null, {
     [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => action.payload.project,

@@ -9,7 +9,7 @@ import { AuthType } from '../../services/Auth';
 import { GoogleBar } from '../Google/GoogleBar';
 import EditorPanel from '../EditorPanel/EditorPanel';
 import PreviewPanel from '../PreviewPanel/PreviewPanel';
-import { Project, ProjectTemplate, ProjectLayout } from '../../services/Project';
+import { Project, ProjectSelection } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
 import { projectOpenFromDialog, projectFetchData, projectSaving } from '../../redux/project';
 import { Dispatch } from 'redux';
@@ -30,9 +30,8 @@ export type AppUI = {
 }
 
 export type AppUIEditor = {
-    selectedTemplate:ProjectTemplate|undefined|null,
-    selectedLayout:ProjectLayout|undefined|null,
-    selectedSourceType:ProjectSourceType
+	selectedSourceType:ProjectSourceType,
+	selection:ProjectSelection|undefined|null
 }
 
 type AppState = {

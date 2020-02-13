@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project } from '
 import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender } from '.';
 
 function* saga_openProjectFromDialog(action: any) {
     try {
@@ -19,9 +19,7 @@ function* saga_openProjectFromDialog(action: any) {
     }
 }
 
-function* watchOpenProjectFromDialog() {
-    yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog)
-}
+
 
 function* saga_fetchData(action: any) {
     try {
@@ -44,10 +42,6 @@ function* saga_fetchData(action: any) {
     }
 }
 
-function* watchFetchData() {
-    yield takeEvery(projectFetchData.type, saga_fetchData);
-}
-
 function* saga_saveProject(action:any){
     try{
         const project:Project = yield select(state => state.project);
@@ -60,14 +54,22 @@ function* saga_saveProject(action:any){
     }
 }
 
-function* watchSaveProject(){
-    yield takeLatest(projectSaving.type,saga_saveProject)
+
+function* saga_renderProjectSelection(action:any){
+    console.log(typeof action);
+    try{
+        //const html:string = yield call(renderProjectPreviewAsHtml,)
+    }catch(e){
+
+    }
 }
+
 
 export default function* projectSaga() {
     yield all([
-        watchOpenProjectFromDialog(),
-        watchFetchData(),
-        watchSaveProject()
+        yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog),
+        yield takeEvery(projectFetchData.type, saga_fetchData),
+        yield takeLatest(projectSaving.type,saga_saveProject),
+        yield takeLatest(projectRender.type,saga_renderProjectSelection)
     ])
 }

@@ -1,5 +1,5 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
-import { ProjectTemplate, ProjectLayout } from '../../services/Project';
+import { ProjectTemplate, ProjectLayout, ProjectDataItem } from '../../services/Project';
 import { PDFSource } from '../../components/PDFViewer/PDFDocument';
 import { AppUI, AppUIEditor, AppUIPreview } from '../../components/App/App';
 import { ProjectSourceType } from '../../services/Project/Sources';
@@ -7,24 +7,46 @@ import { ProjectSourceType } from '../../services/Project/Sources';
 export const uiEditorSelectedTemplateChanged = createAction<{ template: ProjectTemplate }>("uiEditor/selectedTemplateChanged");
 export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectLayout }>("uiEditor/selectedLayoutChanged");
 export const uiEditorSelectedSourceTypeChanged = createAction<{ sourceType: ProjectSourceType }>("uiEditor/selectedSourceTypeChanged");
+export const uiEditorSelectedDataChanged = createAction<{ data: ProjectDataItem|undefined|null }>("uiEditor/selectedDataChanged");
 export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource }>("uiPreview/pdfChanged");
 export const uiPreviewHtmlChanged = createAction<{ html: string }>("uiPreview/htmlChanged");
 
 export const uiEditorReducer = createReducer<AppUIEditor>({
-    selectedTemplate: null,
-    selectedLayout: null,
-    selectedSourceType: ProjectSourceType.NONE
+    selectedSourceType: ProjectSourceType.NONE,
+    selection:null
 }, {
     [uiEditorSelectedTemplateChanged.type]: (state, action: PayloadAction<{ template: ProjectTemplate }>) => {
         return {
             ...state,
-            selectedTemplate: action.payload.template
+            selection:{
+                layout:state.selection?.layout,
+                data:state.selection?.data,
+                template: action.payload.template
+            }
+            
         }
     },
     [uiEditorSelectedLayoutChanged.type]: (state, action: PayloadAction<{ layout: ProjectLayout }>) => {
+
         return {
             ...state,
-            selectedLayout: action.payload.layout
+            selection:{
+                layout:action.payload.layout,
+                data:state.selection?.data,
+                template: state.selection?.template
+            }
+            
+        }
+    },
+    [uiEditorSelectedDataChanged.type]: (state, action: PayloadAction<{ data: ProjectDataItem }>) => {
+        return {
+            ...state,
+            selection:{
+                layout:state.selection?.layout,
+                data: action.payload.data,
+                template: state.selection?.template
+            }
+            
         }
     },
     [uiEditorSelectedSourceTypeChanged.type]: (state, action: PayloadAction<{ sourceType: ProjectSourceType }>) => {

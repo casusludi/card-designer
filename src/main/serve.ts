@@ -5,16 +5,18 @@ import fs from 'fs';
 import * as path from 'path'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+export type ServeOverrides = {[key:string]:string}
+
 export type Serve = {
-    serve : (id:string,html:string,base:string) => void
+    serve : (id:string,html:string,base:string,overrides?:ServeOverrides) => void
     unserve : (id:string) => void
-    convertToPdf : (id:string,html:string,base:string) => Promise<Buffer>
+    convertToPdf : (html:string,base:string,overrides?:ServeOverrides) => Promise<Buffer>
     close : () => void
 }
 
 export default async function makeServe(port:number): Promise<Serve>{
 
-    const mapping:{ [id: string] : {html:string,base:string} }  = {};
+    const mapping:{ [id: string] : {html:string,base:string, overrides:ServeOverrides} }  = {};
     const showWindow = false;
 
     const pdfWindow = new BrowserWindow({
@@ -37,8 +39,10 @@ export default async function makeServe(port:number): Promise<Serve>{
 
         //@ts-ignore
         let base = __static;
+        let overrides:ServeOverrides = {};
         if(mapping[id]){
             base = mapping[id].base
+            overrides = mapping[id].overrides
         }
         const filePath = path.normalize(base + req.url);
         const extName = path.extname(filePath);
@@ -63,8 +67,11 @@ export default async function makeServe(port:number): Promise<Serve>{
                 contentType = 'image/svg+xml';
                 break;
         }
-        if(fs.existsSync(filePath)){
 
+        if(overrides[req.url]){
+            res.writeHead(200,{ 'Content-Type': contentType });
+            res.end(overrides[req.url],encoding);
+        }else if(fs.existsSync(filePath)){
             fs.readFile(filePath, function (err,data) {
                 if (err) {
                     res.writeHead(404,{ 'Content-Type': contentType });
@@ -85,21 +92,24 @@ export default async function makeServe(port:number): Promise<Serve>{
     console.log(`server listen at ${port}`);
 
     return {
-        serve(id:string,html:string,base:string){
+        serve(id:string,html:string,base:string,overrides?:ServeOverrides){
+            console.log("serve");
             mapping[id] = {
                 html,
-                base
+                base,
+                overrides: overrides || {}
             }
         },
         unserve(id:string){
             delete mapping[id];
         },
-        async convertToPdf(html:string,base:string){
+        async convertToPdf(html:string,base:string,overrides?:ServeOverrides){
 
             const id = uuidv1();
             mapping[id] = {
                 html,
-                base
+                base,
+                overrides: overrides || {}
             }
             await pdfWindow.loadURL(`http://localhost:${port}/${id}`);
             const data =  await pdfWindow.webContents.printToPDF({printBackground:true});

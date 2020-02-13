@@ -4,12 +4,19 @@ import mkdirp from 'mkdirp';
 import { promisify } from "util";
 import path from 'path';
 
+export type ServeOverrides = {[key:string]:string}
+
+
 export function getSharedVar(name: string): any {
     return remote.getGlobal('sharedVars')[name]
 }
 
-export async function convertHtmlToPdf(id: string, html: string, base: string): Promise<Buffer> {
-    return ipcRenderer.invoke("html-to-pdf", id, html, base);
+export async function convertHtmlToPdf( html: string, base: string,overrides?:ServeOverrides): Promise<Buffer> {
+    return ipcRenderer.invoke("html-to-pdf", html, base,overrides);
+}
+
+export async function serveHtml(id:string,html:string, base:string,overrides?:ServeOverrides): Promise<string>{
+    return ipcRenderer.invoke("serve",id,html,base,overrides).then(() => `http://localhost:${getSharedVar('servePort')}/${id}`);
 }
 
 export const fsreadFile = promisify(fs.readFile);

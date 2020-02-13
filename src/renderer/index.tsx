@@ -58,7 +58,7 @@ async function main() {
             },
             preview:{
                 pdf:null,
-                html:null
+                htmlUrl:null
             }
         }
     }

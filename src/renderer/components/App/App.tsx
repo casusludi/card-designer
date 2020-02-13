@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import './App.scss';
-import fs from 'fs';
-import { PDFSource } from '../PDFViewer/PDFDocument';
-import { convertHtmlToPdf } from '../../utils';
+
+import { PDFSource } from '../PreviewPanel/PDFViewer/PDFDocument';
+
 import { AuthType } from '../../services/Auth';
 import { GoogleBar } from '../Google/GoogleBar';
 import EditorPanel from '../EditorPanel/EditorPanel';
@@ -16,12 +16,9 @@ import { Dispatch } from 'redux';
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { authSignIn,authSignOut } from '../../redux/auth';
 
-const PDF_FILE_TEST: string = `./tmp/events.pdf`;
-const HTML_FILE_TEST: string = `./tmp/clients.html`;
-
 export type AppUIPreview = {
     pdf:PDFSource,
-    html:string|null
+    htmlUrl:string|null
 }
 
 export type AppUI = {
@@ -36,7 +33,6 @@ export type AppUIEditor = {
 
 type AppState = {
 	editorWidth: number
-	pdfToView: PDFSource
 }
 
 export type AppProps = {
@@ -84,7 +80,6 @@ class App extends Component<AppProps, AppState> {
 
 	state = {
 		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
-		pdfToView: PDF_FILE_TEST
 	}
 
 	async componentDidMount() {
@@ -138,8 +133,6 @@ class App extends Component<AppProps, AppState> {
 							<button className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
 							<button className="button" disabled={!this.props.project?.modified} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
 						</div>
-						<button className="button" onClick={() => this.testPDFConverter()} >Test pdf converter</button>
-						
 					</div>
 					<div className="layout__header-title">
 						Cardmaker Studio
@@ -162,7 +155,7 @@ class App extends Component<AppProps, AppState> {
 							<div className="viewer-tabitem">
 								<PreviewPanel
 									ui={this.props.ui.preview}
-									finalPreview={this.state.pdfToView}
+									project={this.props.project}
 								/>
 							</div>
 						</div>
@@ -177,16 +170,6 @@ class App extends Component<AppProps, AppState> {
 		);
 	}
 
-	async testPDFConverter() {
-
-		//@ts-ignore
-		const filePath = __static + '/' + HTML_FILE_TEST;
-		//@ts-ignore
-		const data = await convertHtmlToPdf(fs.readFileSync(filePath).toString(), __static);
-		this.setState({
-			pdfToView: data
-		})
-	}
 }
 
 function mapStateToProps(state: ApplicationState) {

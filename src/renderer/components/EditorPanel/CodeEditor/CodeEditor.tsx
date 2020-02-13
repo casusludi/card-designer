@@ -122,7 +122,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
         // define project saving, because externals shortcuts dont trigger ine the code panel
         this.editor.commands.addCommand({
             name: 'save',
-            bindKey: {win: "Ctrl-S", "mac": "Cmd-S"},
+            bindKey: {win: "ctrl+s", mac: "cmd+s"},
             exec: () => {
                 this.props.dispatch(projectSaving())
             }

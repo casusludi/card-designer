@@ -1,6 +1,6 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
 import { ProjectTemplate, ProjectLayout, ProjectDataItem } from '../../services/Project';
-import { PDFSource } from '../../components/PDFViewer/PDFDocument';
+import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
 import { AppUI, AppUIEditor, AppUIPreview } from '../../components/App/App';
 import { ProjectSourceType } from '../../services/Project/Sources';
 
@@ -9,7 +9,7 @@ export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectLayou
 export const uiEditorSelectedSourceTypeChanged = createAction<{ sourceType: ProjectSourceType }>("uiEditor/selectedSourceTypeChanged");
 export const uiEditorSelectedDataChanged = createAction<{ data: ProjectDataItem|undefined|null }>("uiEditor/selectedDataChanged");
 export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource }>("uiPreview/pdfChanged");
-export const uiPreviewHtmlChanged = createAction<{ html: string }>("uiPreview/htmlChanged");
+export const uiPreviewHtmlUrlChanged = createAction<{ htmlUrl: string | null }>("uiPreview/htmlUrlChanged");
 
 export const uiEditorReducer = createReducer<AppUIEditor>({
     selectedSourceType: ProjectSourceType.NONE,
@@ -59,7 +59,7 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
 
 export const uiPreviewReducer = createReducer<AppUIPreview>({
     pdf: null,
-    html: null
+    htmlUrl: null
 }, {
     [uiPreviewPdfChanged.type]: (state, action: PayloadAction<{ pdf: PDFSource }>) => {
         return {
@@ -69,10 +69,10 @@ export const uiPreviewReducer = createReducer<AppUIPreview>({
     },
     // TS crash à la gueule pour je ne sais quelle raison encore : le fait que pdf soit un binary?
     //J'ai un state:any en attendant
-    [uiPreviewHtmlChanged.type]: (state:any, action: PayloadAction<{ html: string }>) => {
+    [uiPreviewHtmlUrlChanged.type]: (state:any, action: PayloadAction<{ htmlUrl: string }>) => {
         return {
             ...state,
-            html:action.payload.html
+            htmlUrl:action.payload.htmlUrl
         }
     }
 })

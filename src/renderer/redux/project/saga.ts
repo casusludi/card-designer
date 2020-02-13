@@ -1,10 +1,16 @@
 import { call, put, takeLatest, all, takeEvery, select } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject, Project } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection } from '../../services/Project';
 
 import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
 import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender } from '.';
+import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged } from '../ui';
+import { convertHtmlToPdf, serveHtml } from '../../utils';
+import { ApplicationState } from '../..';
+import { ServeOverrides } from '../../../main/serve';
+
+const selectProject = (state:ApplicationState) => state.project;
 
 function* saga_openProjectFromDialog(action: any) {
     try {
@@ -44,7 +50,7 @@ function* saga_fetchData(action: any) {
 
 function* saga_saveProject(action:any){
     try{
-        const project:Project = yield select(state => state.project);
+        const project:Project = yield select(selectProject);
         if(project.modified){
             yield call(saveProject,project);
             yield put(projectSaved());
@@ -56,9 +62,27 @@ function* saga_saveProject(action:any){
 
 
 function* saga_renderProjectSelection(action:any){
-    console.log(typeof action);
     try{
-        //const html:string = yield call(renderProjectPreviewAsHtml,)
+        const selection:ProjectSelection = action.payload.selection;
+        const project:Project = yield select(selectProject);
+        const html = renderSelectionAsHtml(project,action.payload.selection,{})
+        
+        if(html && project && selection.template && selection.layout){
+            let templateStylesPath = selection.template.styles;
+            let layoutStylesPath = selection.layout.styles;
+            if(templateStylesPath[0]!='/')templateStylesPath = '/'+templateStylesPath;
+            if(layoutStylesPath[0]!='/')layoutStylesPath = '/'+layoutStylesPath;
+            const overrides:ServeOverrides = {
+                [templateStylesPath]: project.files[selection.template.styles].content,
+                [layoutStylesPath]: project.files[selection.layout.styles].content
+            }
+            const htmlUrl = yield call(serveHtml,"html-preview",html,project.path,overrides)
+            console.log(htmlUrl)
+            yield put(uiPreviewHtmlUrlChanged({htmlUrl}));
+            
+            const pdf = yield call(convertHtmlToPdf,html,project.path,overrides)
+            yield put(uiPreviewPdfChanged({pdf}))
+        }
     }catch(e){
 
     }

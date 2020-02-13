@@ -5,7 +5,7 @@ import * as path from 'path'
 import getPort from 'get-port';
 import { format as formatUrl } from 'url'
 import settings from '../../settings/globals.json';
-import makeServe, { Serve } from './serve';
+import makeServe, { Serve, ServeOverrides } from './serve';
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -21,7 +21,8 @@ function createMainWindow() {
     darkTheme: true,
     backgroundColor: '#2C2828',
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webviewTag: true
     }
   })
 
@@ -87,12 +88,12 @@ app.on('ready', async () => {
   serve = await makeServe(port);
   mainWindow = createMainWindow();
 
-  ipcMain.handle('html-to-pdf', async (event, id: string, html: string, base: string) => {
-    return await serve?.convertToPdf(id,html,base)
+  ipcMain.handle('html-to-pdf', async (event, html: string, base: string,overrides?:ServeOverrides) => {
+    return await serve?.convertToPdf(html,base,overrides)
   })
 
-  ipcMain.handle('serve', (event, id: string, html: string, base: string) => {
-    return serve?.serve(id,html,base)
+  ipcMain.handle('serve', (event, id: string, html: string, base: string,overrides?:ServeOverrides) => {
+    return serve?.serve(id,html,base,overrides)
   })
 
   ipcMain.handle('unserve', (event, id: string) => {

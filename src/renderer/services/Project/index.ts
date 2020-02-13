@@ -7,6 +7,7 @@ import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile } from './Sources';
 import { fsreadFile, fswriteFile } from '../../utils';
+import render from './render';
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
@@ -186,6 +187,4 @@ export async function buildProject(project:Project,layoutName:string){
 
 }
 
-export async function renderProjectPreviewAsHtml(selection:ProjectSelection):Promise<string>{
-    return "";
-}
+export const renderSelectionAsHtml = render

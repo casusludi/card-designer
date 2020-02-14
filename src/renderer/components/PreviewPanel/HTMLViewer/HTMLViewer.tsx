@@ -1,5 +1,7 @@
 
 import React from "react";
+import './HTMLViewer.scss';
+import {shell} from 'electron';
 
 export type HTMLViewerProps = {
     url:string
@@ -25,9 +27,6 @@ const mouseEventTrapScript = `
 `;
 
 const webviewCSS = `
-    body{
-        background-color: white;
-    }
     
     /* scrollbar css : @see /styles/scrollbars.scss */
     ::-webkit-scrollbar {
@@ -66,6 +65,8 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
                 ref.insertCSS(webviewCSS)
                 // @ts-ignore TS dont recognise webview API
                 ref.executeJavaScript(mouseEventTrapScript);
+                // @ts-ignore TS dont recognise webview API
+               // ref.openDevTools({mode:'bottom'});
             })
 
             ref.addEventListener('console-message', (e:any) => {
@@ -86,16 +87,23 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
         }
     }
 
+    openViewInExternalbrowser(){
+        shell.openExternal(this.props.url);
+    }
+
     webviewComp(){
         // create a specific webviewComp function to add a @ts-ignore
         // Electron want a string value to "nodeintegration" and TS want a boolean|undefind value
         // @ts-ignore
-        return <webview ref={this.onWebViewRef.bind(this)} nodeintegration="true" className="HTMLViewer_webview full-space" src={this.props.url} ></webview> 
+        return <webview ref={this.onWebViewRef.bind(this)} nodeintegration="true" className="HTMLViewer_webview " src={this.props.url} ></webview> 
     }
 
     render(){
         return (
             <div className="HTMLViewer full-space">
+                <div className="HTMLViewer__ActionBar">
+                    <button className="button" onClick={this.openViewInExternalbrowser.bind(this)}><i className="fas fa-external-link-alt"></i></button>
+                </div>
                 {this.webviewComp()}
             </div>
             

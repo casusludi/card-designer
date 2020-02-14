@@ -15,6 +15,7 @@ import { projectOpenFromDialog, projectFetchData, projectSaving } from '../../re
 import { Dispatch } from 'redux';
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { authSignIn,authSignOut } from '../../redux/auth';
+import { LayoutPreferences, prefEditorWidthChanged } from '../../redux/preferences';
 
 export type AppUIPreview = {
     pdf:PDFSource,
@@ -31,15 +32,12 @@ export type AppUIEditor = {
 	selection:ProjectSelection|undefined|null
 }
 
-type AppState = {
-	editorWidth: number
-}
-
 export type AppProps = {
 	project: Project | null
 	users: Users
 	dispatch: Dispatch
-	ui:AppUI
+	ui:AppUI,
+	layoutPreferences:LayoutPreferences
 }
 
 enum PositionType {
@@ -76,16 +74,7 @@ function makePositionAdjuster(type: PositionType, initialValue: number, initialM
 	}
 }
 
-class App extends Component<AppProps, AppState> {
-
-	state = {
-		editorWidth: parseInt(window.localStorage.getItem("editorWidth") || "500"),
-	}
-
-	async componentDidMount() {
-
-
-	}
+class App extends Component<AppProps> {
 
 	async authSignIn() {
 		this.props.dispatch(authSignIn({authType:AuthType.GOOGLE}));
@@ -114,11 +103,12 @@ class App extends Component<AppProps, AppState> {
 	startAdjustEditorWidth(evt: React.MouseEvent) {
 		makePositionAdjuster(
 			PositionType.Vertical,
-			this.state.editorWidth,
+			this.props.layoutPreferences.editorWidth,
 			evt.clientX,
-			(val, diff) => this.setState({
-				editorWidth: val - diff
-			}, () => window.localStorage.setItem("editorWidth", this.state.editorWidth.toString())))
+			(val, diff) => {
+				this.props.dispatch(prefEditorWidthChanged({editorWidth: val -diff}))
+			}
+			)
 	}
 
 	render() {
@@ -160,9 +150,9 @@ class App extends Component<AppProps, AppState> {
 							</div>
 						</div>
 					</main>
-					<aside className="editor" style={{ width: `${this.state.editorWidth}px` }} >
+					<aside className="editor" style={{ width: `${this.props.layoutPreferences.editorWidth}px` }} >
 						<div className="editor__width-adjuster" onMouseDown={evt => this.startAdjustEditorWidth(evt)} ></div>
-						<EditorPanel width={this.state.editorWidth} />
+						<EditorPanel width={this.props.layoutPreferences.editorWidth} />
 					</aside>
 				</div>
 				<footer className="layout__footer"></footer>
@@ -177,11 +167,11 @@ function mapStateToProps(state: ApplicationState) {
 	return {
 		project: state.project,
 		users: state.users,
-		ui:state.ui
+		ui:state.ui,
+		layoutPreferences: state.preferences.layout
 	}
 
 }
-
 
 export default connect(
 	mapStateToProps

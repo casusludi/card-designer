@@ -13,14 +13,15 @@ import rootSaga from './redux/saga';
 
 import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import './styles/index.scss';
-
-import App, { AppUI } from './components/App/App';
 import { openLastProject, Project } from './services/Project';
+import App, { AppUI } from './components/App/App';
+
 import _ from 'lodash';
 import MouseTrap from 'mousetrap';
 import { projectSaving, projectOpenSucceeded } from './redux/project';
 
 import { authUserChanged } from './redux/auth';
+import { prefLoadFromLocalStorage, Preferences } from './redux/preferences';
 
 
 export type Users = EnumDictionary<AuthType,User>;
@@ -28,7 +29,8 @@ export type Users = EnumDictionary<AuthType,User>;
 export interface ApplicationState{
     users:Users
     project:Project | null,
-    ui:AppUI
+    ui:AppUI,
+    preferences:Preferences
 }
 
 async function main() {
@@ -65,6 +67,7 @@ async function main() {
         store.dispatch(projectSaving())
     })
 
+    store.dispatch(prefLoadFromLocalStorage());
     const project = await openLastProject();
     const googleAuth = Global.getAuth(AuthType.GOOGLE);
 

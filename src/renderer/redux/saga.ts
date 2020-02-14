@@ -3,6 +3,7 @@ import projectSaga from './project/saga';
 import authSaga from './auth/saga';
 import { remote } from 'electron';
 import uiSaga from './ui/saga';
+import prefSaga from './preferences/saga';
 
 
 
@@ -19,6 +20,7 @@ export default function* rootSaga() {
         projectSaga(),
         authSaga(),
         uiSaga(),
+        prefSaga(),
         watchErrors()
     ])
 }

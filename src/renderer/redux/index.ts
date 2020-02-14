@@ -6,6 +6,7 @@ import { projectReducer } from "./project";
 import { authReducer } from './auth';
 import { asError } from '../utils/redux';
 import { uiReducer } from './ui';
+import { prefReducer } from './preferences';
 
 export const globalShowErrorPopup = createAction<{title:string,message:string}>('global/showErrorPopup');
 export const globalAddUncaughtError = createAction('global/addUncaughtError',asError());
@@ -13,7 +14,8 @@ export const globalAddUncaughtError = createAction('global/addUncaughtError',asE
 export const appReducer =  combineReducers<ApplicationState>({
     project:projectReducer,
     users:authReducer,
-    ui:uiReducer
+    ui:uiReducer,
+    preferences: prefReducer
 }) 
 
 

@@ -1,7 +1,7 @@
 import React from "react";
 import TabNav, { TabNavItem } from "../Misc/TabNav/TabNav";
 import "./EditorPanel.scss";
-import { Project, ProjectConfig } from "../../services/Project";
+import { Project, ProjectConfig, RenderFilter } from "../../services/Project";
 import ConfigEditor from "./ConfigEditor/ConfigEditor";
 import { connect } from "react-redux";
 import { ApplicationState } from "../..";
@@ -12,12 +12,14 @@ import { AppUIEditor } from "../App/App";
 import { uiEditorSelectedTemplateChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedSourceTypeChanged } from "../../redux/ui";
 import TemplateEditor from "./TemplateEditor/TemplateEditor";
 import { ProjectSourceType } from "../../services/Project/Sources";
+import { EditorPreferences, prefAutoRenderFilterChanged } from "../../redux/preferences";
 
 export type EditorPanelProps = {
     project: Project | null
     width: number
     dispatch: Dispatch,
-    ui: AppUIEditor
+    ui: AppUIEditor,
+    editorPreferences:EditorPreferences
 }
 
 function EditorPanel(props: EditorPanelProps) {
@@ -50,8 +52,13 @@ function EditorPanel(props: EditorPanelProps) {
 
     function onProjectRender() {
         if(props.ui.selection){
-            props.dispatch(projectRender({selection:props.ui.selection}));
+            props.dispatch(projectRender({selection:props.ui.selection, filter: RenderFilter.ALL}));
         }
+    }
+
+    function onAutoRenderChanged(e: React.ChangeEvent<HTMLInputElement>){
+        const filter = e.target.checked?RenderFilter.ALL:RenderFilter.NONE;
+        props.dispatch(prefAutoRenderFilterChanged({autoRenderFilter:filter}))
     }
 
     return (
@@ -100,7 +107,7 @@ function EditorPanel(props: EditorPanelProps) {
                                 <label htmlFor="EditorPanelAutoRenderCheckBox">
                                     Auto :
                                 </label>
-                                <input type="checkbox" id="EditorPanelAutoRenderCheckBox" name="EditorPanelAutoRenderCheckBox" />
+                                <input type="checkbox" id="EditorPanelAutoRenderCheckBox" name="EditorPanelAutoRenderCheckBox" defaultChecked={props.editorPreferences.autoRenderFilter == RenderFilter.ALL} onChange={onAutoRenderChanged}/>
                             </div>
                         </div>
                     </div>
@@ -115,7 +122,8 @@ function EditorPanel(props: EditorPanelProps) {
 function mapStateToProps(state: ApplicationState) {
     return {
         project: state.project,
-        ui: state.ui.editor
+        ui: state.ui.editor,
+        editorPreferences: state.preferences.editor
     }
 
 }

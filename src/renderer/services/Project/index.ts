@@ -14,6 +14,12 @@ const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
 
 export const PROJECT_CACHE_FOLDER = '.cache';
 
+export enum RenderFilter {
+    NONE,
+    PDF,
+    HTML,
+    ALL
+}
 
 export type ProjectConfigTemplate = {
     hbs:string

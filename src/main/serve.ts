@@ -3,6 +3,8 @@ import http from 'http';
 import uuidv1 from 'uuid/v1';
 import fs from 'fs';
 import * as path from 'path'
+import Cookies from 'cookies';
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 export type ServeOverrides = {[key:string]:string}
@@ -24,18 +26,22 @@ export default async function makeServe(port:number): Promise<Serve>{
     });
     if(isDevelopment && showWindow)pdfWindow.webContents.openDevTools();
 
-    
+    const cookieNames = ['cardmaker-id']
     
     const requestListener = function (req:any, res:any) {
-        let id = req.url.substring(1);
+        var cookies = new Cookies(req, res, { keys: cookieNames })
+
+        let id = req.url.substring(1).split('?')[0];
         const encoding = 'utf-8';
         let contentType = 'text/html';
         if(mapping[id]){
-            res.writeHead(200,{ 'Content-Type': contentType, 'Set-Cookie':id });
+            cookies.set('cardmaker-id',id)
+            res.writeHead(200,{ 'Content-Type': contentType });
+            
             res.end(mapping[id].html,encoding);
             return;
         }
-        id = req.headers.cookie;
+        id = cookies.get('cardmaker-id');
 
         //@ts-ignore
         let base = __static;

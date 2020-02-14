@@ -4,11 +4,12 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
 import { ServeOverrides } from '../../../main/serve';
+import { AnyAction } from 'redux';
 
 const selectProject = (state:ApplicationState) => state.project;
 
@@ -77,23 +78,35 @@ function* saga_renderProjectSelection(action:any){
                 [layoutStylesPath]: project.files[selection.layout.styles].content
             }
             const htmlUrl = yield call(serveHtml,"html-preview",html,project.path,overrides)
-            console.log(htmlUrl)
             yield put(uiPreviewHtmlUrlChanged({htmlUrl}));
-            
+            console.log("pdf rendering start")
             const pdf = yield call(convertHtmlToPdf,html,project.path,overrides)
+            console.log("pdf rendering over")
             yield put(uiPreviewPdfChanged({pdf}))
         }
     }catch(e){
 
     }
 }
+const editorSelectionSelect = (state:ApplicationState) => state.ui.editor.selection;
 
+function* saga_renderProjectSelectionFromEditor(){
+    const selection = yield select(editorSelectionSelect);
+    yield put(projectRender({selection}));
+}
+
+function* saga_autoRenderProjectSelectionFromEditor(action:AnyAction){
+    // @todo later :  option activated or disabled
+    yield saga_renderProjectSelectionFromEditor();
+}
 
 export default function* projectSaga() {
     yield all([
         yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog),
         yield takeEvery(projectFetchData.type, saga_fetchData),
         yield takeLatest(projectSaving.type,saga_saveProject),
-        yield takeLatest(projectRender.type,saga_renderProjectSelection)
+        yield takeLatest(projectRender.type,saga_renderProjectSelection),
+        yield takeLatest(projectOpenSucceeded.type,saga_renderProjectSelectionFromEditor),
+        yield takeLatest(projectFileChanged.type,saga_autoRenderProjectSelectionFromEditor)
     ])
 }

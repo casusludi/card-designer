@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Handlebars from 'handlebars';
 import { ProjectSelection, Project } from '.';
+import { ServeOverrides } from '../../utils';
 
 type MetaVariables = {
     [key:string]:  (value:string,card:any,cards:Array<any>) => void
@@ -57,7 +58,7 @@ Handlebars.registerHelper('modulo', function(options) {
         return options.inverse(this);
 });
 
-export default function render(project:Project,selection:ProjectSelection,globalVars:{}):string|null{
+export function renderHtml(project:Project,selection:ProjectSelection,globalVars:{}):string|null{
     if(!project) return null;
     if(!selection.data) return null;
     if(!selection.layout) return null;
@@ -75,4 +76,5 @@ export default function render(project:Project,selection:ProjectSelection,global
     const variables = {cards,...globalVars};
     return tpl(variables);
 }
+ 
 

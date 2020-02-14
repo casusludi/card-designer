@@ -14,14 +14,13 @@ import rootSaga from './redux/saga';
 import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import './styles/index.scss';
 
-
 import App, { AppUI } from './components/App/App';
 import { openLastProject, Project } from './services/Project';
 import _ from 'lodash';
-import { firstKeyOfObject } from './utils';
-import { ProjectSourceType } from './services/Project/Sources';
 import MouseTrap from 'mousetrap';
-import { projectSaving } from './redux/project';
+import { projectSaving, projectOpenSucceeded } from './redux/project';
+
+import { authUserChanged } from './redux/auth';
 
 
 export type Users = EnumDictionary<AuthType,User>;
@@ -32,36 +31,7 @@ export interface ApplicationState{
     ui:AppUI
 }
 
-
 async function main() {
-    const project = await openLastProject();
-
-    const googleAuth = Global.getAuth(AuthType.GOOGLE);
-    const googleUser = googleAuth?.getUser() || UNKNOW_USER;
-
-    const selectedTemplate = project?.templates[firstKeyOfObject(project?.templates)]
-    const selectedSourceType = ProjectSourceType.GSHEETS;
-
-    const initialState:ApplicationState = {
-        project,
-        users:{
-            [AuthType.GOOGLE]: googleUser
-        },
-        ui:{
-            editor:{
-                selectedSourceType,
-                selection:{
-                    template:selectedTemplate,
-                    layout: project?.layouts[firstKeyOfObject(project?.layouts)],
-                    data: (selectedTemplate && selectedTemplate.id)?_.find(project?.data[selectedSourceType]?.data,o => o.id == selectedTemplate.id):null
-                }
-            },
-            preview:{
-                pdf:null,
-                htmlUrl:null
-            }
-        }
-    }
 
     const sagaMiddleware = createSagaMiddleware({
         onError(e:Error){
@@ -70,16 +40,16 @@ async function main() {
             store.dispatch(globalAddUncaughtError(e));
         }
     })
+
     const store = createStore(
         appReducer,
-        initialState,
         compose(
             applyMiddleware(sagaMiddleware),
             applyMiddleware(logger)
         ));
+
     sagaMiddleware.run(rootSaga);
     
-
     ReactDOM.render(
         <Provider store={store}>
             <App />
@@ -94,6 +64,12 @@ async function main() {
     MouseTrap.bind('mod+s',() => {
         store.dispatch(projectSaving())
     })
+
+    const project = await openLastProject();
+    const googleAuth = Global.getAuth(AuthType.GOOGLE);
+
+    if(project)store.dispatch(projectOpenSucceeded({project}))
+    store.dispatch(authUserChanged({authType:AuthType.GOOGLE, user:googleAuth?.getUser() || UNKNOW_USER}));
 
 }
 

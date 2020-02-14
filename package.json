@@ -36,6 +36,7 @@
   "devDependencies": {
     "@babel/preset-react": "^7.8.3",
     "@fortawesome/fontawesome-free": "^5.12.0",
+    "@types/cookies": "^0.7.4",
     "@types/lodash": "^4.14.149",
     "@types/mkdirp": "^1.0.0",
     "@types/mousetrap": "^1.6.3",
@@ -64,6 +65,7 @@
     "ace-builds": "^1.4.8",
     "axios": "^0.19.2",
     "chokidar": "^3.3.1",
+    "cookies": "^0.8.0",
     "get-port": "^5.1.1",
     "googleapis": "^47.0.0",
     "handlebars": "^4.7.3",

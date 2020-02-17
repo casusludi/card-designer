@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import Handlebars from 'handlebars';
 import { ProjectSelection, Project } from '.';
-import { ServeOverrides } from '../../utils';
 
 type MetaVariables = {
     [key:string]:  (value:string,card:any,cards:Array<any>) => void

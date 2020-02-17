@@ -20,7 +20,7 @@
     top:0;
     left: 0;
     right: 0;
-    bottom: 43px;
+    bottom: 65px;
 }
 
 .EditorPanel__ActionBar {
@@ -29,11 +29,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px;
+    height: 59px;
+    padding-bottom: 5px;
 
     & > .MessagerAlert__error{
         position: absolute;
@@ -43,9 +40,23 @@
     }
 }
 
+.EditorPanel__ActionBar-line{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding: 5px 5px 0 5px;
+
+    & > *:not(:last-child) {
+        margin-right: 5px;
+    }
+}
+
+
+
 
 .ActionBar__RenderingBox {
     display: flex;
+    margin-left: auto;
     label {
         cursor: pointer;
     }

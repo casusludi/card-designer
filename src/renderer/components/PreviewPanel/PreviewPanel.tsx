@@ -18,7 +18,7 @@ export default class PreviewPanel extends React.Component<PreviewPanelProps> {
         // HTML Preview is not ready yet
         return (
             <TabNav className="full-space" headerPosition={TabNavHeaderPosition.BOTTOM}>
-                <TabNavItem label="Final Preview">
+                <TabNavItem label="PDF Preview">
                     <PDFViewer src={this.props.ui.pdf} />
                 </TabNavItem>
                 <TabNavItem label="HTML Preview">

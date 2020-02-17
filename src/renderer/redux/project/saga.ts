@@ -1,11 +1,11 @@
 import { call, put, takeLatest, all, takeEvery, select } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig } from '../../services/Project';
 
 import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged } from '.';
-import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged } from '../ui';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged } from '.';
+import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
 import { ServeOverrides } from '../../../main/serve';
@@ -28,7 +28,22 @@ function* saga_openProjectFromDialog(action: any) {
     }
 }
 
+function* saga_reloadProjectWhenConfigChanged(action:any){
+    try {
+        const oldProject: Project = yield select(selectProject);
 
+        const newProject = yield call(loadProjectFromConfig, oldProject.config,oldProject.path);
+        if (newProject) {
+            newProject.modified = true;
+            yield put(projectOpenSucceeded({ project: newProject }))
+        } else {
+            yield put(projectOpenCancelled())
+        }
+        
+    } catch (e) {
+        yield projectOpenFailed(e);
+    }
+}
 
 function* saga_fetchData(action: any) {
     try {
@@ -121,6 +136,12 @@ export default function* projectSaga() {
         yield takeLatest(projectSaving.type, saga_saveProject),
         yield takeLatest(projectRender.type, saga_renderProjectSelection),
         yield takeLatest(projectOpenSucceeded.type, saga_renderProjectAtOpening),
-        yield takeLatest(projectFileChanged.type, saga_autoRenderProjectSelectionFromEditor)
+        yield takeLatest([
+            projectFileChanged.type,
+            projectDataChanged.type,
+            uiEditorSelectedLayoutChanged.type,
+            uiEditorSelectedDataChanged.type,
+        ], saga_autoRenderProjectSelectionFromEditor),
+        yield takeLatest(projectConfigChanged.type, saga_reloadProjectWhenConfigChanged)
     ])
 }

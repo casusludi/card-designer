@@ -1,0 +1,61 @@
+@import '../../../styles/variables.scss';
+
+/* Reset Select */
+.Select__wrapper > select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0 !important;
+    background: $white;
+    background-image: none;
+}
+
+/* Custom Select */
+.Select__wrapper {
+    position: relative;
+    display: inline-flex;
+    width: 10em;
+    height: 31px;
+    line-height: 3;
+    background: $medium-grey;
+    overflow: hidden;
+}
+
+.Select__wrapper > select {
+    flex: 1;
+    padding: 0 .5em;
+    color: $darkest-grey;
+    cursor: pointer;
+}
+
+/* Arrow */
+.Select__wrapper::after {
+    content: '\25BC';
+    position: absolute;
+    top: -0.3em;
+    right: 0;
+    bottom: 0;
+    padding: 0 0.5em;
+    background: $medium-grey;
+    color: $white;
+    cursor: pointer;
+    pointer-events: none;
+    transition: .25s all ease;
+}
+/* Transition */
+.Select__wrapper:hover::after {
+    color: $light-grey;
+}
+
+.Select_labeltop {
+    display: block;
+    position: relative;
+    & > label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.8rem;
+    }
+}

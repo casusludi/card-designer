@@ -20,7 +20,7 @@ export const prefLoadFromLocalStorage = createAction('pref/loadFromLocalStorage'
 export const prefLoaded = createAction<{ preferences: Preferences }>('pref/loaded');
 
 const layoutPrefReducer = createReducer<LayoutPreferences>({
-    editorWidth: 500
+    editorWidth: 600
 }, {
     [prefLoaded.type]: (state,action:PayloadAction<{  preferences: Preferences }>) => action.payload.preferences.layout,
     [prefEditorWidthChanged.type]: (state,action:PayloadAction<{ editorWidth: number }>) => ({

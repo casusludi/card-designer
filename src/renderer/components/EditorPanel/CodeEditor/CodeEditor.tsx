@@ -70,10 +70,11 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
             if (annotations.length == 0) {
                 const code = this.editor.getSession().getValue();
                 if (code != this.state.validCode) {
-                    this.setState({ validCode: code });
-                    if (this.onValidChangeDebounced) {
+                   
+                    if (this.onValidChangeDebounced && this.state.validCode) {
                         this.onValidChangeDebounced(code);
                     }
+                    this.setState({ validCode: code });
                 }
             }
         }

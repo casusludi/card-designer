@@ -43,7 +43,7 @@
     color: $white;
     cursor: pointer;
     pointer-events: none;
-    transition: .25s all ease;
+    transition: .25s color ease;
 }
 /* Transition */
 .Select__wrapper:hover::after {

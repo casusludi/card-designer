@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -35,13 +35,13 @@ function* saga_reloadProjectWhenConfigChanged(action:any){
         const newProject = yield call(loadProjectFromConfig, oldProject.config,oldProject.path);
         if (newProject) {
             newProject.modified = true;
-            yield put(projectOpenSucceeded({ project: newProject }))
+            yield put(projectReloadSucceeded({ project: newProject }))
         } else {
-            yield put(projectOpenCancelled())
+            yield put(projectReloadFailed(new Error('Project not found')))
         }
         
     } catch (e) {
-        yield projectOpenFailed(e);
+        yield projectReloadFailed(e);
     }
 }
 
@@ -88,6 +88,7 @@ function* saga_renderProjectSelection(action: any) {
 
         if (html && project && selection.template && selection.layout) {
             if (filter != RenderFilter.NONE) {
+                console.log("selected layout",selection.layout);
                 let templateStylesPath = selection.template.styles;
                 let layoutStylesPath = selection.layout.styles;
                 if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;

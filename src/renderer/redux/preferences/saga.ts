@@ -1,6 +1,6 @@
 import { ApplicationState } from "../..";
 import { select, put, takeLatest, all, takeEvery } from "redux-saga/effects";
-import { prefLoaded, prefLoadFromLocalStorage, prefAutoRenderFilterChanged, prefEditorWidthChanged } from ".";
+import { prefLoaded, prefLoadFromLocalStorage, prefAutoRenderFilterChanged, prefEditorWidthChanged, prefProjectExportChanged } from ".";
 
 const preferenceSelect = (state: ApplicationState) => state.preferences
 
@@ -24,7 +24,8 @@ export default function* prefSaga() {
         yield takeLatest(prefLoadFromLocalStorage.type, saga_loadPrefFromLocalStorage),
         yield takeEvery([
             prefAutoRenderFilterChanged.type, 
-            prefEditorWidthChanged.type
+            prefEditorWidthChanged.type,
+            prefProjectExportChanged.type
         ],saga_savePrefInLocalStorage)
     ])
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose} from 'redux'
-import logger from 'redux-logger';
+import {createLogger} from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import {AuthType, User, UNKNOW_USER} from './services/Auth';
 import Global from './AppGlobal';
@@ -41,6 +41,10 @@ async function main() {
             console.error(e);  
             store.dispatch(globalAddUncaughtError(e));
         }
+    })
+
+    const logger = createLogger({
+        collapsed: true
     })
 
     const store = createStore(

@@ -70,7 +70,7 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
             })
 
             ref.addEventListener('console-message', (e:any) => {
-                console.log('[webview] :', e.message)
+                //console.log('[webview] :', e.message)
             })
 
             ref.addEventListener('ipc-message', (e:any) => {

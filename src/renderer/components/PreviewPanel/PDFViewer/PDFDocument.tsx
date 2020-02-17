@@ -4,6 +4,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = './pdf.worker.js';
 //@ts-ignore
 //import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 import { approximateFraction, getOutputScale, roundToDivide, CSS_UNITS } from './PDFUtils';
+import _ from 'lodash';
 
 
 
@@ -35,10 +36,10 @@ export default class PDFDocument extends React.Component<PDFDocumentProps> {
         const loadingTask = pdfjs.getDocument(this.props.src);
 
         const doc = await loadingTask.promise;
-        const pageCount: Array<number> = Array(doc.numPages);
+        const pageCount: Array<number> = this.props.selectedPages.length == 0?_.range(doc.numPages):this.props.selectedPages;
 
-        this.pageRefs = Array.from(pageCount, () => React.createRef());
-        this.pages = await Promise.all(Array.from(pageCount, async (e, i) => await doc.getPage(i + 1)))
+        this.pageRefs = pageCount.map(() => React.createRef());
+        this.pages = await Promise.all(pageCount.map(async (o, i) => await doc.getPage(o + 1)))
             .then(pages => pages.map((page, i) => <PDFPage key={i} ref={this.pageRefs[i]} page={page} scale={this.props.scale} />))
 
         this.forceUpdate();

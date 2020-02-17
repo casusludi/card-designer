@@ -18,6 +18,8 @@ export type ProjectFetchDataPayload = {
 
 export const projectOpenFromDialog = createAction('project/openFromDialog');
 export const projectOpenSucceeded = createAction<{ project: Project }>('project/openSucceeded');
+export const projectReloadSucceeded = createAction<{ project: Project }>('project/reloadSucceeded');
+export const projectReloadFailed = createAction('project/reloadFailed',asError());
 export const projectOpenFailed = createAction('project/openFailed',asError());
 export const projectOpenCancelled = createAction('project/openCancelled');
 export const projectDataChanged = createAction<ProjectDataChangedPayload>('projectData/changed');
@@ -34,6 +36,7 @@ export const projectRendered = createAction('project/rendered');
 
 export const projectReducer = createReducer<Project | null>(null, {
     [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => action.payload.project,
+    [projectReloadSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => action.payload.project,
     [projectDataChanged.type]: (state, action: PayloadAction<ProjectDataChangedPayload>) => {
         if (!state) return null;
         return {

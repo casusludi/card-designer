@@ -3,7 +3,7 @@ import { ProjectTemplate, ProjectLayout, ProjectDataItem, Project } from '../../
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
 import { AppUI, AppUIEditor, AppUIPreview } from '../../components/App/App';
 import { ProjectSourceType } from '../../services/Project/Sources';
-import { projectOpenSucceeded } from '../project';
+import { projectOpenSucceeded, projectReloadSucceeded } from '../project';
 import { firstKeyOfObject } from '../../utils';
 import _ from 'lodash';
 
@@ -28,6 +28,28 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
                 template: selectedTemplate,
                 layout: project?.layouts[firstKeyOfObject(project?.layouts)],
                 data: (selectedTemplate && selectedTemplate.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == selectedTemplate.id) : null
+            }
+
+        }
+    },
+    [projectReloadSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => {
+        const { project } = action.payload;
+  
+
+        const lastSelection = state.selection;
+        console.log(_.map(project.layouts,o => console.log(o)));
+        let selectedTemplate = _.find(project.templates, o => o.id == lastSelection?.template?.id)
+        if(!selectedTemplate) selectedTemplate = project?.templates[firstKeyOfObject(project?.templates)];
+        let selectedLayout = _.find(project.layouts, o => o.id == lastSelection?.layout?.id)
+        if(!selectedLayout) selectedLayout = project?.layouts[firstKeyOfObject(project?.layouts)];
+
+        const selectedSourceType = state.selectedSourceType;
+        return {
+            selectedSourceType,
+            selection: {
+                template: selectedTemplate,
+                layout: selectedLayout,
+                data: (selectedTemplate && selectedTemplate.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == selectedTemplate?.id) : null
             }
 
         }

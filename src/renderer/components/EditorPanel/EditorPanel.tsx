@@ -14,6 +14,7 @@ import TemplateEditor from "./TemplateEditor/TemplateEditor";
 import { ProjectSourceType } from "../../services/Project/Sources";
 import { EditorPreferences, prefAutoRenderFilterChanged } from "../../redux/preferences";
 import Select from "../Misc/Select/Select";
+import ExportEditor from "./ExportEditor/ExportEditor";
 
 export type EditorPanelProps = {
     project: Project | null
@@ -77,6 +78,9 @@ function EditorPanel(props: EditorPanelProps) {
                         <TabNavItem label="Layout">
                             <TemplateEditor width={props.width} template={props.ui.selection?.layout} files={props.project.files} onFileChanged={onFileChanged} />
                         </TabNavItem>
+                        <TabNavItem label="Export">
+                           <ExportEditor />
+                        </TabNavItem>
 
                     </TabNav>
                     <div className="EditorPanel__ActionBar">
@@ -85,9 +89,9 @@ function EditorPanel(props: EditorPanelProps) {
                                 No data found in source <b>{props.ui.selectedSourceType}</b> for template <b>{props.ui.selection.template?.id}</b>
                             </div>}
                         <div className="EditorPanel__ActionBar-line">
-                            <Select id="ActionBar__TemplateSelect-select" label="Template" defaultValue={props.ui.selection?.template} onChange={selectedTemplateChanged} options={_.map(props.project.templates,(o,k)=>({label:k,value:o}))} />
-                            <Select id="ActionBar__LayoutSelect-select" label="layout" defaultValue={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts,(o,k)=>({label:k,value:o}))} />
-                            <Select id="ActionBar__SourceSelect-select" label="Source" defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(ProjectSourceType,(o,k)=>({label:o,value:o}))} />
+                            <Select id="ActionBar__TemplateSelect-select" label="Template" labelOnTop={true} defaultValue={props.ui.selection?.template} onChange={selectedTemplateChanged} options={_.map(props.project.templates,(o,k)=>({label:k,value:o}))} />
+                            <Select id="ActionBar__LayoutSelect-select" label="layout" labelOnTop={true} defaultValue={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts,(o,k)=>({label:k,value:o}))} />
+                            <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(ProjectSourceType,(o,k)=>({label:o,value:o}))} />
                
                             <div className="ActionBar__RenderingBox button-bar">
                                 <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>

@@ -1,8 +1,18 @@
 import { createAction, createReducer, combineReducers, PayloadAction } from "@reduxjs/toolkit";
 import { RenderFilter } from "../../services/Project";
+import { ProjectSourceType } from "../../services/Project/Sources";
 
 export type LayoutPreferences = {
     editorWidth:number
+}
+
+export type ExportPreferences = {
+    selectedLayoutId:string|null|undefined,
+    selectedSourceType:ProjectSourceType
+}
+
+export type AllExportPreferences = {
+    [projectPath:string]:ExportPreferences
 }
 
 export type EditorPreferences = {
@@ -11,13 +21,15 @@ export type EditorPreferences = {
 
 export type Preferences = {
     layout:LayoutPreferences,
-    editor:EditorPreferences
+    editor:EditorPreferences,
+    export:AllExportPreferences
 }
 
 export const prefAutoRenderFilterChanged = createAction<{ autoRenderFilter: RenderFilter }>('pref/AutoRenderFilterChanged');
 export const prefEditorWidthChanged = createAction<{ editorWidth: number }>('pref/editorWidthChanged');
 export const prefLoadFromLocalStorage = createAction('pref/loadFromLocalStorage');
 export const prefLoaded = createAction<{ preferences: Preferences }>('pref/loaded');
+export const prefProjectExportChanged= createAction<{ projectPath:string,preferences: ExportPreferences }>('pref/projectExportChanged');
 
 const layoutPrefReducer = createReducer<LayoutPreferences>({
     editorWidth: 600
@@ -30,7 +42,7 @@ const layoutPrefReducer = createReducer<LayoutPreferences>({
 })
 
 const editorPrefReducer = createReducer<EditorPreferences>({
-    autoRenderFilter: RenderFilter.ALL
+    autoRenderFilter: RenderFilter.ALL,
 }, {
     [prefLoaded.type]: (state,action:PayloadAction<{  preferences: Preferences }>) => action.payload.preferences.editor,
     [prefAutoRenderFilterChanged.type]: (state,action:PayloadAction<{ autoRenderFilter: RenderFilter }>) => ({
@@ -40,7 +52,16 @@ const editorPrefReducer = createReducer<EditorPreferences>({
 
 })
 
+const exportPrefReducer = createReducer<AllExportPreferences>({}, {
+    [prefLoaded.type]: (state,action:PayloadAction<{  preferences: Preferences }>) => action.payload.preferences.export,
+    [prefProjectExportChanged.type] : (state,action:PayloadAction<{ projectPath:string,preferences: ExportPreferences }>) => ({
+        ...state,
+        [action.payload.projectPath]:action.payload.preferences
+    })
+})
+
 export const prefReducer = combineReducers<Preferences>({
     editor: editorPrefReducer,
-    layout: layoutPrefReducer
+    layout: layoutPrefReducer,
+    export:exportPrefReducer
 })

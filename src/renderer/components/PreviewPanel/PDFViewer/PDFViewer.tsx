@@ -3,6 +3,7 @@ import React from 'react';
 import './PDFViewer.scss'
 
 import PDFDocument, { PDFSource } from './PDFDocument';
+import Select from '../../Misc/Select/Select';
 
 export type PDFViewerProps = {
     src: PDFSource
@@ -48,11 +49,8 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
             <div className="PDFViewer">
                 <div className="PDFViewer__header">
                     <div>page count : {this.state.numPages}  </div>
-                    <div>
-                        <label htmlFor="scale"> Zoom : </label>
-                        <select id="scale" value={this.state.scale} onChange={e => this.setState({ scale: parseFloat(e.target.value) })} >
-                            {scales.map((o, k) => <option key={k} value={o.value}>{o.label}</option>)}
-                        </select></div>
+                    <Select id="zoom" label="Zoom" defaultValue={this.state.scale}  onChange={value => this.setState({ scale: parseFloat(value) })} options={scales} />
+
                 </div>
                 <div className="PDFViewer__viewport" onMouseUp={evt => this.startGrabbingViewPort(evt)}>
                     <PDFDocument src={this.state.src} scale={this.state.scale} />

@@ -40,6 +40,7 @@ export function firstKeyOfObject(obj: Object | undefined | null): any {
 }
 
 export function replacer(text:string, data:{[key:string]:string}) {
+    if(!text) return null;
     for(var key in data){
         text = text.replace(key, data[key])
     }

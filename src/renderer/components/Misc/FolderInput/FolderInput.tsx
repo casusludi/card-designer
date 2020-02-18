@@ -23,7 +23,7 @@ export default function FolderInput(props:FolderInputProps){
 
     return (
         <div className="FolderInput">
-            <input type="string" value={props.path} onChange={(e)=>props.onChange(e.target.value)} />
+            <input type="string" value={props.path || ""} onChange={(e)=>props.onChange(e.target.value)} />
             <button type="button" className="button" onClick={openExplorer}><i className="far fa-folder-open"></i></button>
         </div>
     )

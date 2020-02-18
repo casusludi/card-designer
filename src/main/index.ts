@@ -1,6 +1,6 @@
 'use strict'
 
-import { app,protocol, BrowserWindow, ipcMain, Menu } from 'electron'
+import { app,protocol, BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 import getPort from 'get-port';
 import { format as formatUrl } from 'url'
@@ -26,7 +26,7 @@ function createMainWindow() {
     }
   })
 
-  
+  /*
   const menuTemplate:Electron.MenuItemConstructorOptions[] = [
     { 
       role: 'help',
@@ -43,7 +43,9 @@ function createMainWindow() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
 
-  window.setMenu(menu);
+  window.setMenu(menu);*/
+
+  window.setMenu(null);
 
   if (isDevelopment) {
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`).then(() => {
@@ -115,6 +117,12 @@ app.on('ready', async () => {
 
   ipcMain.handle('unserve', (event, id: string) => {
     return serve?.unserve(id)
+  })
+
+  ipcMain.handle('open-dev-tools', () => {
+    if(mainWindow){
+      mainWindow.webContents.openDevTools();
+    }
   })
  
 })

@@ -17,15 +17,15 @@
       "output": "releases"
     },
     "copyright": "Copyright © 2020 Casus Ludi",
-    "extraResources": [
-      "static"
-    ],
     "files": [
       {
         "from": "./public",
         "to": "./"
       }
-    ]
+    ],
+    "win": {
+      "icon": "build/icon.ico"
+    }
   },
   "electronWebpack": {
     "main": {

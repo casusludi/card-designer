@@ -125,6 +125,7 @@ class App extends Component<AppProps> {
 						</div>
 					</div>
 					<div className="layout__header-title">
+						<img className="ImageIcon ImageIcon_small Header__AppIcon" src="./icon.png" />
 						Cardmaker Studio
 						{this.props.project && <div className="project-bar__name">
 							- {this.props.project.name}{this.props.project.modified && <span className="project-bar__modified">(not saved)<i className="icon fas fa-exclamation-triangle"></i></span>}

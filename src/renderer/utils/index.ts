@@ -19,6 +19,10 @@ export async function serveHtml(id:string,html:string, base:string,overrides?:Se
     return ipcRenderer.invoke("serve",id,html,base,overrides).then(() => `http://localhost:${getSharedVar('servePort')}/${id}?rnd=${Date.now()}`);
 }
 
+export function openDevTools(){
+    return ipcRenderer.invoke("open-dev-tools");
+}
+
 export const fsreadFile = promisify(fs.readFile);
 
 const _fswriteFile = promisify(fs.writeFile);

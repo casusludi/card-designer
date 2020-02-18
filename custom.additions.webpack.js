@@ -13,7 +13,13 @@ module.exports = {
                         ['transform-react-jsx', { pragma: 'jsxFactory.createElement' }],
                     ]
                 }
-            }
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    'file-loader',
+                ],
+            },
         ]
     },
     plugins: [

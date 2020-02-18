@@ -1,3 +1,9 @@
+
+import MouseTrap from 'mousetrap';
+MouseTrap.bind('mod+shift+i',() => {
+    openDevTools()
+})
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
@@ -17,11 +23,12 @@ import { openLastProject, Project } from './services/Project';
 import App, { AppUI } from './components/App/App';
 
 import _ from 'lodash';
-import MouseTrap from 'mousetrap';
+
 import { projectSaving, projectOpenSucceeded } from './redux/project';
 
 import { authUserChanged } from './redux/auth';
 import { prefLoadFromLocalStorage, Preferences } from './redux/preferences';
+import { openDevTools } from './utils';
 
 
 export type Users = EnumDictionary<AuthType,User>;

@@ -4,6 +4,7 @@ import { ApplicationState } from "../..";
 import { Project } from "../../services/Project";
 import { AppUIEditor } from "../../components/App/App";
 import _ from "lodash";
+import { projectDataChanged } from "../project";
 
 const projectSelect = (state:ApplicationState) => state.project;
 const uiEditorSelect = (state:ApplicationState) => state.ui.editor;
@@ -23,7 +24,10 @@ function* saga_updateProjectSelectedData(action:any){
 
 export default function* uiSaga() {
     yield all([
-        yield takeEvery(uiEditorSelectedSourceTypeChanged.type,saga_updateProjectSelectedData),
-        yield takeEvery(uiEditorSelectedTemplateChanged.type,saga_updateProjectSelectedData)
+        yield takeEvery([
+            uiEditorSelectedSourceTypeChanged.type,
+            uiEditorSelectedTemplateChanged.type,
+            projectDataChanged.type
+        ],saga_updateProjectSelectedData)
     ])
 }

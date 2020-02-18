@@ -38,3 +38,10 @@ export function firstKeyOfObject(obj: Object | undefined | null): any {
         .sort()
         .slice(0, 1)[0]
 }
+
+export function replacer(text:string, data:{[key:string]:string}) {
+    for(var key in data){
+        text = text.replace(key, data[key])
+    }
+    return text;
+}

@@ -9,12 +9,15 @@ import { ProjectSourceType } from "../../../services/Project/Sources";
 import { ExportPreferences, prefProjectExportChanged } from "../../../redux/preferences";
 import _ from "lodash";
 import FolderInput from "../../Misc/FolderInput/FolderInput";
+import { replacer } from "../../../utils";
 
 export type ExportEditorProps = {
     project:Project | null
     preferences:ExportPreferences
     dispatch:Dispatch
 } 
+
+
 
 function ExportEditor(props:ExportEditorProps){
 
@@ -48,6 +51,22 @@ function ExportEditor(props:ExportEditorProps){
 
     }
 
+    function exportFolderPathChanged(value: string) {
+
+        if (props.project) {
+            const preferences = {
+                ...props.preferences,
+                exportFolderPath : value
+            }
+
+            props.dispatch(prefProjectExportChanged({
+                projectPath:props.project.path,
+                preferences
+            }))
+        }
+
+    }
+
     function exportButtonOnClick(){
 
     }
@@ -56,12 +75,20 @@ function ExportEditor(props:ExportEditorProps){
 
     }
 
+    const pathVariables = {
+        '${projectPath}': props.project?.path || '${projectPath}'
+    }
+
+    function valueToName(path:string){
+        const ret =  replacer(path,_.invert(pathVariables))
+        return ret;
+    }
 
     return (
         <div className="ExportEditor full-space">
             <Select id="ExportEditor__LayoutSelect-select" label="layout" labelOnTop={true} defaultValue={props.preferences?.selectedLayoutId && props.project?.layouts[props.preferences.selectedLayoutId]} onChange={selectedLayoutChanged} options={_.map(props.project?.layouts,(o,k)=>({label:k,value:o}))} />
             <Select id="ExportEditor__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.preferences?.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(ProjectSourceType,(o,k)=>({label:o,value:o}))} />
-            <FolderInput />
+            <FolderInput path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
             <button type="button" className="button" onClick={exportButtonOnClick}>Export</button>
             <button type="button" className="button" onClick={openFolderButtonOnclick}><i className="icon far fa-folder-open"></i><span>Open Export Folder In Explorer</span></button>
            
@@ -74,7 +101,8 @@ function mapStateToProps(state: ApplicationState) {
     if(!preferences){
         preferences = {
             selectedLayoutId:null,
-            selectedSourceType: ProjectSourceType.NONE
+            selectedSourceType: ProjectSourceType.NONE,
+            exportFolderPath: state.project?.path || ""
         }
     }
     return {

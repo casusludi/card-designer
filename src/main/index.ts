@@ -28,7 +28,7 @@ function createMainWindow() {
 
   
   const menuTemplate:Electron.MenuItemConstructorOptions[] = [
-    {
+    { 
       role: 'help',
       submenu: [
         {
@@ -60,9 +60,9 @@ function createMainWindow() {
   }
 
   window.on('closed', () => {
-    mainWindow = null
-    //serve?.close();
+    serve?.close();
     serve = null;
+    mainWindow = null;
   })
 
   window.webContents.on('devtools-opened', () => {

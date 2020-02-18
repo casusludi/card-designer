@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     module: {
@@ -14,5 +15,10 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new CopyPlugin([
+            { from: './public', to: '../renderer' }
+        ]),
+    ],
 }

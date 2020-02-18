@@ -124,8 +124,12 @@ export default async function makeServe(port:number): Promise<Serve>{
 
         },
         close(){
-            server.close();
-            pdfWindow.close();
+            server.close();  
+            try{
+                pdfWindow.close();
+            }catch(e){
+                // pdfWindow alreay destroyed : we skip thios error
+            }
         }
     }
 }

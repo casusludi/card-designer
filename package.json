@@ -24,7 +24,7 @@
       }
     ],
     "win": {
-      "icon": "build/icon-v2.png"
+      "icon": "build/icon.ico"
     }
   },
   "electronWebpack": {

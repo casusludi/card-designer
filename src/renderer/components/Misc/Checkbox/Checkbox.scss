@@ -1,0 +1,56 @@
+@import "../../../styles/variables.scss";
+
+.Checkbox{
+    padding-left: 5px;
+}
+
+.Checkbox__buttonStyle {
+    border-radius: 4px;
+    border: 1px solid $medium-grey;
+}
+
+.Checkbox__input {
+    position: absolute;
+    left: -9999px;
+}
+
+.Checkbox__label {
+    position: relative;
+    padding-left: 23px;
+    padding-right: 5px;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.Checkbox__label::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 1px solid $white;
+    background-color: $medium-grey;
+
+}
+
+.Checkbox__label::after {
+    position: absolute;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: $white;
+    font-weight: bold;
+    width: 18px;
+    height: 18px;
+    display: block;
+    text-align: center;
+}
+
+.Checkbox__input:checked + .Checkbox__label::after {
+    content: '✓';
+}
+

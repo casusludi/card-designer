@@ -1,6 +1,6 @@
 'use strict'
 
-import { app,protocol, BrowserWindow, ipcMain } from 'electron'
+import { app,protocol, BrowserWindow, ipcMain, dialog, OpenDialogOptions } from 'electron'
 import * as path from 'path'
 import getPort from 'get-port';
 import { format as formatUrl } from 'url'
@@ -123,6 +123,13 @@ app.on('ready', async () => {
     if(mainWindow){
       mainWindow.webContents.openDevTools();
     }
+  })
+
+  ipcMain.handle('show-open-dialog',(event,options:OpenDialogOptions) => {
+    if(mainWindow){
+       return dialog.showOpenDialog(mainWindow,options);
+    }
+    return null;
   })
  
 })

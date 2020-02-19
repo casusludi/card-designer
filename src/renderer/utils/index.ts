@@ -1,4 +1,4 @@
-import { ipcRenderer, remote } from 'electron'
+import { ipcRenderer, remote, OpenDialogOptions } from 'electron'
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import { promisify } from "util";
@@ -21,6 +21,10 @@ export async function serveHtml(id:string,html:string, base:string,overrides?:Se
 
 export function openDevTools(){
     return ipcRenderer.invoke("open-dev-tools");
+}
+
+export function showOpenDialog(options:OpenDialogOptions){
+    return ipcRenderer.invoke("show-open-dialog",options)
 }
 
 export const fsreadFile = promisify(fs.readFile);

@@ -2,3 +2,16 @@
 .ExportEditor{
     padding: 5px;
 }
+
+.ExportEditor__selection {
+    display: flex;
+    
+    & > :not(:last-child) {
+        margin-right: 5px;
+    }
+}
+
+.ExportEditor__export-line {
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,20 @@
+
+.FolderInput {
+    display: flex;
+    align-items: stretch;
+    min-height: 28px;
+    margin: 5px 0;
+}
+
+.FolderInput__label {
+    align-self: center;
+    padding-right: 5px;
+}
+
+.FolderInput__input {
+    border-right: none;
+}
+.FolderInput__button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}

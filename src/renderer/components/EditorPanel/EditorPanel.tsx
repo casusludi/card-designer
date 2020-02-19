@@ -15,6 +15,7 @@ import { ProjectSourceType } from "../../services/Project/Sources";
 import { EditorPreferences, prefAutoRenderFilterChanged } from "../../redux/preferences";
 import Select from "../Misc/Select/Select";
 import ExportEditor from "./ExportEditor/ExportEditor";
+import Checkbox from "../Misc/Checkbox/Checkbox";
 
 export type EditorPanelProps = {
     project: Project | null
@@ -59,8 +60,8 @@ function EditorPanel(props: EditorPanelProps) {
         }
     }
 
-    function onAutoRenderChanged(e: React.ChangeEvent<HTMLInputElement>) {
-        const filter = e.target.checked ? RenderFilter.ALL : RenderFilter.NONE;
+    function onAutoRenderChanged(value:boolean) {
+        const filter = value ? RenderFilter.ALL : RenderFilter.NONE;
         props.dispatch(prefAutoRenderFilterChanged({ autoRenderFilter: filter }))
     }
 
@@ -95,12 +96,7 @@ function EditorPanel(props: EditorPanelProps) {
                
                             <div className="ActionBar__RenderingBox button-bar">
                                 <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>
-                                <div className="button">
-                                    <label htmlFor="EditorPanelAutoRenderCheckBox">
-                                        Auto :
-                                </label>
-                                    <input type="checkbox" id="EditorPanelAutoRenderCheckBox" name="EditorPanelAutoRenderCheckBox" defaultChecked={props.editorPreferences.autoRenderFilter == RenderFilter.ALL} onChange={onAutoRenderChanged} />
-                                </div>
+                                <Checkbox id="EditorPanelAutoRenderCheckBox" buttonStyle={true} label="Auto" defaultChecked={props.editorPreferences.autoRenderFilter == RenderFilter.ALL} onChange={onAutoRenderChanged} />
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,3 @@
-import { remote } from 'electron';
 import path from 'path';
 
 import _ from 'lodash';
@@ -6,7 +5,7 @@ import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile } from './Sources';
-import { fsreadFile, fswriteFile } from '../../utils';
+import { fsreadFile, fswriteFile, showOpenDialog } from '../../utils';
 import {renderHtml} from './render';
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
@@ -115,7 +114,7 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigT
 
 export async function openProjectFromDialog(): Promise<Project | null> {
 
-    const result = await remote.dialog.showOpenDialog({
+    const result = await showOpenDialog({
         title: 'Open Cardmaker Studio Project',
         properties: ["openDirectory"]
 

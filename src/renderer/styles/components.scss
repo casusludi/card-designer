@@ -11,6 +11,7 @@
     border: 1px solid $medium-grey;
     outline: none;
     user-select: none;
+    min-height: 28px;
     cursor: pointer;
     &:hover:not([disabled]) {
         background-color: $medium-grey;
@@ -32,26 +33,26 @@
 .button-bar {
     display: flex;
     flex-direction: row;
-    .button{
-        &:first-child {
-            border-top-right-radius: 0; 
-            border-bottom-right-radius: 0; 
-        }
-        &:last-child {
-            border-top-left-radius: 0; 
-            border-bottom-left-radius: 0; 
-    
-        }
-        &:not(:first-child)
-        {
-            border-left: none;
 
-        }
-        &:not(:first-child):not(:last-child)
-        {
-            border-radius: 0;
-        }
+    & > :first-child {
+        border-top-right-radius: 0; 
+        border-bottom-right-radius: 0; 
     }
+    & > :last-child {
+        border-top-left-radius: 0; 
+        border-bottom-left-radius: 0; 
+
+    }
+    & > :not(:first-child)
+    {
+        border-left: none;
+
+    }
+    & > :not(:first-child):not(:last-child)
+    {
+        border-radius: 0;
+    }
+    
 
     &.right-align{
         justify-content: flex-end;
@@ -81,4 +82,9 @@
 
 .ImageIcon_small {
     height: 16px;
+}
+
+.input-field {
+    border: 1px solid $medium-grey;
+    padding: 0 5px;
 }

@@ -9,7 +9,7 @@ export type LayoutPreferences = {
 export type ExportPreferences = {
     selectedLayoutId:string|null|undefined,
     selectedSourceType:ProjectSourceType,
-    exportFolderPath:string
+    exportFolderPath:string|null|undefined
 }
 
 export type AllExportPreferences = {

@@ -5,90 +5,84 @@ import fs from 'fs';
 import * as path from 'path'
 import Cookies from 'cookies';
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
-
-export type ServeOverrides = {[key:string]:string}
+export type ServeOverrides = { [key: string]: string }
 
 export type Serve = {
-    serve : (id:string,html:string,base:string,overrides?:ServeOverrides) => void
-    unserve : (id:string) => void
-    convertToPdf : (html:string,base:string,overrides?:ServeOverrides) => Promise<Buffer>
-    close : () => void
+    serve: (id: string, html: string, base: string, overrides?: ServeOverrides) => void
+    unserve: (id: string) => void
+    convertToPdf: (html: string, base: string, overrides?: ServeOverrides) => Promise<Buffer>
+    close: () => void
 }
 
-export default async function makeServe(port:number): Promise<Serve>{
+const COOKIE_NAME = 'cardmaker-id'
 
-    const mapping:{ [id: string] : {html:string,base:string, overrides:ServeOverrides} }  = {};
-    const showWindow = false;
+export default async function makeServe(port: number): Promise<Serve> {
 
-    const pdfWindow = new BrowserWindow({
-        show: showWindow
-    });
-    if(isDevelopment && showWindow)pdfWindow.webContents.openDevTools();
+    const mapping: { [id: string]: { html: string, base: string, overrides: ServeOverrides } } = {};
 
-    const cookieNames = ['cardmaker-id']
-    
-    const requestListener = function (req:any, res:any) {
+    const cookieNames = [COOKIE_NAME]
+
+    const requestListener = function (req: any, res: any) {
         var cookies = new Cookies(req, res, { keys: cookieNames })
 
         let id = req.url.substring(1).split('?')[0];
         const encoding = 'utf-8';
         let contentType = 'text/html';
-        if(mapping[id]){
-            cookies.set('cardmaker-id',id)
-            res.writeHead(200,{ 'Content-Type': contentType });
-            
-            res.end(mapping[id].html,encoding);
+        if (mapping[id]) {
+            cookies.set(COOKIE_NAME, id)
+            res.writeHead(200, { 'Content-Type': contentType });
+
+            res.end(mapping[id].html, encoding);
             return;
         }
-        id = cookies.get('cardmaker-id');
+        id = cookies.get(COOKIE_NAME);
 
-        //@ts-ignore
-        let base = __static;
-        let overrides:ServeOverrides = {};
-        if(mapping[id]){
-            base = mapping[id].base
-            overrides = mapping[id].overrides
-        }
-        const filePath = path.normalize(base + req.url);
-        const extName = path.extname(filePath);
+        if (mapping[id]) {
+            const base = mapping[id].base
+            const overrides = mapping[id].overrides
+            const filePath = path.normalize(base + req.url);
+            const extName = path.extname(filePath);
 
-        switch (extName) {
-            case '.js':
-                contentType = 'text/javascript';
-                break;
-            case '.css':
-                contentType = 'text/css';
-                break;
-            case '.json':
-                contentType = 'application/json';
-                break;
-            case '.png':
-                contentType = 'image/png';
-                break;      
-            case '.jpg':
-                contentType = 'image/jpg';
-                break;
-            case '.svg':
-                contentType = 'image/svg+xml';
-                break;
-        }
+            switch (extName) {
+                case '.js':
+                    contentType = 'text/javascript';
+                    break;
+                case '.css':
+                    contentType = 'text/css';
+                    break;
+                case '.json':
+                    contentType = 'application/json';
+                    break;
+                case '.png':
+                    contentType = 'image/png';
+                    break;
+                case '.jpg':
+                    contentType = 'image/jpg';
+                    break;
+                case '.svg':
+                    contentType = 'image/svg+xml';
+                    break;
+            }
 
-        if(overrides[req.url]){
-            res.writeHead(200,{ 'Content-Type': contentType });
-            res.end(overrides[req.url],encoding);
-        }else if(fs.existsSync(filePath)){
-            fs.readFile(filePath, function (err,data) {
-                if (err) {
-                    res.writeHead(404,{ 'Content-Type': contentType });
-                    res.end('File not found');
-                  return;
-                }
-                res.writeHead(200,{ 'Content-Type': contentType });
-                res.end(data,encoding);
-              });
-        }else{
-            res.writeHead(404,{ 'Content-Type': contentType });
+            if (overrides[req.url]) {
+                res.writeHead(200, { 'Content-Type': contentType });
+                res.end(overrides[req.url], encoding);
+            } else if (fs.existsSync(filePath)) {
+                fs.readFile(filePath, function (err, data) {
+                    if (err) {
+                        res.writeHead(404, { 'Content-Type': contentType });
+                        res.end('File not found');
+                        return;
+                    }
+                    res.writeHead(200, { 'Content-Type': contentType });
+                    res.end(data, encoding);
+                });
+            } else {
+                res.writeHead(404, { 'Content-Type': contentType });
+                res.end('File not found');
+            }
+        } else {
+            res.writeHead(404, { 'Content-Type': contentType });
             res.end('File not found');
         }
     }
@@ -98,7 +92,7 @@ export default async function makeServe(port:number): Promise<Serve>{
     console.log(`server listen at ${port}`);
 
     return {
-        serve(id:string,html:string,base:string,overrides?:ServeOverrides){
+        serve(id: string, html: string, base: string, overrides?: ServeOverrides) {
             console.log("serve");
             mapping[id] = {
                 html,
@@ -106,30 +100,29 @@ export default async function makeServe(port:number): Promise<Serve>{
                 overrides: overrides || {}
             }
         },
-        unserve(id:string){
+        unserve(id: string) {
             delete mapping[id];
         },
-        async convertToPdf(html:string,base:string,overrides?:ServeOverrides){
+        async convertToPdf(html: string, base: string, overrides?: ServeOverrides) {
 
+            const pdfWin = new BrowserWindow({
+                show: false
+            });
             const id = uuidv1();
             mapping[id] = {
                 html,
                 base,
                 overrides: overrides || {}
             }
-            await pdfWindow.loadURL(`http://localhost:${port}/${id}`);
-            const data =  await pdfWindow.webContents.printToPDF({printBackground:true});
+            await pdfWin.loadURL(`http://localhost:${port}/${id}`);
+            const data = await pdfWin.webContents.printToPDF({ printBackground: true });
             delete mapping[id];
+            pdfWin.close();
             return data
 
         },
-        close(){
-            server.close();  
-            try{
-                pdfWindow.close();
-            }catch(e){
-                // pdfWindow alreay destroyed : we skip thios error
-            }
+        close() {
+            server.close();
         }
     }
 }

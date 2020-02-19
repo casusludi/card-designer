@@ -24,6 +24,7 @@ $pastel-on-dark-bg-color: #2C2828;
 }
 
 .TabNavItem__header {
+    position: relative;
     padding: 5px 10px;
     background: $medium-grey;
     color: $light-grey;
@@ -38,6 +39,17 @@ $pastel-on-dark-bg-color: #2C2828;
     &.selected {
         background: $darkest-grey;
         color: $white;
+        
+    }
+
+    &.selected::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: $medium-grey;
     }
 }
 
@@ -58,10 +70,16 @@ $pastel-on-dark-bg-color: #2C2828;
         left: 0;
         border-bottom: none;
         border-top: 2px solid $darkest-grey;
+
+        & > .TabNavItem__header.selected::before {
+            top: 0;
+            bottom: unset;
+        }
     }
 
     & > .TabNav__contents {
         top: 0;
         bottom: 26px;
     }
+
 }

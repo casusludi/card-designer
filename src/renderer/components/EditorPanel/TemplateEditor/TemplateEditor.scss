@@ -1,0 +1,27 @@
+@import "../../../styles/variables.scss";
+
+.TemplateEditor {
+    position: relative;
+}
+
+.TemplateEditor__header {
+    height: 25px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid $medium-grey;
+}
+
+.TemplateEditor__header-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.TemplateEditor__Tabs {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

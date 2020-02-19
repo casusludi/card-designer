@@ -30,6 +30,18 @@
     }
 }
 
+.button-frameless {
+    border: none;
+    background-color: transparent;
+    padding: 0 5px;
+
+    &:hover:not([disabled]) {
+        background-color: transparent;
+        color: $light-grey;
+        
+    }
+}
+
 .button-bar {
     display: flex;
     flex-direction: row;

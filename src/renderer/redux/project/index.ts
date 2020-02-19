@@ -24,6 +24,7 @@ export const projectOpenFailed = createAction('project/openFailed',asError());
 export const projectOpenCancelled = createAction('project/openCancelled');
 export const projectDataChanged = createAction<ProjectDataChangedPayload>('projectData/changed');
 export const projectFetchData = createAction<ProjectFetchDataPayload>('projectData/fetch');
+export const projectFetchDataSucceeded = createAction<ProjectDataChangedPayload>('projectData/fetchSucceded');
 export const projectFetchDataFailed = createAction('projectData/fetchFailed',asError());
 export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
 export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');

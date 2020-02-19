@@ -10,6 +10,12 @@ export enum ProjectSourceType {
     MOCKUP = 'mockup'
 };
 
+export enum FetchDataStatus {
+    NONE,
+    LOADING,
+    COMPLETE
+}
+
 const sourceAuthTypes = {
     [ProjectSourceType.GSHEETS]: AuthType.GOOGLE,
     [ProjectSourceType.MOCKUP]: null,

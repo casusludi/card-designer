@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -26,7 +26,7 @@ function* saga_openProjectFromDialog(action: any) {
             yield put(projectOpenCancelled())
         }
     } catch (e) {
-        yield put(projectOpenFailed(e))
+        yield put(projectOpenFailed(e,action))
     }
 }
 
@@ -43,7 +43,7 @@ function* saga_reloadProjectWhenConfigChanged(action:any){
         }
         
     } catch (e) {
-        yield projectReloadFailed(e);
+        yield projectReloadFailed(e,action);
     }
 }
 
@@ -61,11 +61,16 @@ function* saga_fetchData(action: any) {
         }
 
         const data: ProjectSourceData = yield call(fetchData, action.payload.project, action.payload.sourceType, user)
-        yield put(projectDataChanged({ sourceType: action.payload.sourceType, data }));
+        yield put(projectFetchDataSucceeded({ sourceType: action.payload.sourceType, data }));
+        //yield put(projectDataChanged({ sourceType: action.payload.sourceType, data }));
 
     } catch (e) {
-        yield put(projectFetchDataFailed(e))
+        yield put(projectFetchDataFailed(e,action))
     }
+}
+
+function* saga_projectFetchDataSucceeded(action:any){
+    yield yield put(projectDataChanged(action.payload));
 }
 
 function* saga_saveProject(action: any) {
@@ -184,6 +189,7 @@ export default function* projectSaga() {
     yield all([
         yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog),
         yield takeEvery(projectFetchData.type, saga_fetchData),
+        yield takeEvery(projectFetchDataSucceeded.type, saga_projectFetchDataSucceeded),
         yield takeLatest(projectSaving.type, saga_saveProject),
         yield takeLatest(projectRender.type, saga_renderProjectSelection),
         yield takeLatest(projectOpenSucceeded.type, saga_renderProjectAtOpening),

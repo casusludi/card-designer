@@ -11,24 +11,31 @@ import { Project } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
 import { projectOpenFromDialog, projectFetchData, projectSaving } from '../../redux/project';
 import { Dispatch } from 'redux';
-import { ProjectSourceType } from '../../services/Project/Sources';
-import { authSignIn,authSignOut } from '../../redux/auth';
+import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
+import { authSignIn, authSignOut } from '../../redux/auth';
 import { LayoutPreferences, prefEditorWidthChanged } from '../../redux/preferences';
 import { AppUIExport } from '../EditorPanel/ExportEditor/ExportEditor';
+import { remote } from 'electron';
 
+export type AppUIOthers = {
+	fetchDataStatus:{
+		[type:string]:FetchDataStatus
+	}
+}
 
 export type AppUI = {
-    editor:AppUIEditor
-	preview:AppUIPreview
-	export:AppUIExport
+	editor: AppUIEditor
+	preview: AppUIPreview
+	export: AppUIExport
+	others: AppUIOthers
 }
 
 export type AppProps = {
 	project: Project | null
 	users: Users
 	dispatch: Dispatch
-	ui:AppUI,
-	layoutPreferences:LayoutPreferences
+	ui: AppUI,
+	layoutPreferences: LayoutPreferences
 }
 
 enum PositionType {
@@ -68,27 +75,32 @@ function makePositionAdjuster(type: PositionType, initialValue: number, initialM
 class App extends Component<AppProps> {
 
 	async authSignIn() {
-		this.props.dispatch(authSignIn({authType:AuthType.GOOGLE}));
+		this.props.dispatch(authSignIn({ authType: AuthType.GOOGLE }));
 
 	}
 
 	async authSignOut() {
-		this.props.dispatch(authSignOut({authType:AuthType.GOOGLE}));
+		this.props.dispatch(authSignOut({ authType: AuthType.GOOGLE }));
 	}
 
 	async fetchFromGSheet() {
 		if (this.props.project) {
 			this.props.dispatch(projectFetchData({
-				project:this.props.project, 
-				sourceType:ProjectSourceType.GSHEETS, 
-				user:this.props.users[AuthType.GOOGLE]
+				project: this.props.project,
+				sourceType: ProjectSourceType.GSHEETS,
+				user: this.props.users[AuthType.GOOGLE]
 			}))
 		}
 	}
 
 	openProjectFromDialog() {
-		console.log(projectOpenFromDialog());
 		this.props.dispatch(projectOpenFromDialog())
+	}
+
+	openProjectFolder() {
+		if(this.props.project?.path){
+			remote.shell.openItem(this.props.project.path)
+		}
 	}
 
 	startAdjustEditorWidth(evt: React.MouseEvent) {
@@ -97,9 +109,9 @@ class App extends Component<AppProps> {
 			this.props.layoutPreferences.editorWidth,
 			evt.clientX,
 			(val, diff) => {
-				this.props.dispatch(prefEditorWidthChanged({editorWidth: Math.max(val - diff,584)}))
+				this.props.dispatch(prefEditorWidthChanged({ editorWidth: Math.max(val - diff, 584) }))
 			}
-			)
+		)
 	}
 
 	render() {
@@ -119,12 +131,15 @@ class App extends Component<AppProps> {
 						<img className="ImageIcon ImageIcon_small Header__AppIcon" src="./icon.png" />
 						Cardmaker Studio
 						{this.props.project && <div className="project-bar__name">
-							- {this.props.project.name}{this.props.project.modified && <span className="project-bar__modified">(not saved)<i className="icon fas fa-exclamation-triangle"></i></span>}
+							- {this.props.project.name}
+							<button className="button button-frameless" onClick={() => this.openProjectFolder()} ><i className="icon far fa-folder-open"></i></button>
+							{this.props.project.modified && <span className="project-bar__modified">(not saved)<i className="icon fas fa-exclamation-triangle"></i></span>}
+							
 						</div>}
-						
+
 					</div>
-					
 					<GoogleBar className="right-align"
+						fetchDataStatus={this.props.ui.others.fetchDataStatus[ProjectSourceType.GSHEETS]}
 						user={this.props.users[AuthType.GOOGLE]}
 						signInAction={() => this.authSignIn()}
 						signOutAction={() => this.authSignOut()}
@@ -155,11 +170,10 @@ class App extends Component<AppProps> {
 }
 
 function mapStateToProps(state: ApplicationState) {
-	console.log("mapStateToProps", state);
 	return {
 		project: state.project,
 		users: state.users,
-		ui:state.ui,
+		ui: state.ui,
 		layoutPreferences: state.preferences.layout
 	}
 

@@ -1,9 +1,9 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
 import { ProjectTemplate, ProjectLayout, ProjectDataItem, Project, ProjectExportStatus, ProjectExportState } from '../../services/Project';
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
-import { AppUI } from '../../components/App/App';
-import { ProjectSourceType } from '../../services/Project/Sources';
-import { projectOpenSucceeded, projectReloadSucceeded, projectExportStateChanged } from '../project';
+import { AppUI, AppUIOthers } from '../../components/App/App';
+import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
+import { projectOpenSucceeded, projectReloadSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload } from '../project';
 import { firstKeyOfObject } from '../../utils';
 import _ from 'lodash';
 import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
@@ -144,9 +144,42 @@ export const uiExportReducer = createReducer<AppUIExport>({
     }
 })
 
+export const uiOthersReducer = createReducer<AppUIOthers>({
+    fetchDataStatus:{}
+}, {
+    [projectFetchData.type]: (state,action:PayloadAction<ProjectFetchDataPayload>):any => {
+        return {
+            ...state,
+            fetchDataStatus: {
+                ...state.fetchDataStatus,
+                [action.payload.sourceType]:FetchDataStatus.LOADING
+            }
+        }
+    },
+    [projectFetchDataSucceeded.type]: (state,action:PayloadAction<ProjectDataChangedPayload>):any => {
+        return {
+            ...state,
+            fetchDataStatus: {
+                ...state.fetchDataStatus,
+                [action.payload.sourceType]:FetchDataStatus.COMPLETE
+            }
+        }
+    },
+    [projectFetchDataFailed.type]: (state,action:any):any => {
+        return {
+            ...state,
+            fetchDataStatus: {
+                ...state.fetchDataStatus,
+                [action.meta.payload.sourceType]:FetchDataStatus.NONE
+            }
+        }
+    }
+})
+
 
 export const uiReducer = combineReducers<AppUI>({
     editor: uiEditorReducer,
     preview: uiPreviewReducer,
-    export : uiExportReducer
+    export : uiExportReducer,
+    others: uiOthersReducer
 })

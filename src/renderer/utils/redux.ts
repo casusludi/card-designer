@@ -2,5 +2,5 @@
 
 
 export function asError() {
-    return (t: Error) => ({ payload: t,error:true })
+    return (t: Error,meta?:any) => ({ payload: t,error:true, meta })
 }

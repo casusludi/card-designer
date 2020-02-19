@@ -1,16 +1,18 @@
 import { call, put, takeLatest, all, takeEvery, select } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip } from '../../services/Project';
 
-import { fetchData, getSourceAuthType } from '../../services/Project/Sources';
+import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
 import { ServeOverrides } from '../../../main/serve';
 import { AnyAction } from 'redux';
 import { EditorPreferences } from '../preferences';
+import { PayloadAction } from '@reduxjs/toolkit';
+import _ from 'lodash';
 
 const selectProject = (state: ApplicationState) => state.project;
 const selectEditorPreferences = (state: ApplicationState) => state.preferences.editor
@@ -130,6 +132,54 @@ function* saga_renderProjectAtOpening() {
     yield put(projectRender({ selection, filter:RenderFilter.ALL }));
 }
 
+function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string}>){
+    try{
+        const project: Project = yield select(selectProject);
+        
+        yield put(projectExportStateChanged({
+            state: {
+                status: ProjectExportStatus.INIT,
+                rate:0
+            }
+        }))
+
+        const templateNames = _.keys(project.templates);
+        for(let i = 0,c = templateNames.length;i<c;i++){
+            yield call(exportProjectStrip,project,templateNames[i], action.payload.layoutId, action.payload.sourceType, action.payload.exportFolderPath)
+            yield put(projectExportStateChanged({
+                state: {
+                    status: ProjectExportStatus.PROGRESS,
+                    rate:i/c
+                }
+            }))
+        }
+
+        yield put(projectExportStateChanged({
+            state: {
+                status: ProjectExportStatus.COMPLETE,
+                rate:1
+            }
+        }))
+
+        yield put(projectExportStateChanged({
+            state: {
+                status: ProjectExportStatus.NONE,
+                rate:0
+            }
+        }))
+
+   
+    }catch(e){
+        yield put(projectExportFailed(e));
+        yield put(projectExportStateChanged({
+            state: {
+                status: ProjectExportStatus.NONE,
+                rate:0
+            }
+        }))
+    }
+}
+
 export default function* projectSaga() {
     yield all([
         yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog),
@@ -143,6 +193,7 @@ export default function* projectSaga() {
             uiEditorSelectedLayoutChanged.type,
             uiEditorSelectedDataChanged.type,
         ], saga_autoRenderProjectSelectionFromEditor),
-        yield takeLatest(projectConfigChanged.type, saga_reloadProjectWhenConfigChanged)
+        yield takeLatest(projectConfigChanged.type, saga_reloadProjectWhenConfigChanged),
+        yield takeLatest(projectExport.type, saga_exportProject)
     ])
 }

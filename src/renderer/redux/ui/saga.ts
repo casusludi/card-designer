@@ -2,9 +2,10 @@ import { all, takeEvery,select, put } from "redux-saga/effects";
 import { uiEditorSelectedSourceTypeChanged, uiEditorSelectedDataChanged, uiEditorSelectedTemplateChanged } from ".";
 import { ApplicationState } from "../..";
 import { Project } from "../../services/Project";
-import { AppUIEditor } from "../../components/App/App";
+
 import _ from "lodash";
 import { projectDataChanged } from "../project";
+import { AppUIEditor } from "../../components/EditorPanel/EditorPanel";
 
 const projectSelect = (state:ApplicationState) => state.project;
 const uiEditorSelect = (state:ApplicationState) => state.ui.editor;

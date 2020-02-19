@@ -3,33 +3,24 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import './App.scss';
 
-import { PDFSource } from '../PreviewPanel/PDFViewer/PDFDocument';
-
 import { AuthType } from '../../services/Auth';
 import { GoogleBar } from '../Google/GoogleBar';
-import EditorPanel from '../EditorPanel/EditorPanel';
-import PreviewPanel from '../PreviewPanel/PreviewPanel';
-import { Project, ProjectSelection } from '../../services/Project';
+import EditorPanel, { AppUIEditor } from '../EditorPanel/EditorPanel';
+import PreviewPanel, { AppUIPreview } from '../PreviewPanel/PreviewPanel';
+import { Project } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
 import { projectOpenFromDialog, projectFetchData, projectSaving } from '../../redux/project';
 import { Dispatch } from 'redux';
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { authSignIn,authSignOut } from '../../redux/auth';
 import { LayoutPreferences, prefEditorWidthChanged } from '../../redux/preferences';
+import { AppUIExport } from '../EditorPanel/ExportEditor/ExportEditor';
 
-export type AppUIPreview = {
-    pdf:PDFSource,
-    htmlUrl:string|null
-}
 
 export type AppUI = {
-    editor:AppUIEditor,
-    preview:AppUIPreview
-}
-
-export type AppUIEditor = {
-	selectedSourceType:ProjectSourceType,
-	selection:ProjectSelection|undefined|null
+    editor:AppUIEditor
+	preview:AppUIPreview
+	export:AppUIExport
 }
 
 export type AppProps = {

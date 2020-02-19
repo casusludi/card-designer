@@ -5,7 +5,7 @@ import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile } from './Sources';
-import { fsreadFile, fswriteFile, showOpenDialog } from '../../utils';
+import { fsreadFile, fswriteFile, showOpenDialog, convertHtmlToPdf } from '../../utils';
 import {renderHtml} from './render';
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
@@ -63,6 +63,18 @@ export type ProjectLayout = {
     id:string
     hbs:string
     styles:string
+}
+
+export enum ProjectExportStatus {
+    NONE = "none",
+    INIT = "init",
+    PROGRESS = "progress",
+    COMPLETE = "complete"
+}
+
+export type ProjectExportState = {
+    status:ProjectExportStatus
+    rate:number
 }
 
 export type ProjectFiles = {[key:string]:ProjectFile}
@@ -188,8 +200,24 @@ export async function saveProject(project:Project){
     return Promise.all(filesToSave)
 }
 
-export async function buildProject(project:Project,layoutName:string){
+export async function exportProjectStrip(project:Project,templateName:string,layoutId:string,sourceType:ProjectSourceType,exportFolderPath:string){
+    const rawData = project.data[sourceType]
+    if(!rawData) throw new Error(`No data found from source '${sourceType}'`)
+    const data = _.find(rawData.data, o => o.id == templateName);
+    if(!data) throw new Error(`No data found for '${templateName}' from source '${sourceType}'`)
 
+    const selection:ProjectSelection = {
+        template: project.templates[templateName],
+        layout: project.layouts[layoutId],
+        data: data
+    }
+    const html = renderSelectionAsHtml(project, selection, {});
+    if(!html){
+        throw new Error(`Build failed for template '${templateName}' with layout '${layoutId}'`)
+    }
+    const pdf = await convertHtmlToPdf(html,project.path);
+    await fswriteFile(path.join(exportFolderPath,layoutId,`${templateName}.pdf`),pdf);
+    return true
 }
 
 export const renderSelectionAsHtml = renderHtml

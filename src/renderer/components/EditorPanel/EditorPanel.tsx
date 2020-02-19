@@ -1,14 +1,14 @@
 import React from "react";
 import TabNav, { TabNavItem } from "../Misc/TabNav/TabNav";
 import "./EditorPanel.scss";
-import { Project, ProjectConfig, RenderFilter } from "../../services/Project";
+import { Project, ProjectConfig, RenderFilter, ProjectSelection } from "../../services/Project";
 import ConfigEditor from "./ConfigEditor/ConfigEditor";
 import { connect } from "react-redux";
 import { ApplicationState } from "../..";
 import { Dispatch } from "redux";
 import { projectConfigChanged, projectFileChanged, projectRender } from "../../redux/project";
 import _ from "lodash";
-import { AppUIEditor } from "../App/App";
+
 import { uiEditorSelectedTemplateChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedSourceTypeChanged } from "../../redux/ui";
 import TemplateEditor from "./TemplateEditor/TemplateEditor";
 import { ProjectSourceType } from "../../services/Project/Sources";
@@ -17,6 +17,7 @@ import Select from "../Misc/Select/Select";
 import ExportEditor from "./ExportEditor/ExportEditor";
 import Checkbox from "../Misc/Checkbox/Checkbox";
 
+
 export type EditorPanelProps = {
     project: Project | null
     width: number
@@ -24,6 +25,13 @@ export type EditorPanelProps = {
     ui: AppUIEditor,
     editorPreferences: EditorPreferences
 }
+
+
+export type AppUIEditor = {
+	selectedSourceType:ProjectSourceType
+	selection:ProjectSelection|undefined|null
+}
+
 
 function EditorPanel(props: EditorPanelProps) {
 

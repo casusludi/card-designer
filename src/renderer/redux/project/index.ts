@@ -1,5 +1,5 @@
 import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { Project, ProjectSourceData, ProjectConfig, ProjectSelection, RenderFilter } from '../../services/Project'
+import { Project, ProjectSourceData, ProjectConfig, ProjectSelection, RenderFilter, ProjectExportState } from '../../services/Project'
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { User } from '../../services/Auth';
 import { asError } from '../../utils/redux';
@@ -33,6 +33,9 @@ export const projectSaved = createAction('project/saved');
 export const projectRender = createAction<{selection:ProjectSelection, filter:RenderFilter}>('project/render');
 export const projectRenderFailed = createAction('project/renderFailed',asError());
 export const projectRendered = createAction('project/rendered');
+export const projectExport = createAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string}>('project/export');
+export const projectExportFailed = createAction('project/exportFailed',asError());
+export const projectExportStateChanged = createAction<{ state:ProjectExportState }>("project/exportStateChanged");
 
 export const projectReducer = createReducer<Project | null>(null, {
     [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => action.payload.project,

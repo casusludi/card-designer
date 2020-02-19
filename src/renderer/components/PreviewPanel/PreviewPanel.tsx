@@ -1,14 +1,20 @@
 import React from "react";
 import PDFViewer from "./PDFViewer/PDFViewer";
 import TabNav, { TabNavItem, TabNavHeaderPosition } from "../Misc/TabNav/TabNav";
-import { AppUIPreview } from "../App/App";
 import { HTMLViewer } from "./HTMLViewer/HTMLViewer";
 import { Project } from "../../services/Project";
+import { PDFSource } from "./PDFViewer/PDFDocument";
 
 export type PreviewPanelProps = {
     ui:AppUIPreview
     project:Project|null
 }
+
+export type AppUIPreview = {
+    pdf:PDFSource
+    htmlUrl:string|null
+}
+
 
 export default class PreviewPanel extends React.Component<PreviewPanelProps> {
     

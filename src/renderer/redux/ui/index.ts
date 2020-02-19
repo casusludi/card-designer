@@ -1,11 +1,14 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
-import { ProjectTemplate, ProjectLayout, ProjectDataItem, Project } from '../../services/Project';
+import { ProjectTemplate, ProjectLayout, ProjectDataItem, Project, ProjectExportStatus, ProjectExportState } from '../../services/Project';
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
-import { AppUI, AppUIEditor, AppUIPreview } from '../../components/App/App';
+import { AppUI } from '../../components/App/App';
 import { ProjectSourceType } from '../../services/Project/Sources';
-import { projectOpenSucceeded, projectReloadSucceeded } from '../project';
+import { projectOpenSucceeded, projectReloadSucceeded, projectExportStateChanged } from '../project';
 import { firstKeyOfObject } from '../../utils';
 import _ from 'lodash';
+import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
+import { AppUIPreview } from '../../components/PreviewPanel/PreviewPanel';
+import { AppUIExport } from '../../components/EditorPanel/ExportEditor/ExportEditor';
 
 export const uiEditorSelectedTemplateChanged = createAction<{ template: ProjectTemplate }>("uiEditor/selectedTemplateChanged");
 export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectLayout }>("uiEditor/selectedLayoutChanged");
@@ -122,7 +125,28 @@ export const uiPreviewReducer = createReducer<AppUIPreview>({
     }
 })
 
+
+export const uiExportReducer = createReducer<AppUIExport>({
+    exportProgress: {
+        status: ProjectExportStatus.NONE,
+        rate: 0
+    }
+}, {
+    [projectExportStateChanged.type]: (state,action:PayloadAction<{ state:ProjectExportState }>):any => {
+        return {
+            ...state,
+            exportProgress: {
+                ...state.exportProgress,
+                status: action.payload.state.status,
+                rate: action.payload.state.rate
+            }
+        }
+    }
+})
+
+
 export const uiReducer = combineReducers<AppUI>({
     editor: uiEditorReducer,
-    preview: uiPreviewReducer
+    preview: uiPreviewReducer,
+    export : uiExportReducer
 })

@@ -3,15 +3,21 @@
     padding: 15px;
 }
 
-.ExportEditor__selection {
+
+.ExportEditor__line {
     display: flex;
-    
-    & > :not(:last-child) {
+    justify-content: flex-start;
+    margin:  0 0 15px 0;
+
+    & > :not(:last-child){
         margin-right: 5px;
     }
 }
 
-.ExportEditor__export-line {
-    display: flex;
-    justify-content: space-between;
+.ExportEditor__ProgressBar{
+    flex: 1 1 auto;
+}
+
+.ExportEditor__line_end {
+    justify-content: flex-end;
 }

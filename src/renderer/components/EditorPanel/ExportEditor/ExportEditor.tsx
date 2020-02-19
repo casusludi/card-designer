@@ -1,4 +1,4 @@
-import { Project } from "../../../services/Project";
+import { Project, ProjectExportStatus, ProjectExportState } from "../../../services/Project";
 import React from "react";
 import './ExportEditor.scss';
 import Select from "../../Misc/Select/Select";
@@ -11,13 +11,19 @@ import _ from "lodash";
 import FolderInput from "../../Misc/FolderInput/FolderInput";
 import { replacer } from "../../../utils";
 import { remote } from "electron";
+import ProgressBar from "../../Misc/ProgressBar/ProgressBar";
+import { projectExport } from "../../../redux/project";
 
 export type ExportEditorProps = {
     project:Project | null
     preferences:ExportPreferences
     dispatch:Dispatch
+    ui:AppUIExport
 } 
 
+export type AppUIExport = {
+	exportProgress : ProjectExportState
+}
 
 
 function ExportEditor(props:ExportEditorProps){
@@ -69,7 +75,14 @@ function ExportEditor(props:ExportEditorProps){
     }
 
     function exportButtonOnClick(){
-
+        if(!props.preferences.selectedLayoutId) return;
+        if(!props.preferences.selectedSourceType) return;
+        if(!props.preferences.exportFolderPath) return;
+        props.dispatch(projectExport({
+            layoutId: props.preferences.selectedLayoutId,
+            sourceType: props.preferences.selectedSourceType,
+            exportFolderPath: props.preferences.exportFolderPath
+        }))
     }
 
     function openFolderButtonOnclick(){
@@ -90,13 +103,18 @@ function ExportEditor(props:ExportEditorProps){
 
     return (
         <div className="ExportEditor full-space">
-            <div className="ExportEditor__selection">
+            <div className="ExportEditor__line">
                 <Select id="ExportEditor__LayoutSelect-select" label="layout" labelOnTop={true} defaultValue={props.preferences?.selectedLayoutId && props.project?.layouts[props.preferences.selectedLayoutId]} onChange={selectedLayoutChanged} options={_.map(props.project?.layouts,(o,k)=>({label:k,value:o}))} />
                 <Select id="ExportEditor__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.preferences?.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(ProjectSourceType,(o,k)=>({label:o,value:o}))} />
             </div>
-            <FolderInput label="Export Folder : " path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
-            <div className="ExportEditor__export-line">
-                <button type="button" className="button" onClick={exportButtonOnClick} disabled={_.isEmpty(props.preferences.exportFolderPath)}>Export</button>
+            <div className="ExportEditor__line" >
+                <FolderInput className="ExportEditor__FolderInput" label="Export Folder : " path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
+            </div>
+            <div className="ExportEditor__line">
+                <button type="button" className="button" onClick={exportButtonOnClick} disabled={_.isEmpty(props.preferences.exportFolderPath) || props.ui.exportProgress.status != ProjectExportStatus.NONE}>Export</button>
+                <ProgressBar className="ExportEditor__ProgressBar" rate={props.ui.exportProgress.rate} spinner={props.ui.exportProgress.status != ProjectExportStatus.NONE} disabled={props.ui.exportProgress.status == ProjectExportStatus.NONE}/>
+            </div>
+            <div className="ExportEditor__line ExportEditor__line_end">
                 <button type="button" className="button" onClick={openFolderButtonOnclick} disabled={_.isEmpty(props.preferences.exportFolderPath)}><i className="icon far fa-folder-open"></i><span>Open Export Folder In Explorer</span></button>
             </div>
         </div>
@@ -114,7 +132,8 @@ function mapStateToProps(state: ApplicationState) {
     }
     return {
         project: state.project,
-        preferences
+        preferences,
+        ui:state.ui.export
     }
 
 }

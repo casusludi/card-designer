@@ -13,6 +13,7 @@ import { replacer } from "../../../utils";
 import { remote } from "electron";
 import ProgressBar from "../../Misc/ProgressBar/ProgressBar";
 import { projectExport } from "../../../redux/project";
+import path from 'path';
 
 export type ExportEditorProps = {
     project:Project | null
@@ -127,7 +128,7 @@ function mapStateToProps(state: ApplicationState) {
         preferences = {
             selectedLayoutId:null,
             selectedSourceType: ProjectSourceType.NONE,
-            exportFolderPath: state.project?.path
+            exportFolderPath: state.project?.path?path.join(state.project.path,'export'):null
         }
     }
     return {

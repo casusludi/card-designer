@@ -53,7 +53,7 @@ export default function TabNav(props:TabNavProps){
                 {props.children.map( (t,i) => (<HeaderButton key={i} index={i} onSelect={(index) => setState({currentTab:index})}  selected={state.currentTab == i}>{t.props.label}</HeaderButton>))}
             </div>
             <div className="TabNav__contents">
-                {props.children.map( (t,i) => <div className="TabNavItem__content" key={i} style={state.currentTab != i?{visibility:'hidden'}:{}} >{t}</div>)}
+                {props.children.map( (t,i) => <div className="TabNavItem__content" key={i} style={state.currentTab != i?{display:'none'}:{}} >{t}</div>)}
             </div>
         </div>
 

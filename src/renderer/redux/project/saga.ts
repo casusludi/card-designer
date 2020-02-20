@@ -1,10 +1,10 @@
 import { call, put, takeLatest, all, takeEvery, select, delay } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath } from '../../services/Project';
 
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -44,6 +44,19 @@ function* saga_reloadProjectWhenConfigChanged(action:any){
         
     } catch (e) {
         yield projectReloadFailed(e,action);
+    }
+}
+
+function* saga_openProjectFromPath(action:PayloadAction<{path:string}>){
+    try {
+        const project = yield call(loadProjectFromPath, action.payload.path);
+        if (project) {
+            yield put(projectOpenSucceeded({ project: project }))
+        } else {
+            yield put(projectOpenFailed(new Error(`No project found at ${action.payload.path}`),action))
+        }
+    } catch (e) {
+        yield put(projectOpenFailed(e,action))
     }
 }
 
@@ -91,11 +104,10 @@ function* saga_renderProjectSelection(action: any) {
         const selection: ProjectSelection = action.payload.selection;
         const project: Project = yield select(selectProject);
         const filter:RenderFilter = action.payload.filter;
-        const html = renderSelectionAsHtml(project, action.payload.selection, {})
+        const html = renderSelectionAsHtml(project, action.payload.selection)
 
         if (html && project && selection.template && selection.layout) {
             if (filter != RenderFilter.NONE) {
-                console.log("selected layout",selection.layout);
                 let templateStylesPath = selection.template.styles;
                 let layoutStylesPath = selection.layout.styles;
                 if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;
@@ -109,10 +121,10 @@ function* saga_renderProjectSelection(action: any) {
                     yield put(uiPreviewHtmlUrlChanged({ htmlUrl }));
                 }
                 if(filter == RenderFilter.ALL || filter == RenderFilter.PDF){
-                    console.time("pdf rendering")
+
+                    const t = Date.now();
                     const pdf = yield call(convertHtmlToPdf, html, project.path, overrides)
-                    console.timeEnd("pdf rendering")
-                    yield put(uiPreviewPdfChanged({ pdf }))
+                    yield put(uiPreviewPdfChanged({ pdf, renderTime:Date.now()-t }))
                 }
             }
         }
@@ -192,6 +204,7 @@ function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:P
 export default function* projectSaga() {
     yield all([
         yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog),
+        yield takeLatest(projectOpenFromPath.type, saga_openProjectFromPath),
         yield takeEvery(projectFetchData.type, saga_fetchData),
         yield takeEvery(projectFetchDataSucceeded.type, saga_projectFetchDataSucceeded),
         yield takeLatest(projectSaving.type, saga_saveProject),

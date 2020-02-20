@@ -107,9 +107,7 @@ function ExportEditor(props:ExportEditorProps){
             <div className="ExportEditor__line">
                 <Select id="ExportEditor__LayoutSelect-select" label="layout" labelOnTop={true} defaultValue={props.preferences?.selectedLayoutId && props.project?.layouts[props.preferences.selectedLayoutId]} onChange={selectedLayoutChanged} options={_.map(props.project?.layouts,(o,k)=>({label:k,value:o}))} />
                 <Select id="ExportEditor__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.preferences?.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(ProjectSourceType,(o,k)=>({label:o,value:o}))} />
-            </div>
-            <div className="ExportEditor__line" >
-                <FolderInput className="ExportEditor__FolderInput" label="Export Folder : " path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
+                <FolderInput className="ExportEditor__FolderInput" label="Export Folder : " labelOnTop={true} path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
             </div>
             <div className="ExportEditor__line">
                 <button type="button" className="button" onClick={exportButtonOnClick} disabled={_.isEmpty(props.preferences.exportFolderPath) || props.ui.exportProgress.status != ProjectExportStatus.NONE}>Export</button>

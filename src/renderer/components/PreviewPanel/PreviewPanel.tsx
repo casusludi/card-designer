@@ -12,6 +12,7 @@ export type PreviewPanelProps = {
 
 export type AppUIPreview = {
     pdf:PDFSource
+    pdfLastRenderTime: number | null
     htmlUrl:string|null
 }
 
@@ -25,7 +26,7 @@ export default class PreviewPanel extends React.Component<PreviewPanelProps> {
         return (
             <TabNav className="full-space" headerPosition={TabNavHeaderPosition.BOTTOM}>
                 <TabNavItem label="PDF Preview">
-                    <PDFViewer src={this.props.ui.pdf} />
+                    <PDFViewer src={this.props.ui.pdf} lastRenderTime={this.props.ui.pdfLastRenderTime}/>
                 </TabNavItem>
                 <TabNavItem label="HTML Preview">
                     {

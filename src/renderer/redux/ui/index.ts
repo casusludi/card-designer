@@ -14,7 +14,7 @@ export const uiEditorSelectedTemplateChanged = createAction<{ template: ProjectT
 export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectLayout }>("uiEditor/selectedLayoutChanged");
 export const uiEditorSelectedSourceTypeChanged = createAction<{ sourceType: ProjectSourceType }>("uiEditor/selectedSourceTypeChanged");
 export const uiEditorSelectedDataChanged = createAction<{ data: ProjectDataItem | undefined | null }>("uiEditor/selectedDataChanged");
-export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource }>("uiPreview/pdfChanged");
+export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource, renderTime?:number }>("uiPreview/pdfChanged");
 export const uiPreviewHtmlUrlChanged = createAction<{ htmlUrl: string | null }>("uiPreview/htmlUrlChanged");
 
 export const uiEditorReducer = createReducer<AppUIEditor>({
@@ -37,10 +37,7 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
     },
     [projectReloadSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => {
         const { project } = action.payload;
-  
-
         const lastSelection = state.selection;
-        console.log(_.map(project.layouts,o => console.log(o)));
         let selectedTemplate = _.find(project.templates, o => o.id == lastSelection?.template?.id)
         if(!selectedTemplate) selectedTemplate = project?.templates[firstKeyOfObject(project?.templates)];
         let selectedLayout = _.find(project.layouts, o => o.id == lastSelection?.layout?.id)
@@ -101,18 +98,21 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
 
 export const uiPreviewReducer = createReducer<AppUIPreview>({
     pdf: null,
+    pdfLastRenderTime: 0,
     htmlUrl: null
 }, {
     [projectOpenSucceeded.type]: (state,action:PayloadAction<{project:Project}>):any => {
         return {
             pdf:null,
-            htmlUrl:null
+            htmlUrl:null,
+            pdfLastRenderTime:null
         }
     },
-    [uiPreviewPdfChanged.type]: (state, action: PayloadAction<{ pdf: PDFSource }>) => {
+    [uiPreviewPdfChanged.type]: (state, action: PayloadAction<{ pdf: PDFSource, renderTime?:number }>) => {
         return {
             ...state,
-            pdf: action.payload.pdf
+            pdf: action.payload.pdf,
+            pdfLastRenderTime:action.payload.renderTime || null
         }
     },
     // TS crash à la gueule pour je ne sais quelle raison encore

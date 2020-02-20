@@ -23,9 +23,21 @@
 .FolderInput__input {
     position: relative;
     border: none;
+    flex: 1;
 }
 
 .FolderInput__button {
     border-bottom: none;
     box-shadow: none;
+}
+
+
+.FolderInput_labeltop {
+    display: block;
+    position: relative;
+    & > label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.8rem;
+    }
 }

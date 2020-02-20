@@ -40,6 +40,7 @@
 .button-frameless {
     border: none;
     background-color: transparent;
+    box-shadow: none;
     padding: 0 5px;
 
     &:hover:not([disabled]) {

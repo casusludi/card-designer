@@ -17,6 +17,7 @@ export type ProjectFetchDataPayload = {
 }
 
 export const projectOpenFromDialog = createAction('project/openFromDialog');
+export const projectOpenFromPath = createAction<{path:string}>('project/openFromPath');
 export const projectOpenSucceeded = createAction<{ project: Project }>('project/openSucceeded');
 export const projectReloadSucceeded = createAction<{ project: Project }>('project/reloadSucceeded');
 export const projectReloadFailed = createAction('project/reloadFailed',asError());

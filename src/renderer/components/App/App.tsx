@@ -9,7 +9,7 @@ import EditorPanel, { AppUIEditor } from '../EditorPanel/EditorPanel';
 import PreviewPanel, { AppUIPreview } from '../PreviewPanel/PreviewPanel';
 import { Project } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
-import { projectOpenFromDialog, projectFetchData, projectSaving } from '../../redux/project';
+import { projectOpenFromDialog, projectFetchData, projectSaving, projectOpenFromPath } from '../../redux/project';
 import { Dispatch } from 'redux';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
 import { authSignIn, authSignOut } from '../../redux/auth';
@@ -104,6 +104,12 @@ class App extends Component<AppProps> {
 		}
 	}
 
+	openReloadProject() {
+		if(this.props.project){
+			this.props.dispatch(projectOpenFromPath({path:this.props.project.path}))
+		}
+	}
+
 	startAdjustEditorWidth(evt: React.MouseEvent) {
 		makePositionAdjuster(
 			PositionType.Vertical,
@@ -126,6 +132,7 @@ class App extends Component<AppProps> {
 							<button className="button" ><i className="icon far fa-file"></i></button>
 							<button className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
 							<button className="button" disabled={!this.props.project?.modified} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
+							<button className="button" onClick={() => this.openReloadProject()} ><i className="fas fa-sync"></i></button>
 						</div>
 					</div>
 					<div className="layout__header-title">

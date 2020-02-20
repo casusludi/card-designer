@@ -67,7 +67,7 @@
           "properties": {
             "sheetId": {
               "$id": "#/properties/sources/properties/gsheets/properties/sheetId",
-              "type": "string",
+              "type": [ "string", "null" ],
               "title": "The Sheetid Schema",
               "default": ""
             }

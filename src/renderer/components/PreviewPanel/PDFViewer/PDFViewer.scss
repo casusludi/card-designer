@@ -36,6 +36,12 @@
     overflow: hidden;
 }
 
+.PDFViewer__header-renderTime{
+    font-style: italic;
+    font-size: 0.7rem;
+    color: $light-grey;
+}
+
 .PDFViewer__scrollcontent{
     margin: 15px;
 }

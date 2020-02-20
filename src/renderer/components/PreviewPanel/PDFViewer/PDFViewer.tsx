@@ -2,15 +2,16 @@
 import React from 'react';
 import './PDFViewer.scss'
 
-import PDFDocument, { PDFSource } from './PDFDocument';
+import PDFDocument, { PDFSource, PDFDocProxy } from './PDFDocument';
 import Select from '../../Misc/Select/Select';
 
 export type PDFViewerProps = {
-    src: PDFSource
+    src: PDFSource,
+    lastRenderTime?: number | null
 };
 
 export type PDFViewerState = {
-    numPages: Number | null
+    pageCount: number
     doc: any
     scale: number
     src: PDFSource
@@ -27,7 +28,7 @@ const scales = [
 export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewerState> {
 
     state = {
-        numPages: null,
+        pageCount: 0,
         scale: 1,
         doc: null,
         src: this.props.src,
@@ -44,16 +45,24 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
         
     }
 
+    onDocChange(doc:PDFDocProxy){
+        this.setState({
+            pageCount: doc.pageCount
+        })
+    }
+
     render() {
         return (
             <div className="PDFViewer">
                 <div className="PDFViewer__header">
-                    <div>page count : {this.state.numPages}  </div>
+                    <div className="PDFViewer__header-renderTime">{ !!this.props.lastRenderTime && `Render Time : ${this.props.lastRenderTime}ms`  }</div>
+                    <div>{ this.state.pageCount && `${this.state.pageCount} page${this.state.pageCount > 1?"s":""}` }</div>
+                    
                     <Select id="zoom" label="Zoom" defaultValue={this.state.scale}  onChange={value => this.setState({ scale: parseFloat(value) })} options={scales} />
 
                 </div>
                 <div className="PDFViewer__viewport" onMouseUp={evt => this.startGrabbingViewPort(evt)}>
-                    <PDFDocument src={this.state.src} scale={this.state.scale} />
+                    <PDFDocument onChange={this.onDocChange.bind(this)}  src={this.state.src} scale={this.state.scale} />
                 </div>
 
             </div>

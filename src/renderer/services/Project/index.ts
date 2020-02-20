@@ -211,7 +211,7 @@ export async function exportProjectStrip(project:Project,templateName:string,lay
         layout: project.layouts[layoutId],
         data: data
     }
-    const html = renderSelectionAsHtml(project, selection, {});
+    const html = renderSelectionAsHtml(project, selection);
     if(!html){
         throw new Error(`Build failed for template '${templateName}' with layout '${layoutId}'`)
     }

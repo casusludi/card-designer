@@ -1,0 +1,29 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>{{title}}</title>
+
+    <link rel="stylesheet" href="{{layoutCSSPath}}">
+    <link rel="stylesheet" href="{{templateCSSPath}}">
+</head>
+
+<body class="basic">
+    <div class="card-list">
+        {{#each cards}}
+        {{#if @first}}<div class="card-group">{{/if}}
+
+            <div class="card-box">{{>card card=.}}</div>
+
+            {{#unless @last}}{{#modulo gap=9}}</div>
+        <div class="card-group">{{/modulo}}{{/unless}}
+            {{#if @last}}</div>{{/if}}
+        {{/each}}
+
+    </div>
+</body>
+
+</html>

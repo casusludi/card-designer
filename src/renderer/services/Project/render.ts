@@ -57,7 +57,7 @@ Handlebars.registerHelper('modulo', function(options) {
         return options.inverse(this);
 });
 
-export function renderHtml(project:Project,selection:ProjectSelection,globalVars:{}):string|null{
+export function renderHtml(project:Project,selection:ProjectSelection):string|null{
     if(!project) return null;
     if(!selection.data) return null;
     if(!selection.layout) return null;
@@ -72,6 +72,10 @@ export function renderHtml(project:Project,selection:ProjectSelection,globalVars
     Handlebars.registerPartial('card',template)
     const tpl = Handlebars.compile(layout);
     const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
+    const globalVars = {
+        layoutCSSPath: selection.layout.styles,
+        templateCSSPath: selection.template.styles
+    }
     const variables = {cards,...globalVars};
     return tpl(variables);
 }

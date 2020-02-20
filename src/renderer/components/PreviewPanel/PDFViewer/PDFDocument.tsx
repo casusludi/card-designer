@@ -14,8 +14,11 @@ export type PDFSource = string | Uint8Array | Buffer | null;
 export type PDFDocumentProps = {
     src: PDFSource ,
     selectedPages: Array<number>,
-    scale: number
+    scale: number,
+    onChange?: (doc:PDFDocProxy) => void
 }
+
+export type PDFDocProxy = {pageCount:number};
 
 export default class PDFDocument extends React.Component<PDFDocumentProps> {
 
@@ -41,7 +44,11 @@ export default class PDFDocument extends React.Component<PDFDocumentProps> {
         this.pageRefs = pageCount.map(() => React.createRef());
         this.pages = await Promise.all(pageCount.map(async (o, i) => await doc.getPage(o + 1)))
             .then(pages => pages.map((page, i) => <PDFPage key={i} ref={this.pageRefs[i]} page={page} scale={this.props.scale} />))
-
+        if(this.props.onChange){
+            this.props.onChange({
+                pageCount: this.pages.length
+            });
+        }
         this.forceUpdate();
     }
 

@@ -1,0 +1,17 @@
+@import "../../styles/variables.scss";
+
+.WindowControls {
+    display: flex;
+    justify-content: stretch;
+}
+
+.WindowControls__button {
+    border: none;
+    background-color: $darkest-grey;
+    color: $white;
+    outline: none;
+
+    &:hover {
+        background-color: $medium-grey;
+    }
+}

@@ -1,3 +1,4 @@
+import './assets';
 
 import MouseTrap from 'mousetrap';
 MouseTrap.bind('mod+shift+i',() => {

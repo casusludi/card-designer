@@ -16,6 +16,7 @@ let serve:Serve|null;
 
 function createMainWindow() {
   const window = new BrowserWindow({
+    frame: false,
     width: 1280, height: 768,
     title:'Cardmaker Studio',
     darkTheme: true,
@@ -123,6 +124,13 @@ app.on('ready', async () => {
     if(mainWindow){
       mainWindow.webContents.openDevTools();
     }
+  })
+
+  ipcMain.handle('main-window-isMaximized', () => {
+    if(mainWindow){
+      return mainWindow.isMaximized();
+    }
+    return false;
   })
 
   ipcMain.handle('show-open-dialog',(event,options:OpenDialogOptions) => {

@@ -16,6 +16,7 @@ import { authSignIn, authSignOut } from '../../redux/auth';
 import { LayoutPreferences, prefEditorWidthChanged } from '../../redux/preferences';
 import { AppUIExport } from '../EditorPanel/ExportEditor/ExportEditor';
 import { remote } from 'electron';
+import WindowControls from '../WindowControls/WindowControls';
 
 export type AppUIOthers = {
 	fetchDataStatus:{
@@ -145,6 +146,7 @@ class App extends Component<AppProps> {
 						signOutAction={() => this.authSignOut()}
 						fetchAction={() => this.fetchFromGSheet()}
 					/>
+					<WindowControls/>
 				</header>
 				<div className="layout__body">
 					<main className="viewer">

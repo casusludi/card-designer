@@ -10,11 +10,12 @@
 
 .PDFViewer__viewport{
     position: absolute;
-    top: 36px;
+    top: 41px;
     left: 0;
     right: 0;
     bottom: 0;
     overflow: auto; 
+    background-color: $darkest-grey;
     /*cursor: grab;*/
     
 }
@@ -24,7 +25,7 @@
     left: 0;
     right: 0;
     top: 0;
-    height: 25px;
+    height: 30px;
     background-color: $dark-grey;
     border-bottom: 1px solid $medium-grey;
     display: flex;

@@ -1,8 +1,18 @@
+@import "../../../styles/variables.scss";
 
 .FolderInput {
     display: flex;
     align-items: stretch;
     min-height: 28px;
+    
+}
+
+.FolderInput__content {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    border-bottom: 2px solid $medium-grey;
+    box-shadow: 0 1px 2px 0px #000000;
 }
 
 .FolderInput__label {
@@ -11,9 +21,11 @@
 }
 
 .FolderInput__input {
-    border-right: none;
+    position: relative;
+    border: none;
 }
+
 .FolderInput__button {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-bottom: none;
+    box-shadow: none;
 }

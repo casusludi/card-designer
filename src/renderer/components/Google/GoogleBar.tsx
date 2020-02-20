@@ -13,7 +13,6 @@ export type GoogleBarProps = {
 }
 
 export function GoogleBar(props: GoogleBarProps) {
-    console.log(props.fetchDataStatus)
     return (
         <nav className={"button-bar" + (props.className ? " " + props.className : "")}>
             <button disabled={!!props.user && props.user.status != UserStatus.CONNECTED || props.fetchDataStatus == FetchDataStatus.LOADING} className="button" onClick={() => props.fetchAction()}>

@@ -14,7 +14,7 @@ export type HeaderButtonProps = {
 }
 
 const HeaderButton = (props:HeaderButtonProps) => {
-    return <button className={"TabNavItem__header "+(props.selected?'selected':'')} onClick={e => props.onSelect && props.onSelect(props.index,e)}>{props.children}</button>
+    return <button type="button" className={"TabNavItem__header "+(props.selected?'selected':'')} onClick={e => props.onSelect && props.onSelect(props.index,e)}>{props.children}</button>
 }
 
 

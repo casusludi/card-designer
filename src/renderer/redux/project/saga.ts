@@ -1,4 +1,4 @@
-import { call, put, takeLatest, all, takeEvery, select } from 'redux-saga/effects';
+import { call, put, takeLatest, all, takeEvery, select, delay } from 'redux-saga/effects';
 import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip } from '../../services/Project';
 
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
@@ -151,10 +151,12 @@ function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:P
         const templateNames = _.keys(project.templates);
         for(let i = 0,c = templateNames.length;i<c;i++){
             yield call(exportProjectStrip,project,templateNames[i], action.payload.layoutId, action.payload.sourceType, action.payload.exportFolderPath)
+            const rate = ((i+1)/c)*0.9;
+
             yield put(projectExportStateChanged({
                 state: {
                     status: ProjectExportStatus.PROGRESS,
-                    rate:i/c
+                    rate
                 }
             }))
         }
@@ -165,6 +167,8 @@ function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:P
                 rate:1
             }
         }))
+
+        yield delay(100);
 
         yield put(projectExportStateChanged({
             state: {

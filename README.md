@@ -14,9 +14,6 @@
     - better UI
     - display page one by one
 
-## PDF generation : 
-    - Generate a pdf data from a string template and display ths pdf data without existing file
-
 ## Template editor 
     - Single card layout
     - template variantes
@@ -29,3 +26,10 @@
 
 ## better user pref storage system
     -
+
+## Credits 
+
+- icons : https://github.com/microsoft/vscode-codicons and https://fontawesome.com/
+- Logo : Tiphaine Hardy
+- Maintainer : Pierre Chabiland
+Casus Ludi 2020

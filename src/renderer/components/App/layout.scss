@@ -10,17 +10,30 @@
 }
 
 .layout__header {
+    -webkit-app-region: drag;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 5px;
     background-color: $darkest-grey;
     border-bottom: 1px solid $medium-grey;
+
+    & button {
+        -webkit-app-region: no-drag;
+    }
 }
 
 .layout__header-title {
     display: flex;
     align-items: center;
+}
+
+.layout__header-right {
+    display: flex;
+
+    & > *:last-child{
+        margin-left: 30px;
+    }
 }
 
 .layout__body {

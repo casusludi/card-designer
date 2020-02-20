@@ -139,14 +139,16 @@ class App extends Component<AppProps> {
 						</div>}
 
 					</div>
-					<GoogleBar className="right-align"
-						fetchDataStatus={this.props.ui.others.fetchDataStatus[ProjectSourceType.GSHEETS]}
-						user={this.props.users[AuthType.GOOGLE]}
-						signInAction={() => this.authSignIn()}
-						signOutAction={() => this.authSignOut()}
-						fetchAction={() => this.fetchFromGSheet()}
-					/>
-					<WindowControls/>
+					<div className="layout__header-right">
+						<GoogleBar className="right-align"
+							fetchDataStatus={this.props.ui.others.fetchDataStatus[ProjectSourceType.GSHEETS]}
+							user={this.props.users[AuthType.GOOGLE]}
+							signInAction={() => this.authSignIn()}
+							signOutAction={() => this.authSignOut()}
+							fetchAction={() => this.fetchFromGSheet()}
+						/>
+						<WindowControls/>
+					</div>
 				</header>
 				<div className="layout__body">
 					<main className="viewer">

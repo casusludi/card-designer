@@ -126,13 +126,6 @@ app.on('ready', async () => {
     }
   })
 
-  ipcMain.handle('main-window-isMaximized', () => {
-    if(mainWindow){
-      return mainWindow.isMaximized();
-    }
-    return false;
-  })
-
   ipcMain.handle('show-open-dialog',(event,options:OpenDialogOptions) => {
     if(mainWindow){
        return dialog.showOpenDialog(mainWindow,options);

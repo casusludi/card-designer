@@ -102,8 +102,8 @@ export function renderHBSToHtml(project:Project,selection:ProjectSelection):stri
     if(!selection.layout) return null;
     if(!selection.template) return null;
 
-    const template = project.files[selection.template.tpl].content;
-    const layout = project.files[selection.layout.tpl].content;
+    const template = project.files[selection.template.hbs].content;
+    const layout = project.files[selection.layout.hbs].content;
 
     if(!template) return null;
     if(!layout) return null;
@@ -119,6 +119,7 @@ export function renderHBSToHtml(project:Project,selection:ProjectSelection):stri
     return tpl(variables);
 }
 
+/*
 const ejs = require('ejs');
 
 export function renderEJSToHtml(project:Project,selection:ProjectSelection):string|null{
@@ -127,8 +128,8 @@ export function renderEJSToHtml(project:Project,selection:ProjectSelection):stri
     if(!selection.layout) return null;
     if(!selection.template) return null;
 
-    const template = project.files[selection.template.tpl].content;
-    const layout = project.files[selection.layout.tpl].content;
+    const template = project.files[selection.template.hbs].content;
+    const layout = project.files[selection.layout.hbs].content;
 
     if(!template) return null;
     if(!layout) return null;
@@ -149,5 +150,5 @@ export function renderEJSToHtml(project:Project,selection:ProjectSelection):stri
         return "";
     });
 }
- 
+ */
 

@@ -6,7 +6,7 @@ import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
 import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
-import {renderEJSToHtml} from './render';
+import { renderHBSToHtml} from './render';
 import fse from 'fs-extra';
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
@@ -23,7 +23,7 @@ export enum RenderFilter {
 }
 
 export type ProjectConfigTemplate = {
-    tpl:string
+    hbs:string
     styles:string
 }
 
@@ -56,14 +56,14 @@ export type ProjectSourceData = {
 
 export type ProjectTemplate = {
     id:string
-    tpl:string
+    hbs:string
     styles:string
 }
 
 // currently the same thing as ProjectTemplate but ProjectTemplate evoluate later
 export type ProjectLayout = {
     id:string
-    tpl:string
+    hbs:string
     styles:string
 }
 
@@ -104,11 +104,11 @@ const schemaValidator = new Validator();
 
 async function loadTemplate(projectPath:string,id:string,template:ProjectConfigTemplate,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
    
-    if(!files[template.tpl]){
-        const hbsPath = path.join(projectPath, template.tpl);
-        const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.tpl} missing.`) }); 
-        files[template.tpl] = {
-            path:template.tpl,
+    if(!files[template.hbs]){
+        const hbsPath = path.join(projectPath, template.hbs);
+        const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.hbs} missing.`) }); 
+        files[template.hbs] = {
+            path:template.hbs,
             content:hbsRawData.toString()
         }
     }
@@ -123,7 +123,7 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigT
     
     return {
         id,
-        tpl:template.tpl,
+        hbs:template.hbs,
         styles:template.styles
     }
 }
@@ -274,4 +274,4 @@ export async function createNewProjectFromTemplate(templatePath:string){
     return project;
 }
 
-export const renderSelectionAsHtml = renderEJSToHtml
+export const renderSelectionAsHtml = renderHBSToHtml

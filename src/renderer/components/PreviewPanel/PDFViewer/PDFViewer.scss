@@ -6,6 +6,7 @@
     left: 0;
     right: 0;
     bottom: 0;
+    background-color: $darkest-grey;
 }
 
 .PDFViewer__viewport{
@@ -57,4 +58,19 @@
     border: 1px solid $light-grey;
     box-shadow: 5px 5px 10px 4px rgba(0,0,0,1);
     margin: 15px;
+}
+
+.PDFViewer__no {
+    position: absolute;
+    top:41px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $medium-grey;
+    font-size: 1.2rem;
+    user-select: none;
 }

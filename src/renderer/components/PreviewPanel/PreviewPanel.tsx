@@ -29,10 +29,7 @@ export default class PreviewPanel extends React.Component<PreviewPanelProps> {
                     <PDFViewer src={this.props.ui.pdf} lastRenderTime={this.props.ui.pdfLastRenderTime}/>
                 </TabNavItem>
                 <TabNavItem label="HTML Preview">
-                    {
-                        this.props.ui.htmlUrl && this.props.project ? <HTMLViewer url={this.props.ui.htmlUrl} />
-                        : <div>No HTML to view</div>
-                    }
+                    <HTMLViewer url={this.props.ui.htmlUrl} />
                 </TabNavItem>
             </TabNav>
       

@@ -56,14 +56,22 @@ export default class PDFViewer extends React.Component<PDFViewerProps, PDFViewer
             <div className="PDFViewer">
                 <div className="PDFViewer__header">
                     <div className="PDFViewer__header-renderTime">{ !!this.props.lastRenderTime && `Render Time : ${this.props.lastRenderTime}ms`  }</div>
-                    <div>{ this.state.pageCount && `${this.state.pageCount} page${this.state.pageCount > 1?"s":""}` }</div>
+                    <div>{ this.state.pageCount ? `${this.state.pageCount} page${this.state.pageCount > 1?"s":""}`:'' }</div>
                     
-                    <Select id="zoom" label="Zoom" defaultValue={this.state.scale}  onChange={value => this.setState({ scale: parseFloat(value) })} options={scales} />
+                    <Select id="zoom" label="Zoom" disabled={!this.state.src} defaultValue={this.state.scale}  onChange={value => this.setState({ scale: parseFloat(value) })} options={scales} />
 
                 </div>
-                <div className="PDFViewer__viewport" onMouseUp={evt => this.startGrabbingViewPort(evt)}>
+                {
+                    this.state.src?
+                    <div className="PDFViewer__viewport" onMouseUp={evt => this.startGrabbingViewPort(evt)}>
                     <PDFDocument onChange={this.onDocChange.bind(this)}  src={this.state.src} scale={this.state.scale} />
                 </div>
+                :
+                    <div className="PDFViewer__no">
+                        No PDF to preview
+                    </div>
+                }
+                
 
             </div>
         );

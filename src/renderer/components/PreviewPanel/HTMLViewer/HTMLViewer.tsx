@@ -8,25 +8,6 @@ export type HTMLViewerProps = {
     url: string | null | undefined
 }
 
-/*
-const mouseEventTrapScript = `
-    const { ipcRenderer } = require('electron');
-
-    function eventDistachToHost(event){
-        ipcRenderer.sendToHost('webview-event-trap',{
-            type: event.type,
-            clientX:event.clientX,
-            clientY:event.clientY,
-        });
-    }
-
-    document.addEventListener('click', eventDistachToHost);
-    document.addEventListener('mouseup', eventDistachToHost);
-    document.addEventListener('mousedown', eventDistachToHost);
-    document.addEventListener('mousemove', eventDistachToHost);
-
-`;*/
-
 const webviewCSS = `
     
     /* scrollbar css : @see /styles/scrollbars.scss */
@@ -65,13 +46,11 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
                 // @ts-ignore TS dont recognise webview API
                 ref.insertCSS(webviewCSS)
                 // @ts-ignore TS dont recognise webview API
-                //ref.executeJavaScript(mouseEventTrapScript);
-                // @ts-ignore TS dont recognise webview API
                 // ref.openDevTools({mode:'bottom'});
             })
 
             ref.addEventListener('console-message', (e: any) => {
-                console.log('[webview] :', e.message)
+                //console.log('[webview] :', e.message)
             })
 
             ref.addEventListener('ipc-message', (e: any) => {

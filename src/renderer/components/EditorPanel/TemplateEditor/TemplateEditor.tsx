@@ -23,7 +23,7 @@ export default function TemplateEditor(props: TemplateEditorProps) {
                 <div className="TemplateEditor full-space">
                     <div className="TemplateEditor__header"><span className="TemplateEditor__header-label">{props.template.id}</span></div>
                     <TabNav className="TemplateEditor__Tabs" headerPosition={TabNavHeaderPosition.TOP} >
-                        <TabNavItem label="HTML"><CodeEditor width={props.width} className="full-space" mode="handlebars" onChange={(code) => props.template && props.onFileChanged(props.template.hbs, code)} code={props.files[props.template.hbs].content} /></TabNavItem>
+                        <TabNavItem label="HTML"><CodeEditor width={props.width} className="full-space" mode="ejs" onChange={(code) => props.template && props.onFileChanged(props.template.tpl, code)} code={props.files[props.template.tpl].content} /></TabNavItem>
                         <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.template && props.onFileChanged(props.template.styles, code)} code={props.files[props.template.styles].content} /></TabNavItem>
                     </TabNav>
                 </div> :

@@ -57,14 +57,53 @@ Handlebars.registerHelper('modulo', function(options) {
         return options.inverse(this);
 });
 
-export function renderHtml(project:Project,selection:ProjectSelection):string|null{
+Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+
+    switch (operator) {
+        case '==':
+            // @ts-ignore
+            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+        case '===':
+            // @ts-ignore
+            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+        case '!=':
+            // @ts-ignore
+            return (v1 != v2) ? options.fn(this) : options.inverse(this);
+        case '!==':
+            // @ts-ignore
+            return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+        case '<':
+            // @ts-ignore
+            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+        case '<=':
+            // @ts-ignore
+            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+        case '>':
+            // @ts-ignore
+            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+        case '>=':
+            // @ts-ignore
+            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+        case '&&':
+            // @ts-ignore
+            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+        case '||':
+            // @ts-ignore
+            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+        default:
+            // @ts-ignore
+            return options.inverse(this);
+    }
+});
+
+export function renderHBSToHtml(project:Project,selection:ProjectSelection):string|null{
     if(!project) return null;
     if(!selection.data) return null;
     if(!selection.layout) return null;
     if(!selection.template) return null;
 
-    const template = project.files[selection.template.hbs].content;
-    const layout = project.files[selection.layout.hbs].content;
+    const template = project.files[selection.template.tpl].content;
+    const layout = project.files[selection.layout.tpl].content;
 
     if(!template) return null;
     if(!layout) return null;
@@ -78,6 +117,37 @@ export function renderHtml(project:Project,selection:ProjectSelection):string|nu
     }
     const variables = {cards,...globalVars};
     return tpl(variables);
+}
+
+const ejs = require('ejs');
+
+export function renderEJSToHtml(project:Project,selection:ProjectSelection):string|null{
+    if(!project) return null;
+    if(!selection.data) return null;
+    if(!selection.layout) return null;
+    if(!selection.template) return null;
+
+    const template = project.files[selection.template.tpl].content;
+    const layout = project.files[selection.layout.tpl].content;
+
+    if(!template) return null;
+    if(!layout) return null;
+
+  
+    const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
+    const globalVars = {
+        title: selection.template.id,
+        layoutCSSPath: selection.layout.styles,
+        templateCSSPath: selection.template.styles
+    }
+    const variables = {cards,...globalVars};
+    const tpl = ejs.compile(layout,{client:true});
+    return tpl(variables,null,(path:string,d:any) => {
+        switch(path){
+            case 'card': return ejs.render(template,d)
+        }
+        return "";
+    });
 }
  
 

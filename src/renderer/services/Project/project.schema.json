@@ -18,11 +18,11 @@
       "additionalProperties": {
         "type": "object",
         "required": [
-          "hbs",
+          "tpl",
           "styles"
         ],
         "properties": {
-          "hbs": {
+          "tpl": {
             "type": "string"
           },
           "styles": {
@@ -38,11 +38,11 @@
       "additionalProperties": {
         "type": "object",
         "required": [
-          "hbs",
+          "tpl",
           "styles"
         ],
         "properties": {
-          "hbs": {
+          "tpl": {
             "type": "string"
           },
           "styles": {

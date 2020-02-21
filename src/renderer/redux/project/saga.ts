@@ -142,7 +142,7 @@ function* saga_renderProjectSelection(action: any) {
             }
         }
     } catch (e) {
-
+        console.error(e);
     }
 }
 const editorSelectionSelect = (state: ApplicationState) => state.ui.editor.selection;

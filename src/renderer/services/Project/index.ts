@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
-import { ProjectSourceType, getCachedData, createDataFile } from './Sources';
+import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
 import { fsreadFile, fswriteFile, showOpenDialog, convertHtmlToPdf } from '../../utils';
 import {renderHtml} from './render';
 
@@ -81,12 +81,14 @@ export type ProjectFiles = {[key:string]:ProjectFile}
 
 export type Project = {
     name:string,
+    isNew:Boolean,
     modified:boolean,
     path: string,
     config: ProjectConfig,
     templates: { [key: string]: ProjectTemplate }
     layouts: { [key: string]: ProjectLayout }
     files:ProjectFiles
+    availablesSources: Array<ProjectSourceType>
     data:EnumDictionary<ProjectSourceType,ProjectSourceData>
 }
 
@@ -173,11 +175,13 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
     const project: Project = {
         modified: false,
         name,
+        isNew: false,
         path: projectPath,
         config,
         templates: _.keyBy(templates, o => o.id),
         layouts: _.keyBy(layouts, o => o.id),
         files,
+        availablesSources: getAvailableSources(config),
         data:{}
     }
     const rawCacheData = await Promise.all(_.map(config.sources, (o,k) => getCachedData(project,k)))

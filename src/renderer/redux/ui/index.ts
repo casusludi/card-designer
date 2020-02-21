@@ -24,7 +24,7 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
     [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => {
         const { project } = action.payload;
         const selectedTemplate = project?.templates[firstKeyOfObject(project?.templates)];
-        const selectedSourceType = ProjectSourceType.GSHEETS;
+        const selectedSourceType = project?.availablesSources[1] || ProjectSourceType.NONE;
         return {
             selectedSourceType,
             selection: {

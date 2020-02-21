@@ -1,4 +1,4 @@
-import { Project, ProjectSourceData, PROJECT_CACHE_FOLDER, ProjectFile } from "..";
+import { Project, ProjectSourceData, PROJECT_CACHE_FOLDER, ProjectFile, ProjectConfig } from "..";
 import { fetchFromGSheet } from "./GSheets";
 import { User, AuthType } from "../../Auth";
 import { fsreadFile } from "../../../utils";
@@ -61,6 +61,30 @@ export function createDataFile(project:Project, sourceType: ProjectSourceType|st
             }
     }
     return null;
+}
+
+export function getAvailableSources(config: ProjectConfig):Array<ProjectSourceType>{
+    const sourceConfigs = config.sources;
+    const ret:Array<ProjectSourceType> = [ProjectSourceType.NONE];
+    for(let key in sourceConfigs){
+        const type = key as ProjectSourceType;
+        if(type){
+            switch(type){
+                case ProjectSourceType.GSHEETS:
+                    if(sourceConfigs.gsheets && sourceConfigs.gsheets.sheetId != null){
+                        ret.push(type);
+                    }
+                break;
+                case ProjectSourceType.MOCKUP:
+                    if(sourceConfigs.mockup && sourceConfigs.mockup.length > 0){
+                        ret.push(type);
+                    }
+                break;
+            }
+        }
+    }
+
+    return ret;
 }
 
 export async function getCachedData(project: Project, sourceType: ProjectSourceType|string) {

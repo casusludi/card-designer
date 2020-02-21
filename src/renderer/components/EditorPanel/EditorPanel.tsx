@@ -12,10 +12,11 @@ import _ from "lodash";
 import { uiEditorSelectedTemplateChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedSourceTypeChanged } from "../../redux/ui";
 import TemplateEditor from "./TemplateEditor/TemplateEditor";
 import { ProjectSourceType } from "../../services/Project/Sources";
-import { EditorPreferences, prefAutoRenderFilterChanged } from "../../redux/preferences";
+import { prefAutoRenderFilterChanged } from "../../redux/preferences";
 import Select from "../Misc/Select/Select";
 import ExportEditor from "./ExportEditor/ExportEditor";
 import Checkbox from "../Misc/Checkbox/Checkbox";
+import { EditorPreferences } from "../../services/Preferences";
 
 
 export type EditorPanelProps = {
@@ -100,7 +101,7 @@ function EditorPanel(props: EditorPanelProps) {
                         <div className="EditorPanel__ActionBar-line">
                             <Select id="ActionBar__TemplateSelect-select" label="Template" labelOnTop={true} defaultValue={props.ui.selection?.template} onChange={selectedTemplateChanged} options={_.map(props.project.templates,(o,k)=>({label:k,value:o}))} />
                             <Select id="ActionBar__LayoutSelect-select" label="layout" labelOnTop={true} defaultValue={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts,(o,k)=>({label:k,value:o}))} />
-                            <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(ProjectSourceType,(o,k)=>({label:o,value:o}))} />
+                            <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources,(o,k)=>({label:o,value:o}))} />
                
                             <div className="ActionBar__RenderingBox button-bar">
                                 <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>

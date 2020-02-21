@@ -1,20 +1,18 @@
 import { ApplicationState } from "../..";
 import { select, put, takeLatest, all, takeEvery } from "redux-saga/effects";
 import { prefLoaded, prefLoadFromLocalStorage, prefAutoRenderFilterChanged, prefEditorWidthChanged, prefProjectExportChanged } from ".";
+import { savePrefInLocalStorage, loadPrefFromLocalStorage } from "../../services/Preferences";
 
 const preferenceSelect = (state: ApplicationState) => state.preferences
 
-const PREF_KEY = 'preferences';
-
 function* saga_savePrefInLocalStorage() {
     const preferences = yield select(preferenceSelect);
-    window.localStorage.setItem(PREF_KEY, JSON.stringify(preferences));
+    savePrefInLocalStorage(preferences)
 }
 
 function* saga_loadPrefFromLocalStorage() {
-    const prefRaw = window.localStorage.getItem(PREF_KEY);
-    if (prefRaw) {
-        const preferences = JSON.parse(prefRaw);
+    const preferences = loadPrefFromLocalStorage();
+    if (preferences) {
         yield put(prefLoaded({ preferences }));
     }
 }

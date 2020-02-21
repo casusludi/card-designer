@@ -5,8 +5,9 @@ import { remote } from "electron";
 
 export default function WindowControls(){
 
-    const currentWindow = remote.getCurrentWindow();
-    const [state,setState] = useState({isMaximized:currentWindow.isMaximized()});
+    //const currentWindow = remote.getCurrentWindow();
+    const currentWindow = remote.BrowserWindow.getFocusedWindow();
+    const [state,setState] = useState({isMaximized:currentWindow?.isMaximized()});
 
     const handleWindowMaximizedEvent = useCallback( () => {
         setState({isMaximized:true})
@@ -17,15 +18,16 @@ export default function WindowControls(){
     },[])
 
     useEffect(()=>{
-
-        if(currentWindow){
-          currentWindow.on('maximize',handleWindowMaximizedEvent)
-          currentWindow.on('unmaximize',handleWindowUnMaximizedEvent)
+        // declare local variable to close with the same window as start
+        // see return () => {}
+        const curr = currentWindow;
+        if(curr){
+            curr.on('maximize',handleWindowMaximizedEvent)
+            curr.on('unmaximize',handleWindowUnMaximizedEvent)
         }
-
         return () => {
-            currentWindow.removeListener('maximize',handleWindowMaximizedEvent)
-            currentWindow.removeListener('unmaximize',handleWindowUnMaximizedEvent)
+            curr?.removeListener('maximize',handleWindowMaximizedEvent)
+            curr?.removeListener('unmaximize',handleWindowUnMaximizedEvent)
         }
     });
 

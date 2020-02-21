@@ -1,30 +1,6 @@
 import { createAction, createReducer, combineReducers, PayloadAction } from "@reduxjs/toolkit";
 import { RenderFilter } from "../../services/Project";
-import { ProjectSourceType } from "../../services/Project/Sources";
-
-export type LayoutPreferences = {
-    editorWidth:number
-}
-
-export type ExportPreferences = {
-    selectedLayoutId:string|null|undefined,
-    selectedSourceType:ProjectSourceType,
-    exportFolderPath:string|null|undefined
-}
-
-export type AllExportPreferences = {
-    [projectPath:string]:ExportPreferences
-}
-
-export type EditorPreferences = {
-    autoRenderFilter:RenderFilter
-}
-
-export type Preferences = {
-    layout:LayoutPreferences,
-    editor:EditorPreferences,
-    export:AllExportPreferences
-}
+import { Preferences, ExportPreferences, LayoutPreferences, EditorPreferences, AllExportPreferences } from "../../services/Preferences";
 
 export const prefAutoRenderFilterChanged = createAction<{ autoRenderFilter: RenderFilter }>('pref/AutoRenderFilterChanged');
 export const prefEditorWidthChanged = createAction<{ editorWidth: number }>('pref/editorWidthChanged');

@@ -13,10 +13,11 @@ import { projectOpenFromDialog, projectFetchData, projectSaving, projectOpenFrom
 import { Dispatch } from 'redux';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
 import { authSignIn, authSignOut } from '../../redux/auth';
-import { LayoutPreferences, prefEditorWidthChanged } from '../../redux/preferences';
+import { prefEditorWidthChanged } from '../../redux/preferences';
 import { AppUIExport } from '../EditorPanel/ExportEditor/ExportEditor';
 import { remote } from 'electron';
 import WindowControls from '../WindowControls/WindowControls';
+import { LayoutPreferences } from '../../services/Preferences';
 
 export type AppUIOthers = {
 	fetchDataStatus:{

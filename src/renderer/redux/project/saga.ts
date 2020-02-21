@@ -10,9 +10,9 @@ import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
 import { ServeOverrides } from '../../../main/serve';
 import { AnyAction } from 'redux';
-import { EditorPreferences } from '../preferences';
 import { PayloadAction } from '@reduxjs/toolkit';
 import _ from 'lodash';
+import { EditorPreferences } from '../../services/Preferences';
 
 const selectProject = (state: ApplicationState) => state.project;
 const selectEditorPreferences = (state: ApplicationState) => state.preferences.editor

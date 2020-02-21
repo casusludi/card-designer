@@ -28,8 +28,9 @@ import _ from 'lodash';
 import { projectSaving, projectOpenSucceeded } from './redux/project';
 
 import { authUserChanged } from './redux/auth';
-import { prefLoadFromLocalStorage, Preferences } from './redux/preferences';
+import { prefLoadFromLocalStorage } from './redux/preferences';
 import { openDevTools } from './utils';
+import { Preferences } from './services/Preferences';
 
 
 export type Users = EnumDictionary<AuthType,User>;

@@ -1,13 +1,14 @@
 
 import React from "react";
 import './HTMLViewer.scss';
-import { shell } from 'electron';
+import { shell, remote } from 'electron';
+import path from 'path';
 
 export type HTMLViewerProps = {
-    url: string | null
+    url: string | null | undefined
 }
 
-
+/*
 const mouseEventTrapScript = `
     const { ipcRenderer } = require('electron');
 
@@ -24,7 +25,7 @@ const mouseEventTrapScript = `
     document.addEventListener('mousedown', eventDistachToHost);
     document.addEventListener('mousemove', eventDistachToHost);
 
-`;
+`;*/
 
 const webviewCSS = `
     
@@ -64,13 +65,13 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
                 // @ts-ignore TS dont recognise webview API
                 ref.insertCSS(webviewCSS)
                 // @ts-ignore TS dont recognise webview API
-                ref.executeJavaScript(mouseEventTrapScript);
+                //ref.executeJavaScript(mouseEventTrapScript);
                 // @ts-ignore TS dont recognise webview API
                 // ref.openDevTools({mode:'bottom'});
             })
 
             ref.addEventListener('console-message', (e: any) => {
-                //console.log('[webview] :', e.message)
+                console.log('[webview] :', e.message)
             })
 
             ref.addEventListener('ipc-message', (e: any) => {
@@ -94,10 +95,8 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
     }
 
     webviewComp() {
-        // create a specific webviewComp function to add a @ts-ignore
-        // Electron want a string value to "nodeintegration" and TS want a boolean|undefind value
-        // @ts-ignore
-        return <webview ref={this.onWebViewRef.bind(this)} nodeintegration="true" className="HTMLViewer_webview " src={this.props.url} ></webview>
+        const preloadPath = path.join(remote.app.getAppPath(),'webview-preload.js');
+        return <webview ref={this.onWebViewRef.bind(this)} preload={preloadPath}  className="HTMLViewer_webview " src={this.props.url || undefined} ></webview>
     }
 
     render() {

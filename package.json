@@ -19,18 +19,14 @@
     "copyright": "Copyright © 2020 Casus Ludi",
     "files": [
       {
-        "from": "./public",
+        "from": "./public/renderer",
         "to": "./"
-      },
-      {
-        "from": "./templates",
-        "to": "./templates"
       }
     ],
     "extraFiles": [
       {
-        "from": "./templates",
-        "to": "./templates"
+        "from": "./public/main",
+        "to": "./"
       }
     ],
     "win": {

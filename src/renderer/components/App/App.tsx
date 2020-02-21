@@ -7,9 +7,9 @@ import { AuthType } from '../../services/Auth';
 import { GoogleBar } from '../Google/GoogleBar';
 import EditorPanel, { AppUIEditor } from '../EditorPanel/EditorPanel';
 import PreviewPanel, { AppUIPreview } from '../PreviewPanel/PreviewPanel';
-import { Project } from '../../services/Project';
+import { Project, PROJECT_DEFAULT_TEMPLATE_PATH } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
-import { projectOpenFromDialog, projectFetchData, projectSaving, projectOpenFromPath } from '../../redux/project';
+import { projectOpenFromDialog, projectFetchData, projectSaving, projectOpenFromPath, projectCreateFromTemplate } from '../../redux/project';
 import { Dispatch } from 'redux';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
 import { authSignIn, authSignOut } from '../../redux/auth';
@@ -18,6 +18,7 @@ import { AppUIExport } from '../EditorPanel/ExportEditor/ExportEditor';
 import { remote } from 'electron';
 import WindowControls from '../WindowControls/WindowControls';
 import { LayoutPreferences } from '../../services/Preferences';
+import path from 'path';
 
 export type AppUIOthers = {
 	fetchDataStatus:{
@@ -95,6 +96,11 @@ class App extends Component<AppProps> {
 		}
 	}
 
+	createNewProject(){
+		const tplPath = path.join(remote.app.getAppPath(),PROJECT_DEFAULT_TEMPLATE_PATH);
+		this.props.dispatch(projectCreateFromTemplate({templatePath:tplPath}))
+	}
+
 	openProjectFromDialog() {
 		this.props.dispatch(projectOpenFromDialog())
 	}
@@ -130,9 +136,9 @@ class App extends Component<AppProps> {
 					{/*<div className="project-name">{state.project && state.project.name} {state.projectModified && <span className="project-modified-status"> &#9679;</span>}</div>*/}
 					<div className="project-bar right-align">
 						<div className="button-bar">
-							<button className="button" ><i className="icon far fa-file"></i></button>
+							<button className="button" onClick={() => this.createNewProject()}><i className="icon far fa-file"></i></button>
 							<button className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
-							<button className="button" disabled={!this.props.project?.modified} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
+							<button className="button" disabled={!this.props.project?.modified && !this.props.project?.isNew} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
 							<button className="button" onClick={() => this.openReloadProject()} ><i className="fas fa-sync"></i></button>
 						</div>
 					</div>
@@ -142,7 +148,7 @@ class App extends Component<AppProps> {
 						{this.props.project && <div className="project-bar__name">
 							- {this.props.project.name}
 							<button className="button button-frameless" onClick={() => this.openProjectFolder()} ><i className="icon far fa-folder-open"></i></button>
-							{this.props.project.modified && <span className="project-bar__modified">(not saved)<i className="icon fas fa-exclamation-triangle"></i></span>}
+							{(this.props.project.modified || this.props.project.isNew)&& <span className="project-bar__modified">(not saved)<i className="icon fas fa-exclamation-triangle"></i></span>}
 							
 						</div>}
 

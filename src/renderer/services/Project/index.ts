@@ -5,13 +5,15 @@ import {Validator} from 'jsonschema';
 import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
-import { fsreadFile, fswriteFile, showOpenDialog, convertHtmlToPdf } from '../../utils';
+import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
 import {renderHtml} from './render';
+import fse from 'fs-extra';
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
 
 export const PROJECT_CACHE_FOLDER = '.cache';
+export const PROJECT_DEFAULT_TEMPLATE_PATH = 'templates/mtg-standard';
 
 export enum RenderFilter {
     NONE,
@@ -104,17 +106,17 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigT
    
     if(!files[template.hbs]){
         const hbsPath = path.join(projectPath, template.hbs);
-        const hbsRawData =  await fsreadFile(hbsPath).catch(() => { throw new Error(`${template.hbs} missing.`) }); 
+        const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.hbs} missing.`) }); 
         files[template.hbs] = {
-            path:hbsPath,
+            path:template.hbs,
             content:hbsRawData.toString()
         }
     }
     if(!files[template.styles]){
         const stylesPath = path.join(projectPath, template.styles);
-        const stylesRawData =  await fsreadFile(stylesPath).catch(() => { throw new Error(`${template.styles} missing.`) });
+        const stylesRawData =  await fse.readFile(stylesPath).catch(() => { throw new Error(`${template.styles} missing.`) });
         files[template.styles] = {
-            path:stylesPath,
+            path:template.styles,
             content:stylesRawData.toString()
         }
     }
@@ -150,8 +152,13 @@ export async function openLastProject():Promise<Project|null>{
 }
 
 export async function loadProjectFromPath(projectPath:string){
+    try{
+        await fse.access(projectPath,fse.constants.W_OK | fse.constants.R_OK);
+    }catch(e){
+        console.log(e)
+    }
     const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
-    const rawData =  await fsreadFile(configFilePath).catch(() => { throw new Error(`${CARDMAKER_CONFIG_FILE} missing.`) });
+    const rawData =  await fse.readFile(configFilePath).catch(() => { throw new Error(`${CARDMAKER_CONFIG_FILE} missing.`) });
     const config: ProjectConfig = JSON.parse(rawData.toString());
     const validationResult = schemaValidator.validate(config,projectSchema);
     if(validationResult.errors.length > 0){
@@ -189,19 +196,56 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
     return project
 }
 
-export async function saveProject(project:Project){
-    const projectPath = project.path;
-    const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
-    const configRawData = JSON.stringify(project.config,null,4);
-    const filesToSave = _.map(project.files, f => fswriteFile(f.path,f.content))
-    filesToSave.push(fswriteFile(configFilePath,configRawData))
-    _.forIn(ProjectSourceType,(sourceType) => {
-        const file = createDataFile(project,sourceType);
-        if(file){
-            filesToSave.push(fswriteFile(file.path,file.content));
-        }
+export async function saveProject(project:Project):Promise<Project|null>{
+    
+    if(project.isNew){
+        return saveProjectAs(project);
+    }
+
+    return saveProjectAt(project,project.path);
+}
+
+export async function copyProject(project:Project,pathToCopy:string):Promise<Project|null>{
+    await fse.copy(project.path,pathToCopy);
+    return await saveProjectAt(project,pathToCopy);
+}
+
+async function saveProjectAt(project:Project, projectPath:string):Promise<Project|null>{
+        const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
+        const configRawData = JSON.stringify(project.config,null,4);
+        const filesToSave = _.map(project.files, f => writeFile(path.join(projectPath,f.path),f.content))
+        filesToSave.push(writeFile(configFilePath,configRawData))
+        _.forIn(ProjectSourceType,(sourceType) => {
+            const file = createDataFile(project,sourceType);
+            if(file){
+                filesToSave.push(writeFile(file.path,file.content));
+            }
+        });
+        await Promise.all(filesToSave);
+        window.localStorage.setItem(LAST_PROJECT_PATH_STORAGE_KEY,projectPath);
+        return {
+            ...project,
+            name: _.upperFirst(path.basename(projectPath)),
+            path:projectPath,
+            modified: false,
+            isNew: false
+        };
+}
+
+
+export async function saveProjectAs(project:Project):Promise<Project|null>{
+    
+    let projectPath = null;
+
+    const result = await showSaveDialog({
+        title: 'Open Cardmaker Studio Project'
     });
-    return Promise.all(filesToSave)
+
+    if (!result.canceled && result.filePath != "") {
+        projectPath = result.filePath;
+        return copyProject(project,projectPath);
+    }
+    return null
 }
 
 export async function exportProjectStrip(project:Project,templateName:string,layoutId:string,sourceType:ProjectSourceType,exportFolderPath:string){
@@ -220,8 +264,14 @@ export async function exportProjectStrip(project:Project,templateName:string,lay
         throw new Error(`Build failed for template '${templateName}' with layout '${layoutId}'`)
     }
     const pdf = await convertHtmlToPdf(html,project.path);
-    await fswriteFile(path.join(exportFolderPath,layoutId,`${templateName}.pdf`),pdf);
+    await writeFile(path.join(exportFolderPath,layoutId,`${templateName}.pdf`),pdf);
     return true
+}
+
+export async function createNewProjectFromTemplate(templatePath:string){
+    const project = await loadProjectFromPath(templatePath);
+    project.isNew = true;
+    return project;
 }
 
 export const renderSelectionAsHtml = renderHtml

@@ -1,6 +1,6 @@
 'use strict'
 
-import { app,protocol, BrowserWindow, ipcMain, dialog, OpenDialogOptions } from 'electron'
+import { app,protocol, BrowserWindow, ipcMain, dialog, OpenDialogOptions, SaveDialogOptions } from 'electron'
 import * as path from 'path'
 import getPort from 'get-port';
 import { format as formatUrl } from 'url'
@@ -129,6 +129,13 @@ app.on('ready', async () => {
   ipcMain.handle('show-open-dialog',(event,options:OpenDialogOptions) => {
     if(mainWindow){
        return dialog.showOpenDialog(mainWindow,options);
+    }
+    return null;
+  })
+
+  ipcMain.handle('show-save-dialog',(event,options:SaveDialogOptions) => {
+    if(mainWindow){
+       return dialog.showSaveDialog(mainWindow,options);
     }
     return null;
   })

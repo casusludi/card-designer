@@ -24,7 +24,8 @@ module.exports = {
     },
     plugins: [
         new CopyPlugin([
-            { from: './public', to: '../renderer' }
+            { from: './public', to: '../renderer' },
+            { from: './templates', to: '../main/templates' }
         ]),
     ],
 }

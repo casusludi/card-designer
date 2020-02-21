@@ -1,7 +1,7 @@
 import { Project, ProjectSourceData, PROJECT_CACHE_FOLDER, ProjectFile, ProjectConfig } from "..";
 import { fetchFromGSheet } from "./GSheets";
 import { User, AuthType } from "../../Auth";
-import { fsreadFile } from "../../../utils";
+import fse from 'fs-extra';
 
 
 export enum ProjectSourceType {
@@ -93,7 +93,7 @@ export async function getCachedData(project: Project, sourceType: ProjectSourceT
             if (!project.config.sources.gsheets) throw new Error(`Fetching Data from '${sourceType}' : no sheet id found in cardmaker.json.`)
             const cacheFile = `${project.path}/${PROJECT_CACHE_FOLDER}/gsheets/${project.config.sources.gsheets.sheetId}.json`;
             try{
-                const data = await fsreadFile(cacheFile);
+                const data = await fse.readFile(cacheFile);
                 return {
                     data: JSON.parse(data.toString()),
                     cacheFilePath: `${project.path}/${PROJECT_CACHE_FOLDER}/gsheets/${project.config.sources.gsheets.sheetId}.json`,

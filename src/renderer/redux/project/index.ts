@@ -16,6 +16,8 @@ export type ProjectFetchDataPayload = {
     user: User|null|undefined
 }
 
+export const projectCreateFromTemplate = createAction<{templatePath:string}>('project/createFromTemplate');
+export const projectCreateFromTemplateFailed = createAction('project/createFromTemplateFailed',asError());
 export const projectOpenFromDialog = createAction('project/openFromDialog');
 export const projectOpenFromPath = createAction<{path:string}>('project/openFromPath');
 export const projectOpenSucceeded = createAction<{ project: Project }>('project/openSucceeded');
@@ -31,7 +33,7 @@ export const projectConfigChanged = createAction<{config:ProjectConfig}>('projec
 export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
 export const projectSaving = createAction('project/saving');
 export const projectSavingFailed = createAction('project/savingFailed',asError());
-export const projectSaved = createAction('project/saved');
+export const projectSaved = createAction<{project:Project}>('project/saved');
 export const projectRender = createAction<{selection:ProjectSelection, filter:RenderFilter}>('project/render');
 export const projectRenderFailed = createAction('project/renderFailed',asError());
 export const projectRendered = createAction('project/rendered');
@@ -62,7 +64,7 @@ export const projectReducer = createReducer<Project | null>(null, {
             config: action.payload.config
         }
     },
-    [projectSaved.type]: (state,action) => (state?{...state, modified:false}:null),
+    [projectSaved.type]: (state,action:PayloadAction<{project:Project}>) => action.payload.project,
     [projectFileChanged.type]: (state,action:PayloadAction<{fileId:string,content:string}>) => {
         if (!state) return null;
         return {

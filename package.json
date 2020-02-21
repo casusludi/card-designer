@@ -21,6 +21,16 @@
       {
         "from": "./public",
         "to": "./"
+      },
+      {
+        "from": "./templates",
+        "to": "./templates"
+      }
+    ],
+    "extraFiles": [
+      {
+        "from": "./templates",
+        "to": "./templates"
       }
     ],
     "win": {
@@ -72,12 +82,12 @@
     "axios": "^0.19.2",
     "chokidar": "^3.3.1",
     "cookies": "^0.8.0",
+    "fs-extra": "^8.1.0",
     "get-port": "^5.1.1",
     "googleapis": "^47.0.0",
     "handlebars": "^4.7.3",
     "jsonschema": "^1.2.5",
     "lodash": "^4.17.15",
-    "mkdirp": "^1.0.3",
     "mousetrap": "^1.6.5",
     "pdfjs-dist": "^2.2.228",
     "qs": "^6.9.1",

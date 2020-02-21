@@ -88,6 +88,7 @@ function ExportEditor(props: ExportEditorProps) {
     }
 
     function canExport() {
+        if(!props.project || props.project.isNew) return false;
         if (!props.preferences) return false;
         if (!props.preferences.selectedLayoutId) return false;
         if (!props.preferences.selectedSourceType) return false;

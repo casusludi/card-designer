@@ -1,7 +1,6 @@
-import { ipcRenderer, remote, OpenDialogOptions } from 'electron'
-import fs from 'fs';
-import mkdirp from 'mkdirp';
-import { promisify } from "util";
+import { ipcRenderer, remote, OpenDialogOptions, SaveDialogOptions } from 'electron'
+
+import fse from 'fs-extra';
 import path from 'path';
 
 export type ServeOverrides = {[key:string]:string}
@@ -27,13 +26,18 @@ export function showOpenDialog(options:OpenDialogOptions){
     return ipcRenderer.invoke("show-open-dialog",options)
 }
 
-export const fsreadFile = promisify(fs.readFile);
+export function showSaveDialog(options:SaveDialogOptions){
+    return ipcRenderer.invoke("show-save-dialog",options)
+}
 
-const _fswriteFile = promisify(fs.writeFile);
+//export const fsreadFile = promisify(fs.readFile);
+//export const fsaccess = promisify(fs.access);
 
-export async function fswriteFile(p: string, content: any) {
-    await mkdirp(path.dirname(p));
-    return await _fswriteFile(p, content);
+
+
+export async function writeFile(p: string, content: any) {
+    await fse.mkdirp(path.dirname(p));
+    return await fse.writeFile(p, content);
 }
 
 export function firstKeyOfObject(obj: Object | undefined | null): any {

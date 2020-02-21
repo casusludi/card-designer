@@ -1,10 +1,10 @@
 import { call, put, takeLatest, all, takeEvery, select, delay } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath, createNewProjectFromTemplate } from '../../services/Project';
 
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -15,7 +15,20 @@ import _ from 'lodash';
 import { EditorPreferences } from '../../services/Preferences';
 
 const selectProject = (state: ApplicationState) => state.project;
-const selectEditorPreferences = (state: ApplicationState) => state.preferences.editor
+const selectEditorPreferences = (state: ApplicationState) => state.preferences.editor;
+
+function* saga_projectCreateFromTemplate(action:PayloadAction<{templatePath:string}>){
+    try {
+        const project = yield call(createNewProjectFromTemplate, action.payload.templatePath);
+        if (project) {
+            yield put(projectOpenSucceeded({ project: project }))
+        } else {
+            yield put(projectOpenCancelled())
+        }
+    } catch (e) {
+        yield put(projectCreateFromTemplateFailed(e,action))
+    }
+}
 
 function* saga_openProjectFromDialog(action: any) {
     try {
@@ -89,9 +102,9 @@ function* saga_projectFetchDataSucceeded(action:any){
 function* saga_saveProject(action: any) {
     try {
         const project: Project = yield select(selectProject);
-        if (project.modified) {
-            yield call(saveProject, project);
-            yield put(projectSaved());
+        if (project.modified || project.isNew) {
+            const savedProject = yield call(saveProject, project);
+            yield put(projectSaved({project:savedProject}));
         }
     } catch (e) {
         yield projectSavingFailed(e);
@@ -203,6 +216,7 @@ function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:P
 
 export default function* projectSaga() {
     yield all([
+        yield takeLatest(projectCreateFromTemplate.type, saga_projectCreateFromTemplate),
         yield takeLatest(projectOpenFromDialog.type, saga_openProjectFromDialog),
         yield takeLatest(projectOpenFromPath.type, saga_openProjectFromPath),
         yield takeEvery(projectFetchData.type, saga_fetchData),

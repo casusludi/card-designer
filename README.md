@@ -23,7 +23,10 @@
         - multi-images boxes
     - better layout management
     - UI base on the previous json 
-    - Migrate template to EJS?
+
+## remove EJS and nodeIntegration of the HTML preview
+
+
 
 ## better user pref storage system
     -

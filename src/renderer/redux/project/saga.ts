@@ -47,7 +47,7 @@ function* saga_reloadProjectWhenConfigChanged(action:any){
     try {
         const oldProject: Project = yield select(selectProject);
 
-        const newProject = yield call(loadProjectFromConfig, oldProject.config,oldProject.path);
+        const newProject = yield call(loadProjectFromConfig, oldProject.config,oldProject.path,oldProject.isNew);
         if (newProject) {
             newProject.modified = true;
             yield put(projectReloadSucceeded({ project: newProject }))

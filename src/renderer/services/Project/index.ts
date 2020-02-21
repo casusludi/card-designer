@@ -83,7 +83,7 @@ export type ProjectFiles = {[key:string]:ProjectFile}
 
 export type Project = {
     name:string,
-    isNew:Boolean,
+    isNew:boolean,
     modified:boolean,
     path: string,
     config: ProjectConfig,
@@ -137,7 +137,7 @@ export async function openProjectFromDialog(): Promise<Project | null> {
     });
     if (!result.canceled && result.filePaths.length > 0) {
         const projectPath = result.filePaths[0];
-        return loadProjectFromPath(projectPath);
+        return loadProjectFromPath(projectPath,false);
     }
 
     return null;
@@ -146,12 +146,12 @@ export async function openProjectFromDialog(): Promise<Project | null> {
 export async function openLastProject():Promise<Project|null>{
     const projectPath = window.localStorage.getItem(LAST_PROJECT_PATH_STORAGE_KEY);
     if(projectPath){
-        return loadProjectFromPath(projectPath);
+        return loadProjectFromPath(projectPath,false);
     }
     return null;
 }
 
-export async function loadProjectFromPath(projectPath:string){
+export async function loadProjectFromPath(projectPath:string,isNew:boolean=false){
     try{
         await fse.access(projectPath,fse.constants.W_OK | fse.constants.R_OK);
     }catch(e){
@@ -168,13 +168,13 @@ export async function loadProjectFromPath(projectPath:string){
             .value();
             throw new Error(`${CARDMAKER_CONFIG_FILE} validation failed : \n${messages}`)
     }
-    return await loadProjectFromConfig(config,projectPath).then( project => {
+    return await loadProjectFromConfig(config,projectPath,isNew).then( project => {
         window.localStorage.setItem(LAST_PROJECT_PATH_STORAGE_KEY,projectPath);
         return project;
     });
 }
 
-export async function loadProjectFromConfig(config:ProjectConfig,projectPath:string, files:{[key:string]:ProjectFile} = {}){
+export async function loadProjectFromConfig(config:ProjectConfig,projectPath:string,isNew:boolean=false, files:{[key:string]:ProjectFile} = {}){
     const templates = await Promise.all(_.map(config.templates, (o,k) => loadTemplate(projectPath,k,o,files)))
     const layouts = await Promise.all(_.map(config.layouts, (o,k) => loadTemplate(projectPath,k,o,files)))
    
@@ -182,7 +182,7 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
     const project: Project = {
         modified: false,
         name,
-        isNew: false,
+        isNew,
         path: projectPath,
         config,
         templates: _.keyBy(templates, o => o.id),
@@ -205,12 +205,12 @@ export async function saveProject(project:Project):Promise<Project|null>{
     return saveProjectAt(project,project.path);
 }
 
-export async function copyProject(project:Project,pathToCopy:string):Promise<Project|null>{
+export async function copyProject(project:Project,pathToCopy:string):Promise<Project>{
     await fse.copy(project.path,pathToCopy);
     return await saveProjectAt(project,pathToCopy);
 }
 
-async function saveProjectAt(project:Project, projectPath:string):Promise<Project|null>{
+async function saveProjectAt(project:Project, projectPath:string):Promise<Project>{
         const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
         const configRawData = JSON.stringify(project.config,null,4);
         const filesToSave = _.map(project.files, f => writeFile(path.join(projectPath,f.path),f.content))
@@ -233,7 +233,7 @@ async function saveProjectAt(project:Project, projectPath:string):Promise<Projec
 }
 
 
-export async function saveProjectAs(project:Project):Promise<Project|null>{
+export async function saveProjectAs(project:Project):Promise<Project>{
     
     let projectPath = null;
 
@@ -245,7 +245,7 @@ export async function saveProjectAs(project:Project):Promise<Project|null>{
         projectPath = result.filePath;
         return copyProject(project,projectPath);
     }
-    return null
+    return project
 }
 
 export async function exportProjectStrip(project:Project,templateName:string,layoutId:string,sourceType:ProjectSourceType,exportFolderPath:string){
@@ -269,7 +269,7 @@ export async function exportProjectStrip(project:Project,templateName:string,lay
 }
 
 export async function createNewProjectFromTemplate(templatePath:string){
-    const project = await loadProjectFromPath(templatePath);
+    const project = await loadProjectFromPath(templatePath,true);
     project.isNew = true;
     return project;
 }

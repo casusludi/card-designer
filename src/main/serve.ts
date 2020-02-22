@@ -106,7 +106,10 @@ export default async function makeServe(port: number): Promise<Serve> {
         async convertToPdf(html: string, base: string, overrides?: ServeOverrides) {
 
             const pdfWin = new BrowserWindow({
-                show: false
+                show: false,
+                webPreferences:{
+                    javascript: false
+                }
             });
             const id = uuidv1();
             mapping[id] = {

@@ -75,7 +75,7 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
 
     webviewComp() {
         const preloadPath = path.join(remote.app.getAppPath(),'webview-preload.js');
-        return <webview ref={this.onWebViewRef.bind(this)} preload={preloadPath}  className="HTMLViewer_webview " src={this.props.url || undefined} ></webview>
+        return <webview ref={this.onWebViewRef.bind(this)} preload={preloadPath} webpreferences="javascript=no, contextIsolation"  className="HTMLViewer_webview " src={this.props.url || undefined} ></webview>
     }
 
     render() {

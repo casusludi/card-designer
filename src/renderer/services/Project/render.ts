@@ -119,6 +119,60 @@ export function renderHBSToHtml(project:Project,selection:ProjectSelection):stri
     return tpl(variables);
 }
 
+import nunjucks, { LoaderSource } from 'nunjucks';
+
+class InternalLoader implements nunjucks.ILoader{
+
+    private src:string;
+    private path:string;
+
+    constructor(src:string,path:string){
+        this.src = src;
+        this.path = path;
+    }
+
+    getSource(name:string):LoaderSource {
+        return {
+            src:this.src,
+            path: this.path,
+            noCache: true
+        }
+    }
+}
+
+export function renderNJKToHtml(project:Project,selection:ProjectSelection):string|null{
+    if(!project) return null;
+    if(!selection.data) return null;
+    if(!selection.layout) return null;
+    if(!selection.template) return null;
+
+    const template = project.files[selection.template.hbs].content;
+    const layout = project.files[selection.layout.hbs].content;
+
+    if(!template) return null;
+    if(!layout) return null;
+
+    var env = new nunjucks.Environment();
+
+    env.addFilter('template', function(card) {
+        return nunjucks.renderString(template,{card:card});
+    });
+
+    var env = new nunjucks.Environment(new InternalLoader(template,selection.template?.hbs || ""));
+
+    env.addFilter('template', function(card) {
+        return nunjucks.renderString(template,{card:card});
+    });
+
+    const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
+    const globalVars = {
+        layoutCSSPath: selection.layout.styles,
+        templateCSSPath: selection.template.styles
+    }
+    const variables = {cards,...globalVars};
+    return env.renderString(layout,variables);
+}
+
 /*
 const ejs = require('ejs');
 

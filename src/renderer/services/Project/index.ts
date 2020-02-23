@@ -6,7 +6,7 @@ import projectSchema from './project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
 import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
-import { renderHBSToHtml} from './render';
+import { renderNJKToHtml} from './render';
 import fse from 'fs-extra';
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
@@ -274,4 +274,4 @@ export async function createNewProjectFromTemplate(templatePath:string){
     return project;
 }
 
-export const renderSelectionAsHtml = renderHBSToHtml
+export const renderSelectionAsHtml = renderNJKToHtml

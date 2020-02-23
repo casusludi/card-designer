@@ -1,17 +1,17 @@
 {
-    "templates": {
+    "cardTypes": {
         "default": {
-            "hbs": "templates/default/template.njk",
+            "template": "templates/default/template.njk",
             "styles": "templates/default/styles.css"
         }
     },
     "layouts": {
         "printer": {
-            "hbs": "layouts/printer.njk",
+            "template": "layouts/printer.njk",
             "styles": "layouts/printer.css"
         },
         "printing-house": {
-            "hbs": "layouts/printing-house.njk",
+            "template": "layouts/printing-house.njk",
             "styles": "layouts/printing-house.css"
         }
     },

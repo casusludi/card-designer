@@ -22,8 +22,8 @@ export enum RenderFilter {
     ALL
 }
 
-export type ProjectConfigTemplate = {
-    hbs:string
+export type ProjectConfigCard = {
+    template:string
     styles:string
 }
 
@@ -33,8 +33,8 @@ export type ProjectDataItem = {
 }
 
 export type ProjectConfig = {
-    templates: { [key: string]: ProjectConfigTemplate }
-    layouts: { [key: string]: ProjectConfigTemplate }
+    cardTypes: { [key: string]: ProjectConfigCard }
+    layouts: { [key: string]: ProjectConfigCard }
     sources: {
         gsheets?: {
             sheetId: string
@@ -56,14 +56,7 @@ export type ProjectSourceData = {
 
 export type ProjectTemplate = {
     id:string
-    hbs:string
-    styles:string
-}
-
-// currently the same thing as ProjectTemplate but ProjectTemplate evoluate later
-export type ProjectLayout = {
-    id:string
-    hbs:string
+    template:string
     styles:string
 }
 
@@ -87,28 +80,28 @@ export type Project = {
     modified:boolean,
     path: string,
     config: ProjectConfig,
-    templates: { [key: string]: ProjectTemplate }
-    layouts: { [key: string]: ProjectLayout }
+    cardTypes: { [key: string]: ProjectTemplate }
+    layouts: { [key: string]: ProjectTemplate }
     files:ProjectFiles
     availablesSources: Array<ProjectSourceType>
     data:EnumDictionary<ProjectSourceType,ProjectSourceData>
 }
 
 export type ProjectSelection = {
-    template:ProjectTemplate|undefined|null,
-    layout:ProjectLayout|undefined|null,
+    cardType:ProjectTemplate|undefined|null,
+    layout:ProjectTemplate|undefined|null,
     data:ProjectDataItem|undefined|null
 }
 
 const schemaValidator = new Validator();
 
-async function loadTemplate(projectPath:string,id:string,template:ProjectConfigTemplate,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
+async function loadTemplate(projectPath:string,id:string,template:ProjectConfigCard,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
    
-    if(!files[template.hbs]){
-        const hbsPath = path.join(projectPath, template.hbs);
-        const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.hbs} missing.`) }); 
-        files[template.hbs] = {
-            path:template.hbs,
+    if(!files[template.template]){
+        const hbsPath = path.join(projectPath, template.template);
+        const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.template} missing.`) }); 
+        files[template.template] = {
+            path:template.template,
             content:hbsRawData.toString()
         }
     }
@@ -123,7 +116,7 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigT
     
     return {
         id,
-        hbs:template.hbs,
+        template:template.template,
         styles:template.styles
     }
 }
@@ -175,7 +168,7 @@ export async function loadProjectFromPath(projectPath:string,isNew:boolean=false
 }
 
 export async function loadProjectFromConfig(config:ProjectConfig,projectPath:string,isNew:boolean=false, files:{[key:string]:ProjectFile} = {}){
-    const templates = await Promise.all(_.map(config.templates, (o,k) => loadTemplate(projectPath,k,o,files)))
+    const templates = await Promise.all(_.map(config.cardTypes, (o,k) => loadTemplate(projectPath,k,o,files)))
     const layouts = await Promise.all(_.map(config.layouts, (o,k) => loadTemplate(projectPath,k,o,files)))
    
     const name = _.upperFirst(path.basename(projectPath));
@@ -185,7 +178,7 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
         isNew,
         path: projectPath,
         config,
-        templates: _.keyBy(templates, o => o.id),
+        cardTypes: _.keyBy(templates, o => o.id),
         layouts: _.keyBy(layouts, o => o.id),
         files,
         availablesSources: getAvailableSources(config),
@@ -255,11 +248,11 @@ export async function exportProjectStrip(project:Project,templateName:string,lay
     if(!data) throw new Error(`No data found for '${templateName}' from source '${sourceType}'`)
 
     const selection:ProjectSelection = {
-        template: project.templates[templateName],
+        cardType: project.cardTypes[templateName],
         layout: project.layouts[layoutId],
         data: data
     }
-    const html = renderSelectionAsHtml(project, selection);
+    const html = await renderSelectionAsHtml(project, selection);
     if(!html){
         throw new Error(`Build failed for template '${templateName}' with layout '${layoutId}'`)
     }

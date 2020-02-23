@@ -100,10 +100,10 @@ export function renderHBSToHtml(project:Project,selection:ProjectSelection):stri
     if(!project) return null;
     if(!selection.data) return null;
     if(!selection.layout) return null;
-    if(!selection.template) return null;
+    if(!selection.cardType) return null;
 
-    const template = project.files[selection.template.hbs].content;
-    const layout = project.files[selection.layout.hbs].content;
+    const template = project.files[selection.cardType.template].content;
+    const layout = project.files[selection.layout.template].content;
 
     if(!template) return null;
     if(!layout) return null;
@@ -113,96 +113,38 @@ export function renderHBSToHtml(project:Project,selection:ProjectSelection):stri
     const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
     const globalVars = {
         layoutCSSPath: selection.layout.styles,
-        templateCSSPath: selection.template.styles
+        templateCSSPath: selection.cardType.styles
     }
     const variables = {cards,...globalVars};
     return tpl(variables);
 }
 
-import nunjucks, { LoaderSource } from 'nunjucks';
+import nunjucks from 'nunjucks';
 
-class InternalLoader implements nunjucks.ILoader{
-
-    private src:string;
-    private path:string;
-
-    constructor(src:string,path:string){
-        this.src = src;
-        this.path = path;
-    }
-
-    getSource(name:string):LoaderSource {
-        return {
-            src:this.src,
-            path: this.path,
-            noCache: true
-        }
-    }
-}
-
-export function renderNJKToHtml(project:Project,selection:ProjectSelection):string|null{
+export async function renderNJKToHtml(project:Project,selection:ProjectSelection):Promise<string|null>{
     if(!project) return null;
     if(!selection.data) return null;
     if(!selection.layout) return null;
-    if(!selection.template) return null;
+    if(!selection.cardType) return null;
 
-    const template = project.files[selection.template.hbs].content;
-    const layout = project.files[selection.layout.hbs].content;
+    const template = project.files[selection.cardType.template].content;
+    const layout = project.files[selection.layout.template].content;
 
     if(!template) return null;
     if(!layout) return null;
 
-    var env = new nunjucks.Environment();
+    const env = new nunjucks.Environment();
 
     env.addFilter('template', function(card) {
-        return nunjucks.renderString(template,{card:card});
-    });
-
-    var env = new nunjucks.Environment(new InternalLoader(template,selection.template?.hbs || ""));
-
-    env.addFilter('template', function(card) {
-        return nunjucks.renderString(template,{card:card});
+        return env.renderString(template,{card:card});
     });
 
     const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
     const globalVars = {
         layoutCSSPath: selection.layout.styles,
-        templateCSSPath: selection.template.styles
+        templateCSSPath: selection.cardType.styles
     }
     const variables = {cards,...globalVars};
+
     return env.renderString(layout,variables);
 }
-
-/*
-const ejs = require('ejs');
-
-export function renderEJSToHtml(project:Project,selection:ProjectSelection):string|null{
-    if(!project) return null;
-    if(!selection.data) return null;
-    if(!selection.layout) return null;
-    if(!selection.template) return null;
-
-    const template = project.files[selection.template.hbs].content;
-    const layout = project.files[selection.layout.hbs].content;
-
-    if(!template) return null;
-    if(!layout) return null;
-
-  
-    const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
-    const globalVars = {
-        title: selection.template.id,
-        layoutCSSPath: selection.layout.styles,
-        templateCSSPath: selection.template.styles
-    }
-    const variables = {cards,...globalVars};
-    const tpl = ejs.compile(layout,{client:true});
-    return tpl(variables,null,(path:string,d:any) => {
-        switch(path){
-            case 'card': return ejs.render(template,d)
-        }
-        return "";
-    });
-}
- */
-

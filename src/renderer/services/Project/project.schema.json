@@ -5,24 +5,24 @@
   "type": "object",
   "title": "The Root Schema",
   "required": [
-    "templates",
+    "cardTypes",
     "layouts",
     "sources"
   ],
   "additionalProperties": false,
   "properties": {
-    "templates": {
+    "cardTypes": {
       "$id": "#/properties/templates",
       "type": "object",
       "title": "The Templates Schema",
       "additionalProperties": {
         "type": "object",
         "required": [
-          "hbs",
+          "template",
           "styles"
         ],
         "properties": {
-          "hbs": {
+          "template": {
             "type": "string"
           },
           "styles": {
@@ -38,11 +38,11 @@
       "additionalProperties": {
         "type": "object",
         "required": [
-          "hbs",
+          "template",
           "styles"
         ],
         "properties": {
-          "hbs": {
+          "template": {
             "type": "string"
           },
           "styles": {

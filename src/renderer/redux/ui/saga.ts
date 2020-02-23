@@ -13,9 +13,9 @@ const uiEditorSelect = (state:ApplicationState) => state.ui.editor;
 function* saga_updateProjectSelectedData(action:any){
     const project:Project = yield select(projectSelect);
     const editor:AppUIEditor = yield select(uiEditorSelect);
-    const templateId = editor.selection?.template?.id;
+    const templateId = editor.selection?.cardType?.id;
     const dataSet = project.data[editor.selectedSourceType]?.data;
-    const data = templateId?_.find(dataSet, o => o.id == editor.selection?.template?.id):null;
+    const data = templateId?_.find(dataSet, o => o.id == editor.selection?.cardType?.id):null;
     yield put(uiEditorSelectedDataChanged({
         data
     }))

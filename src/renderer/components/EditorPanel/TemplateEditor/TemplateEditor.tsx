@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProjectTemplate, ProjectFiles, ProjectLayout } from '../../../services/Project';
+import { ProjectTemplate, ProjectFiles } from '../../../services/Project';
 import TabNav, { TabNavItem, TabNavHeaderPosition } from '../../Misc/TabNav/TabNav';
 import CodeEditor from '../CodeEditor/CodeEditor';
 import './TemplateEditor.scss';
@@ -7,7 +7,7 @@ import './TemplateEditor.scss';
 
 export type TemplateEditorProps = {
     // currently ProjectTemplate and ProjectLayout are identic. This change later
-    template: ProjectTemplate | ProjectLayout | null | undefined,
+    template: ProjectTemplate | null | undefined,
     files: ProjectFiles
     width: number,
     onFileChanged: (fileId: string, conte: string) => void
@@ -23,7 +23,7 @@ export default function TemplateEditor(props: TemplateEditorProps) {
                 <div className="TemplateEditor full-space">
                     <div className="TemplateEditor__header"><span className="TemplateEditor__header-label">{props.template.id}</span></div>
                     <TabNav className="TemplateEditor__Tabs" headerPosition={TabNavHeaderPosition.TOP} >
-                        <TabNavItem label="HTML"><CodeEditor width={props.width} className="full-space" mode="handlebars" onChange={(code) => props.template && props.onFileChanged(props.template.hbs, code)} code={props.files[props.template.hbs].content} /></TabNavItem>
+                        <TabNavItem label="Template"><CodeEditor width={props.width} className="full-space" mode="handlebars" onChange={(code) => props.template && props.onFileChanged(props.template.template, code)} code={props.files[props.template.template].content} /></TabNavItem>
                         <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.template && props.onFileChanged(props.template.styles, code)} code={props.files[props.template.styles].content} /></TabNavItem>
                     </TabNav>
                 </div> :

@@ -30,7 +30,8 @@ export type EditorPanelProps = {
 
 export type AppUIEditor = {
 	selectedSourceType:ProjectSourceType
-	selection:ProjectSelection|undefined|null
+    selection:ProjectSelection|undefined|null
+    lastError: Error|null|undefined
 }
 
 
@@ -82,8 +83,8 @@ function EditorPanel(props: EditorPanelProps) {
                         <TabNavItem label="Config">
                             <ConfigEditor width={props.width} config={props.project.config} onValidChange={onConfigValidChange} />
                         </TabNavItem>
-                        <TabNavItem label="Template">
-                            <TemplateEditor width={props.width} template={props.ui.selection?.template} files={props.project.files} onFileChanged={onFileChanged} />
+                        <TabNavItem label="Card Type">
+                            <TemplateEditor width={props.width} template={props.ui.selection?.cardType} files={props.project.files} onFileChanged={onFileChanged} />
                         </TabNavItem>
                         <TabNavItem label="Layout">
                             <TemplateEditor width={props.width} template={props.ui.selection?.layout} files={props.project.files} onFileChanged={onFileChanged} />
@@ -94,13 +95,17 @@ function EditorPanel(props: EditorPanelProps) {
 
                     </TabNav>
                     <div className="EditorPanel__ActionBar">
+                        {props.ui.lastError &&
+                            <div className="MessagerAlert__error">
+                                {props.ui.lastError.message}
+                            </div>}
                         {props.ui.selection && !props.ui.selection.data &&
                             <div className="MessagerAlert__error">
-                                No data found in source <b>{props.ui.selectedSourceType}</b> for template <b>{props.ui.selection.template?.id}</b>
+                                No data found in source <b>{props.ui.selectedSourceType}</b> for template <b>{props.ui.selection.cardType?.id}</b>
                             </div>}
                         <div className="EditorPanel__ActionBar-line">
-                            <Select id="ActionBar__TemplateSelect-select" label="Template" labelOnTop={true} defaultValue={props.ui.selection?.template} onChange={selectedTemplateChanged} options={_.map(props.project.templates,(o,k)=>({label:k,value:o}))} />
-                            <Select id="ActionBar__LayoutSelect-select" label="layout" labelOnTop={true} defaultValue={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts,(o,k)=>({label:k,value:o}))} />
+                            <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} defaultValue={props.ui.selection?.cardType} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes,(o,k)=>({label:k,value:o}))} />
+                            <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} defaultValue={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts,(o,k)=>({label:k,value:o}))} />
                             <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources,(o,k)=>({label:o,value:o}))} />
                
                             <div className="ActionBar__RenderingBox button-bar">

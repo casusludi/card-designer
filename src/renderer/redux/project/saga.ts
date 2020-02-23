@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -117,16 +117,17 @@ function* saga_renderProjectSelection(action: any) {
         const selection: ProjectSelection = action.payload.selection;
         const project: Project = yield select(selectProject);
         const filter:RenderFilter = action.payload.filter;
-        const html = renderSelectionAsHtml(project, action.payload.selection)
+        const html = yield call(renderSelectionAsHtml,project, action.payload.selection)
 
-        if (html && project && selection.template && selection.layout) {
+
+        if (html && project && selection.cardType && selection.layout) {
             if (filter != RenderFilter.NONE) {
-                let templateStylesPath = selection.template.styles;
+                let templateStylesPath = selection.cardType.styles;
                 let layoutStylesPath = selection.layout.styles;
                 if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;
                 if (layoutStylesPath[0] != '/') layoutStylesPath = '/' + layoutStylesPath;
                 const overrides: ServeOverrides = {
-                    [templateStylesPath]: project.files[selection.template.styles].content,
+                    [templateStylesPath]: project.files[selection.cardType.styles].content,
                     [layoutStylesPath]: project.files[selection.layout.styles].content
                 }
                 const htmlUrl = yield call(serveHtml, "html-preview", html, project.path, overrides)
@@ -139,10 +140,11 @@ function* saga_renderProjectSelection(action: any) {
                     const pdf = yield call(convertHtmlToPdf, html, project.path, overrides)
                     yield put(uiPreviewPdfChanged({ pdf, renderTime:Date.now()-t }))
                 }
+                yield put(projectRendered())
             }
         }
     } catch (e) {
-        console.error(e);
+        yield put(projectRenderFailed(e));
     }
 }
 const editorSelectionSelect = (state: ApplicationState) => state.ui.editor.selection;
@@ -173,7 +175,7 @@ function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:P
             }
         }))
 
-        const templateNames = _.keys(project.templates);
+        const templateNames = _.keys(project.cardTypes);
         for(let i = 0,c = templateNames.length;i<c;i++){
             yield call(exportProjectStrip,project,templateNames[i], action.payload.layoutId, action.payload.sourceType, action.payload.exportFolderPath)
             const rate = ((i+1)/c)*0.9;

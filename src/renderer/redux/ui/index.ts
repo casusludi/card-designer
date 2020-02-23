@@ -1,9 +1,9 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
-import { ProjectTemplate, ProjectLayout, ProjectDataItem, Project, ProjectExportStatus, ProjectExportState } from '../../services/Project';
+import { ProjectTemplate, ProjectDataItem, Project, ProjectExportStatus, ProjectExportState } from '../../services/Project';
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
 import { AppUI, AppUIOthers } from '../../components/App/App';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
-import { projectOpenSucceeded, projectReloadSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload } from '../project';
+import { projectOpenSucceeded, projectReloadSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered } from '../project';
 import { firstKeyOfObject } from '../../utils';
 import _ from 'lodash';
 import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
@@ -11,7 +11,7 @@ import { AppUIPreview } from '../../components/PreviewPanel/PreviewPanel';
 import { AppUIExport } from '../../components/EditorPanel/ExportEditor/ExportEditor';
 
 export const uiEditorSelectedTemplateChanged = createAction<{ template: ProjectTemplate }>("uiEditor/selectedTemplateChanged");
-export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectLayout }>("uiEditor/selectedLayoutChanged");
+export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectTemplate }>("uiEditor/selectedLayoutChanged");
 export const uiEditorSelectedSourceTypeChanged = createAction<{ sourceType: ProjectSourceType }>("uiEditor/selectedSourceTypeChanged");
 export const uiEditorSelectedDataChanged = createAction<{ data: ProjectDataItem | undefined | null }>("uiEditor/selectedDataChanged");
 export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource, renderTime?:number }>("uiPreview/pdfChanged");
@@ -19,16 +19,18 @@ export const uiPreviewHtmlUrlChanged = createAction<{ htmlUrl: string | null }>(
 
 export const uiEditorReducer = createReducer<AppUIEditor>({
     selectedSourceType: ProjectSourceType.NONE,
-    selection: null
+    selection: null,
+    lastError: null
 }, {
     [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => {
         const { project } = action.payload;
-        const selectedTemplate = project?.templates[firstKeyOfObject(project?.templates)];
+        const selectedTemplate = project?.cardTypes[firstKeyOfObject(project?.cardTypes)];
         const selectedSourceType = project?.availablesSources[1] || ProjectSourceType.NONE;
         return {
+            ...state,
             selectedSourceType,
             selection: {
-                template: selectedTemplate,
+                cardType: selectedTemplate,
                 layout: project?.layouts[firstKeyOfObject(project?.layouts)],
                 data: (selectedTemplate && selectedTemplate.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == selectedTemplate.id) : null
             }
@@ -38,16 +40,17 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
     [projectReloadSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => {
         const { project } = action.payload;
         const lastSelection = state.selection;
-        let selectedTemplate = _.find(project.templates, o => o.id == lastSelection?.template?.id)
-        if(!selectedTemplate) selectedTemplate = project?.templates[firstKeyOfObject(project?.templates)];
+        let selectedTemplate = _.find(project.cardTypes, o => o.id == lastSelection?.cardType?.id)
+        if(!selectedTemplate) selectedTemplate = project?.cardTypes[firstKeyOfObject(project?.cardTypes)];
         let selectedLayout = _.find(project.layouts, o => o.id == lastSelection?.layout?.id)
         if(!selectedLayout) selectedLayout = project?.layouts[firstKeyOfObject(project?.layouts)];
 
         const selectedSourceType = state.selectedSourceType;
         return {
+            ...state,
             selectedSourceType,
             selection: {
-                template: selectedTemplate,
+                cardType: selectedTemplate,
                 layout: selectedLayout,
                 data: (selectedTemplate && selectedTemplate.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == selectedTemplate?.id) : null
             }
@@ -60,19 +63,19 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
             selection: {
                 layout: state.selection?.layout,
                 data: state.selection?.data,
-                template: action.payload.template
+                cardType: action.payload.template
             }
 
         }
     },
-    [uiEditorSelectedLayoutChanged.type]: (state, action: PayloadAction<{ layout: ProjectLayout }>) => {
+    [uiEditorSelectedLayoutChanged.type]: (state, action: PayloadAction<{ layout: ProjectTemplate }>) => {
 
         return {
             ...state,
             selection: {
                 layout: action.payload.layout,
                 data: state.selection?.data,
-                template: state.selection?.template
+                cardType: state.selection?.cardType
             }
 
         }
@@ -83,7 +86,7 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
             selection: {
                 layout: state.selection?.layout,
                 data: action.payload.data,
-                template: state.selection?.template
+                cardType: state.selection?.cardType
             }
 
         }
@@ -93,8 +96,22 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
             ...state,
             selectedSourceType: action.payload.sourceType
         }
+    },
+    [projectRenderFailed.type]: (state, action: PayloadAction<Error>) => {
+        return {
+            ...state,
+            lastError: action.payload
+        }
+    },
+    [projectRendered.type]: (state, action: any) => {
+        return {
+            ...state,
+            lastError: null
+        }
     }
 })
+
+
 
 export const uiPreviewReducer = createReducer<AppUIPreview>({
     pdf: null,

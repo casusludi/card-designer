@@ -66,6 +66,7 @@ function createMainWindow() {
     serve?.close();
     serve = null;
     mainWindow = null;
+    app.quit()
   })
 
   window.webContents.on('devtools-opened', () => {

@@ -1,7 +1,7 @@
 
 import React from "react";
 import './HTMLViewer.scss';
-import { shell, remote } from 'electron';
+import { remote, BrowserWindow } from 'electron';
 import path from 'path';
 
 export type HTMLViewerProps = {
@@ -39,6 +39,8 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
 
     private webviewRef: HTMLWebViewElement | null = null;
 
+    private externalWindow:BrowserWindow | null = null;
+
     onWebViewRef(ref: HTMLWebViewElement) {
         if (ref && !this.webviewRef) {
             this.webviewRef = ref;
@@ -69,7 +71,23 @@ export class HTMLViewer extends React.Component<HTMLViewerProps>{
 
     openViewInExternalbrowser() {
         if(this.props.url){
-            shell.openExternal(this.props.url);
+            if(!this.externalWindow){
+
+                this.externalWindow = new remote.BrowserWindow({
+                    title: 'CardmakerStudio - HTML Preview',
+                    show: false,
+                    webPreferences:{
+                        javascript: false
+                    }
+                }) 
+                this.externalWindow.on('close',() => {
+                    this.externalWindow = null
+                })               
+            }
+            this.externalWindow.loadURL(this.props.url);
+            this.externalWindow.webContents.openDevTools();
+            this.externalWindow.maximize();
+            this.externalWindow.show();
         }
     }
 

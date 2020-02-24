@@ -34,6 +34,8 @@ export const projectFileChanged = createAction<{fileId:string,content:string}>('
 export const projectSaving = createAction('project/saving');
 export const projectSavingFailed = createAction('project/savingFailed',asError());
 export const projectSaved = createAction<{project:Project}>('project/saved');
+export const projectClosing = createAction<{project:Project}>('project/closing');
+export const projectClosed = createAction<{project:Project}>('project/closed');
 export const projectRender = createAction<{selection:ProjectSelection, filter:RenderFilter}>('project/render');
 export const projectRenderFailed = createAction<Error>('project/renderFailed'); // Not considered here as a App error
 export const projectRendered = createAction('project/rendered');
@@ -44,6 +46,7 @@ export const projectExportStateChanged = createAction<{ state:ProjectExportState
 export const projectReducer = createReducer<Project | null>(null, {
     [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => action.payload.project,
     [projectReloadSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => action.payload.project,
+    [projectClosing.type]: (state, action: PayloadAction<{ project: Project }>) => null,
     [projectDataChanged.type]: (state, action: PayloadAction<ProjectDataChangedPayload>) => {
         if (!state) return null;
         return {

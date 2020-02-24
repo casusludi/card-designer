@@ -155,6 +155,7 @@ class App extends Component<AppProps> {
 					</div>
 					<div className="layout__header-right">
 						<GoogleBar className="right-align"
+						gsheetAvailable={this.props.project?this.props.project.availablesSources.indexOf(ProjectSourceType.GSHEETS) >= 0: false}
 							fetchDataStatus={this.props.ui.others.fetchDataStatus[ProjectSourceType.GSHEETS]}
 							user={this.props.users[AuthType.GOOGLE]}
 							signInAction={() => this.authSignIn()}

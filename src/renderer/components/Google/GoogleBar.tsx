@@ -6,6 +6,7 @@ import { FetchDataStatus } from '../../services/Project/Sources';
 export type GoogleBarProps = {
     className?: string
     user: User|null|undefined
+    gsheetAvailable: boolean
     fetchDataStatus:FetchDataStatus
     signInAction: () => void
     signOutAction: () => void
@@ -15,7 +16,7 @@ export type GoogleBarProps = {
 export function GoogleBar(props: GoogleBarProps) {
     return (
         <nav className={"button-bar" + (props.className ? " " + props.className : "")}>
-            <button disabled={!!props.user && props.user.status != UserStatus.CONNECTED || props.fetchDataStatus == FetchDataStatus.LOADING} className="button" onClick={() => props.fetchAction()}>
+            <button disabled={!props.gsheetAvailable || !!props.user && props.user.status != UserStatus.CONNECTED || props.fetchDataStatus == FetchDataStatus.LOADING} className="button" onClick={() => props.fetchAction()}>
                 {props.fetchDataStatus == FetchDataStatus.LOADING? <i className="icon fas fa-spin fa-spinner"></i>: <i className="icon fas fa-download"></i>}
                 <span>Google Sheets</span>
             </button>

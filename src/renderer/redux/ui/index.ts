@@ -3,7 +3,7 @@ import { ProjectTemplate, ProjectDataItem, Project, ProjectExportStatus, Project
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
 import { AppUI, AppUIOthers } from '../../components/App/App';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
-import { projectOpenSucceeded, projectReloadSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered } from '../project';
+import { projectOpenSucceeded, projectReloadSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered, projectClosing } from '../project';
 import { firstKeyOfObject } from '../../utils';
 import _ from 'lodash';
 import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
@@ -35,6 +35,17 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
                 data: (selectedTemplate && selectedTemplate.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == selectedTemplate.id) : null
             }
 
+        }
+    },
+    [projectClosing.type]: (state, action: PayloadAction<{ project: Project }>) => {
+        return {
+            ...state,
+            selectedSourceType: ProjectSourceType.NONE,
+            selection: {
+                cardType: null,
+                layout: null,
+                data:  null
+            }
         }
     },
     [projectReloadSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => {

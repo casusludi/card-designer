@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -19,8 +19,12 @@ const selectEditorPreferences = (state: ApplicationState) => state.preferences.e
 
 function* saga_projectCreateFromTemplate(action:PayloadAction<{templatePath:string}>){
     try {
+        const oldProject: Project = yield select(selectProject);
         const project = yield call(createNewProjectFromTemplate, action.payload.templatePath);
         if (project) {
+            if(oldProject){
+                yield (put(projectClosing({project:oldProject})))
+            }
             yield put(projectOpenSucceeded({ project: project }))
         } else {
             yield put(projectOpenCancelled())
@@ -32,11 +36,32 @@ function* saga_projectCreateFromTemplate(action:PayloadAction<{templatePath:stri
 
 function* saga_openProjectFromDialog(action: any) {
     try {
+        const oldProject: Project = yield select(selectProject);
         const project = yield call(openProjectFromDialog);
         if (project) {
+            if(oldProject){
+                yield (put(projectClosing({project:oldProject})))
+            }
             yield put(projectOpenSucceeded({ project: project }))
         } else {
             yield put(projectOpenCancelled())
+        }
+    } catch (e) {
+        yield put(projectOpenFailed(e,action))
+    }
+}
+
+function* saga_openProjectFromPath(action:PayloadAction<{path:string}>){
+    try {
+        const oldProject: Project = yield select(selectProject);
+        const project = yield call(loadProjectFromPath, action.payload.path);
+        if (project) {
+            if(oldProject){
+                yield (put(projectClosing({project:oldProject})))
+            }
+            yield put(projectOpenSucceeded({ project: project }))
+        } else {
+            yield put(projectOpenFailed(new Error(`No project found at ${action.payload.path}`),action))
         }
     } catch (e) {
         yield put(projectOpenFailed(e,action))
@@ -57,19 +82,6 @@ function* saga_reloadProjectWhenConfigChanged(action:any){
         
     } catch (e) {
         yield projectReloadFailed(e,action);
-    }
-}
-
-function* saga_openProjectFromPath(action:PayloadAction<{path:string}>){
-    try {
-        const project = yield call(loadProjectFromPath, action.payload.path);
-        if (project) {
-            yield put(projectOpenSucceeded({ project: project }))
-        } else {
-            yield put(projectOpenFailed(new Error(`No project found at ${action.payload.path}`),action))
-        }
-    } catch (e) {
-        yield put(projectOpenFailed(e,action))
     }
 }
 

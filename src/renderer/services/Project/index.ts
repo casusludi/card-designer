@@ -13,7 +13,7 @@ const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
 
 export const PROJECT_CACHE_FOLDER = '.cache';
-export const PROJECT_DEFAULT_TEMPLATE_PATH = 'templates/mtg-standard-njk';
+export const PROJECT_DEFAULT_TEMPLATE_PATH = 'templates/mtg-standard';
 
 export enum RenderFilter {
     NONE,

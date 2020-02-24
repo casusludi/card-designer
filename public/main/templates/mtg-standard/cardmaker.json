@@ -1,5 +1,5 @@
 {
-    "version":"1.0",
+    "version": "1.0",
     "cardTypes": {
         "default": {
             "template": "templates/default/template.njk",
@@ -20,8 +20,8 @@
         "gsheets": {
             "sheetId": null
         },
-        "json":{
-            "path":"data.json"
+        "json": {
+            "path": "data.json"
         },
         "mockup": [
             {

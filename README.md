@@ -24,12 +24,7 @@
     - better layout management
     - UI base on the previous json 
 
-## remove EJS and nodeIntegration of the HTML preview
-
-
-
-## better user pref storage system
-    -
+## fix bug : code change from store when editing code 
 
 ## Credits 
 

@@ -6,8 +6,7 @@ import AceEditor, { IEditorProps, IAnnotation } from "react-ace";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-css";
-import "ace-builds/src-noconflict/mode-handlebars";
-//import "ace-builds/src-noconflict/mode-ejs";
+import "ace-builds/src-noconflict/mode-nunjucks";
 import "ace-builds/src-noconflict/theme-pastel_on_dark";
 import "ace-builds/src-noconflict/ext-language_tools";
 import { UndoManager } from "ace-builds";
@@ -86,6 +85,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
     componentDidUpdate(prevProps: CodeEditorProps) {
 
         if (prevProps.code != this.props.code && this.state.code != this.props.code) {
+            console.log("code changed");
             this.setState({code:this.props.code})
             // hack to clear undo manager.
             // @TODO find a better way to clear undo without delay

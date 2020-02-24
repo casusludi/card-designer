@@ -8,7 +8,9 @@
     width: 59mm; /* 4mm de marge  */
     height: 82.4mm; /* on garde le ratio 88/63 */
     position: relative;
-    
+    box-sizing: border-box;
+    padding: 5mm;
+    font-family: "Arial";
 }
 
 .card-bg {
@@ -18,3 +20,18 @@
     right: 0;
     bottom: 0;
 }
+
+.card-title {
+    text-align: center;
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+.card-value{
+    position: absolute;
+    bottom: 5mm;
+    left: 5mm;
+    right: 5mm;
+    text-align: center;
+    font-size: 24px;
+} 

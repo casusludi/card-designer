@@ -1,0 +1,13 @@
+[
+    {
+        "id": "default",
+        "cards": [
+            {
+                "name": "A Card Name",
+                "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus hendrerit ac sem elementum cursus. Nunc sagittis ex nec varius volutpat. Sed condimentum quam sapien, nec accumsan enim aliquam sed.",
+                "value": "10",
+                "_COUNT": "7"
+            }
+        ]
+    }
+]

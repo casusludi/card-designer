@@ -73,6 +73,22 @@
             }
           }
         },
+        "json": {
+          "$id": "#/properties/sources/properties/json",
+          "type": "object",
+          "title": "The Json Schema",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "$id": "#/properties/sources/properties/gsheets/properties/path",
+              "type": [ "string", "null" ],
+              "title": "The Path Schema",
+              "default": ""
+            }
+          }
+        },
         "mockup": {
           "$id": "#/properties/sources/properties/mockup",
           "type": "array",

@@ -19,6 +19,9 @@
         "gsheets": {
             "sheetId": null
         },
+        "json":{
+            "path":"data.json"
+        },
         "mockup": [
             {
                 "id": "default",

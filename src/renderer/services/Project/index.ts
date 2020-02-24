@@ -39,6 +39,9 @@ export type ProjectConfig = {
         gsheets?: {
             sheetId: string
         },
+        json?: {
+            path: string|null
+        },
         mockup?:Array<ProjectDataItem>
     }
 }

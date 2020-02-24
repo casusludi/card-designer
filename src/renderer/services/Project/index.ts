@@ -33,6 +33,7 @@ export type ProjectDataItem = {
 }
 
 export type ProjectConfig = {
+    version:string,
     cardTypes: { [key: string]: ProjectConfigCard }
     layouts: { [key: string]: ProjectConfigCard }
     sources: {

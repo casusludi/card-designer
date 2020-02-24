@@ -5,12 +5,18 @@
   "type": "object",
   "title": "The Root Schema",
   "required": [
+    "version",
     "cardTypes",
     "layouts",
     "sources"
   ],
   "additionalProperties": false,
   "properties": {
+    "version": {
+      "$id": "#/properties/version",
+      "type": "string",
+      "title": "The version Schema"
+    },
     "cardTypes": {
       "$id": "#/properties/templates",
       "type": "object",

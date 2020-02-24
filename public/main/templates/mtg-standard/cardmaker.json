@@ -1,4 +1,5 @@
 {
+    "version":"1.0",
     "cardTypes": {
         "default": {
             "template": "templates/default/template.njk",

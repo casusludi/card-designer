@@ -2,6 +2,7 @@ import { RenderFilter, Project } from "../Project"
 import { ProjectSourceType } from "../Project/Sources"
 import { firstKeyOfObject } from "../../utils";
 import path from 'path';
+import _ from "lodash";
 
 const PREF_KEY = 'preferences';
 
@@ -10,8 +11,9 @@ export type LayoutPreferences = {
 }
 
 export type ExportPreferences = {
-    selectedLayoutId:string|null|undefined,
-    selectedSourceType:ProjectSourceType,
+    selectedLayoutId:string|null|undefined
+    selectedSourceType:ProjectSourceType
+    selectedCardTypes:Array<string>
     exportFolderPath:string|null|undefined
 }
 
@@ -46,6 +48,7 @@ export function createDefaultExportPreferences(project:Project):ExportPreference
      return {
          selectedLayoutId: firstKeyOfObject(project.layouts),
          exportFolderPath: project.path?path.join(project.path,'export'):null,
-         selectedSourceType: ProjectSourceType.NONE
+         selectedSourceType: ProjectSourceType.NONE,
+         selectedCardTypes: _.keys(project.cardTypes)
      }
 }

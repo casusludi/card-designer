@@ -176,7 +176,7 @@ function* saga_renderProjectAtOpening() {
     yield put(projectRender({ selection, filter:RenderFilter.ALL }));
 }
 
-function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string}>){
+function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string, cardTypes:Array<string>}>){
     try{
         const project: Project = yield select(selectProject);
         
@@ -187,7 +187,7 @@ function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:P
             }
         }))
 
-        const templateNames = _.keys(project.cardTypes);
+        const templateNames = _.chain(project.cardTypes).keys().intersection(action.payload.cardTypes).value();
         for(let i = 0,c = templateNames.length;i<c;i++){
             yield call(exportProjectStrip,project,templateNames[i], action.payload.layoutId, action.payload.sourceType, action.payload.exportFolderPath)
             const rate = ((i+1)/c)*0.9;

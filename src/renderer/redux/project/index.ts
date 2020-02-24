@@ -39,7 +39,7 @@ export const projectClosed = createAction<{project:Project}>('project/closed');
 export const projectRender = createAction<{selection:ProjectSelection, filter:RenderFilter}>('project/render');
 export const projectRenderFailed = createAction<Error>('project/renderFailed'); // Not considered here as a App error
 export const projectRendered = createAction('project/rendered');
-export const projectExport = createAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string}>('project/export');
+export const projectExport = createAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string, cardTypes:Array<string>}>('project/export');
 export const projectExportFailed = createAction('project/exportFailed',asError());
 export const projectExportStateChanged = createAction<{ state:ProjectExportState }>("project/exportStateChanged");
 

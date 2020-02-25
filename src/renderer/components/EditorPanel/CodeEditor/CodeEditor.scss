@@ -1,3 +1,11 @@
+@import "../../../styles/variables.scss";
+
 .CodeEditor {
     overflow: auto;
+}
+
+.CodeEditor__path {
+    padding: 5px 15px;
+    color: $light-grey;
+    border-bottom: 1px solid $medium-grey;
 }

@@ -19,6 +19,7 @@ import { projectSaving } from "../../../redux/project";
 
 export type CodeEditorProps = {
     instanceId: string
+    path:string
     code: string
     mode: string
     className?: string
@@ -139,6 +140,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
         return (
             <div className={"CodeEditor" + (this.props.className ? ' ' + this.props.className : '')}>
                 <div className="CodeEditor__background full-space" onClick={this.backGroundOnClick.bind(this)} ></div>
+                <div className="CodeEditor__path">{this.props.path}</div>
                 <AceEditor
                     onLoad={this.editorOnLoad.bind(this)}
                     mode={this.props.mode}

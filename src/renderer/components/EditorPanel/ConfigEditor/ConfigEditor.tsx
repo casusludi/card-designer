@@ -26,7 +26,7 @@ export default function ConfigEditor(props:ConfigEditorProps) {
 
     return (
         <div className="ConfigEditor full-space">
-            <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onValidChange}  code={JSON.stringify(props.config,null,4)} instanceId={props.instanceId}/>
+            <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onValidChange}  code={JSON.stringify(props.config,null,4)} instanceId={props.instanceId} path="cardmaker.json"/>
         </div>
     )
     

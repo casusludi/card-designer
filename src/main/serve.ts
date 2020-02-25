@@ -118,7 +118,7 @@ export default async function makeServe(port: number): Promise<Serve> {
                 overrides: overrides || {}
             }
             await pdfWin.loadURL(`http://localhost:${port}/${id}`);
-            const data = await pdfWin.webContents.printToPDF({ printBackground: true });
+            const data = await pdfWin.webContents.printToPDF({ printBackground: true, marginsType:1 });
             delete mapping[id];
             pdfWin.close();
             return data

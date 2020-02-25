@@ -4,6 +4,7 @@ import uuidv1 from 'uuid/v1';
 import fs from 'fs';
 import * as path from 'path'
 import Cookies from 'cookies';
+//import puppeteer from 'puppeteer';
 
 export type ServeOverrides = { [key: string]: string }
 
@@ -105,22 +106,33 @@ export default async function makeServe(port: number): Promise<Serve> {
         },
         async convertToPdf(html: string, base: string, overrides?: ServeOverrides) {
 
-            const pdfWin = new BrowserWindow({
-                show: false,
-                webPreferences:{
-                    javascript: false
-                }
-            });
+            
             const id = uuidv1();
             mapping[id] = {
                 html,
                 base,
                 overrides: overrides || {}
             }
+            const pdfWin = new BrowserWindow({
+                show: false,
+                webPreferences:{
+                    javascript: false
+                }
+            });
+
             await pdfWin.loadURL(`http://localhost:${port}/${id}`);
-            const data = await pdfWin.webContents.printToPDF({ printBackground: true, marginsType:1 });
-            delete mapping[id];
+            const data = await pdfWin.webContents.printToPDF({ printBackground: true });
             pdfWin.close();
+
+            /*const browser = await puppeteer.launch({ headless: true });
+            const page = await browser.newPage();
+            await page.goto(`http://localhost:${port}/${id}`, {waitUntil: 'networkidle0'});
+            const data = await page.pdf({ printBackground: true, preferCSSPageSize: true, margin: {top:0,left:0,bottom:0,right:0} });
+            
+            await browser.close();*/
+
+            delete mapping[id];
+       
             return data
 
         },

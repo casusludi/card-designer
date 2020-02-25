@@ -1,24 +1,35 @@
 body  
 { 
     font-size: 12pt;
-    font-family: "Arial";
+    padding: 0;
+    margin: 0;
+
 }
+
 
 *{
     box-sizing: border-box;
 }
 
+
 @media print {
-    .card-group{ break-before: page; }
+    .card-group{ 
+        break-before: page; 
+    }
     
 
     @page {  
         size:63mm 88mm;
-        margin: 0mm;  
+        margin: 0mm;
     }  
     
 }
 
 .card-group:not(:first-child){
-    margin-top: 3mm;
+    /*margin-top: 3mm;*/
 }
+
+
+
+
+

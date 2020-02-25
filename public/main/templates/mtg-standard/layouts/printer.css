@@ -1,8 +1,7 @@
 body  
 { 
-    margin: 3mm;  
+    margin: 0;
     font-size: 12pt;
-    font-family: "Times New Roman", Times, serif;
 }
 
 *{
@@ -15,7 +14,7 @@ body
 
     @page {  
         size: A4;
-        margin: 5mm;  
+        margin:8mm;
     }  
     
 }
@@ -26,12 +25,7 @@ body
     margin: 0.2mm 0 0 0.2mm;
 }
 
-.card-group:not(:first-child){
-    margin-top: 3mm;
-}
-
 .card-box {
     border: 0.2mm dashed  lightgray;
-    /*padding: 2mm;*/
     margin:-0.2mm 0 0 -0.2mm;
 }

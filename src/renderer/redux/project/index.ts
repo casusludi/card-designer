@@ -32,6 +32,7 @@ export const projectFetchDataFailed = createAction('projectData/fetchFailed',asE
 export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
 export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
 export const projectSaving = createAction('project/saving');
+export const projectSavingAs = createAction('project/savingAs');
 export const projectSavingFailed = createAction('project/savingFailed',asError());
 export const projectSaved = createAction<{project:Project}>('project/saved');
 export const projectClosing = createAction<{project:Project}>('project/closing');

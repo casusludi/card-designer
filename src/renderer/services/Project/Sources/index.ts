@@ -3,6 +3,7 @@ import { fetchFromGSheet } from "./GSheets";
 import { User, AuthType } from "../../Auth";
 import fse from 'fs-extra';
 import path from 'path';
+import { v4 as uuidv4} from "uuid";
 
 
 export enum ProjectSourceType {
@@ -68,6 +69,7 @@ export function createDataFile(project: Project, sourceType: ProjectSourceType |
             if (!project.data.gsheets) return null;
             if (!project.data.gsheets.cacheFilePath) return null;
             return {
+                instanceId: uuidv4(),
                 path: project.data.gsheets.cacheFilePath,
                 content: JSON.stringify(project.data.gsheets.data, null, 4)
             }

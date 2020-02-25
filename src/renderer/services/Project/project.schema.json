@@ -44,10 +44,14 @@
       "additionalProperties": {
         "type": "object",
         "required": [
+          "cardsPerPage",
           "template",
           "styles"
         ],
         "properties": {
+          "cardsPerPage":{
+            "type":"number"
+          },
           "template": {
             "type": "string"
           },

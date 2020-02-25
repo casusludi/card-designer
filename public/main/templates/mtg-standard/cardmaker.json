@@ -8,10 +8,12 @@
     },
     "layouts": {
         "printer": {
+            "cardsPerPage":9,
             "template": "layouts/printer.njk",
             "styles": "layouts/printer.css"
         },
         "printing-house": {
+            "cardsPerPage":1,
             "template": "layouts/printing-house.njk",
             "styles": "layouts/printing-house.css"
         }

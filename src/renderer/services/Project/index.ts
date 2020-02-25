@@ -23,7 +23,13 @@ export enum RenderFilter {
     ALL
 }
 
-export type ProjectConfigCard = {
+export type ProjectConfigCardType = {
+    template:string
+    styles:string
+}
+
+export type ProjectConfigLayout = {
+    cardsPerPage:number
     template:string
     styles:string
 }
@@ -35,8 +41,8 @@ export type ProjectDataItem = {
 
 export type ProjectConfig = {
     version:string,
-    cardTypes: { [key: string]: ProjectConfigCard }
-    layouts: { [key: string]: ProjectConfigCard }
+    cardTypes: { [key: string]: ProjectConfigCardType }
+    layouts: { [key: string]: ProjectConfigLayout }
     sources: {
         gsheets?: {
             sheetId: string
@@ -66,6 +72,10 @@ export type ProjectTemplate = {
     styles:string
 }
 
+export type ProjectLayout = ProjectTemplate & {
+    cardsPerPage:number
+}
+
 export enum ProjectExportStatus {
     NONE = "none",
     INIT = "init",
@@ -87,7 +97,7 @@ export type Project = {
     path: string,
     config: ProjectConfig,
     cardTypes: { [key: string]: ProjectTemplate }
-    layouts: { [key: string]: ProjectTemplate }
+    layouts: { [key: string]: ProjectLayout }
     files:ProjectFiles
     availablesSources: Array<ProjectSourceType>
     data:EnumDictionary<ProjectSourceType,ProjectSourceData>
@@ -101,7 +111,7 @@ export type ProjectSelection = {
 
 const schemaValidator = new Validator();
 
-async function loadTemplate(projectPath:string,id:string,template:ProjectConfigCard,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
+async function loadTemplate(projectPath:string,id:string,template:ProjectConfigCardType,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
    
     if(!files[template.template]){
         const hbsPath = path.join(projectPath, template.template);
@@ -187,7 +197,7 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
         path: projectPath,
         config,
         cardTypes: _.keyBy(templates, o => o.id),
-        layouts: _.keyBy(layouts, o => o.id),
+        layouts: _.chain(layouts).map(o => ({...o,cardsPerPage:config.layouts[o.id].cardsPerPage})).keyBy(o => o.id).value(),
         files,
         availablesSources: getAvailableSources(config),
         data:{}

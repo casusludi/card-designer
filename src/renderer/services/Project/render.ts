@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Handlebars from 'handlebars';
+import nunjucks from 'nunjucks';
 import { ProjectSelection, Project } from '.';
 
 type MetaVariables = {
@@ -45,82 +45,6 @@ const metaVariables:MetaVariables = {
     }
 }
 
-Handlebars.registerHelper('modulo', function(options) {
-    const index = options.data.index + 1,
-        gap = options.hash.gap;
-
-    if (index % gap === 0)
-    // @ts-ignore // todo find why the use of this here
-        return options.fn(this);
-    else
-    // @ts-ignore
-        return options.inverse(this);
-});
-
-Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
-
-    switch (operator) {
-        case '==':
-            // @ts-ignore
-            return (v1 == v2) ? options.fn(this) : options.inverse(this);
-        case '===':
-            // @ts-ignore
-            return (v1 === v2) ? options.fn(this) : options.inverse(this);
-        case '!=':
-            // @ts-ignore
-            return (v1 != v2) ? options.fn(this) : options.inverse(this);
-        case '!==':
-            // @ts-ignore
-            return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-        case '<':
-            // @ts-ignore
-            return (v1 < v2) ? options.fn(this) : options.inverse(this);
-        case '<=':
-            // @ts-ignore
-            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-        case '>':
-            // @ts-ignore
-            return (v1 > v2) ? options.fn(this) : options.inverse(this);
-        case '>=':
-            // @ts-ignore
-            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-        case '&&':
-            // @ts-ignore
-            return (v1 && v2) ? options.fn(this) : options.inverse(this);
-        case '||':
-            // @ts-ignore
-            return (v1 || v2) ? options.fn(this) : options.inverse(this);
-        default:
-            // @ts-ignore
-            return options.inverse(this);
-    }
-});
-
-export function renderHBSToHtml(project:Project,selection:ProjectSelection):string|null{
-    if(!project) return null;
-    if(!selection.data) return null;
-    if(!selection.layout) return null;
-    if(!selection.cardType) return null;
-
-    const template = project.files[selection.cardType.template].content;
-    const layout = project.files[selection.layout.template].content;
-
-    if(!template) return null;
-    if(!layout) return null;
-
-    Handlebars.registerPartial('card',template)
-    const tpl = Handlebars.compile(layout);
-    const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
-    const globalVars = {
-        layoutCSSPath: selection.layout.styles,
-        templateCSSPath: selection.cardType.styles
-    }
-    const variables = {cards,...globalVars};
-    return tpl(variables);
-}
-
-import nunjucks from 'nunjucks';
-
 export async function renderNJKToHtml(project:Project,selection:ProjectSelection):Promise<string|null>{
     if(!project) return null;
     if(!selection.data) return null;
@@ -135,8 +59,9 @@ export async function renderNJKToHtml(project:Project,selection:ProjectSelection
 
     const env = new nunjucks.Environment();
 
-    env.addFilter('template', function(card) {
-        return env.renderString(template,{card:card});
+    env.addFilter('template', function(card,isRecto:boolean|string=true) {
+        const aCard = {...card, isRecto: typeof(isRecto) === 'boolean'?isRecto:isRecto == "recto"}
+        return env.renderString(template,{card:aCard});
     });
 
     const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);

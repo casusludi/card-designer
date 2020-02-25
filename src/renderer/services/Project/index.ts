@@ -8,6 +8,7 @@ import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources }
 import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
 import { renderNJKToHtml} from './render';
 import fse from 'fs-extra';
+import { v4 as uuidv4 } from 'uuid';
 
 const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
@@ -48,6 +49,7 @@ export type ProjectConfig = {
 }
 
 export type ProjectFile = {
+    instanceId:string
     path:string,
     content:string
 }
@@ -105,6 +107,7 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigC
         const hbsPath = path.join(projectPath, template.template);
         const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.template} missing.`) }); 
         files[template.template] = {
+            instanceId: uuidv4(),
             path:template.template,
             content:hbsRawData.toString()
         }
@@ -113,6 +116,7 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigC
         const stylesPath = path.join(projectPath, template.styles);
         const stylesRawData =  await fse.readFile(stylesPath).catch(() => { throw new Error(`${template.styles} missing.`) });
         files[template.styles] = {
+            instanceId: uuidv4(),
             path:template.styles,
             content:stylesRawData.toString()
         }

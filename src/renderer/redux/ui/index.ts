@@ -14,7 +14,7 @@ export const uiEditorSelectedTemplateChanged = createAction<{ template: ProjectT
 export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectTemplate }>("uiEditor/selectedLayoutChanged");
 export const uiEditorSelectedSourceTypeChanged = createAction<{ sourceType: ProjectSourceType }>("uiEditor/selectedSourceTypeChanged");
 export const uiEditorSelectedDataChanged = createAction<{ data: ProjectDataItem | undefined | null }>("uiEditor/selectedDataChanged");
-export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource, renderTime?:number }>("uiPreview/pdfChanged");
+export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource, renderTime?: number }>("uiPreview/pdfChanged");
 export const uiPreviewHtmlUrlChanged = createAction<{ htmlUrl: string | null }>("uiPreview/htmlUrlChanged");
 
 export const uiEditorReducer = createReducer<AppUIEditor>({
@@ -33,8 +33,8 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
                 cardType: selectedTemplate,
                 layout: project?.layouts[firstKeyOfObject(project?.layouts)],
                 data: (selectedTemplate && selectedTemplate.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == selectedTemplate.id) : null
-            }
-
+            },
+            aceUndoManagers: {}
         }
     },
     [projectClosing.type]: (state, action: PayloadAction<{ project: Project }>) => {
@@ -44,7 +44,7 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
             selection: {
                 cardType: null,
                 layout: null,
-                data:  null
+                data: null
             }
         }
     },
@@ -52,9 +52,9 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
         const { project } = action.payload;
         const lastSelection = state.selection;
         let selectedTemplate = _.find(project.cardTypes, o => o.id == lastSelection?.cardType?.id)
-        if(!selectedTemplate) selectedTemplate = project?.cardTypes[firstKeyOfObject(project?.cardTypes)];
+        if (!selectedTemplate) selectedTemplate = project?.cardTypes[firstKeyOfObject(project?.cardTypes)];
         let selectedLayout = _.find(project.layouts, o => o.id == lastSelection?.layout?.id)
-        if(!selectedLayout) selectedLayout = project?.layouts[firstKeyOfObject(project?.layouts)];
+        if (!selectedLayout) selectedLayout = project?.layouts[firstKeyOfObject(project?.layouts)];
 
         const selectedSourceType = state.selectedSourceType;
         return {
@@ -129,18 +129,18 @@ export const uiPreviewReducer = createReducer<AppUIPreview>({
     pdfLastRenderTime: 0,
     htmlUrl: null
 }, {
-    [projectOpenSucceeded.type]: (state,action:PayloadAction<{project:Project}>):any => {
+    [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>): any => {
         return {
-            pdf:null,
-            htmlUrl:null,
-            pdfLastRenderTime:null
+            pdf: null,
+            htmlUrl: null,
+            pdfLastRenderTime: null
         }
     },
-    [uiPreviewPdfChanged.type]: (state, action: PayloadAction<{ pdf: PDFSource, renderTime?:number }>) => {
+    [uiPreviewPdfChanged.type]: (state, action: PayloadAction<{ pdf: PDFSource, renderTime?: number }>) => {
         return {
             ...state,
             pdf: action.payload.pdf,
-            pdfLastRenderTime:action.payload.renderTime || null
+            pdfLastRenderTime: action.payload.renderTime || null
         }
     },
     // TS crash à la gueule pour je ne sais quelle raison encore
@@ -160,7 +160,7 @@ export const uiExportReducer = createReducer<AppUIExport>({
         rate: 0
     }
 }, {
-    [projectExportStateChanged.type]: (state,action:PayloadAction<{ state:ProjectExportState }>):any => {
+    [projectExportStateChanged.type]: (state, action: PayloadAction<{ state: ProjectExportState }>): any => {
         return {
             ...state,
             exportProgress: {
@@ -173,32 +173,32 @@ export const uiExportReducer = createReducer<AppUIExport>({
 })
 
 export const uiOthersReducer = createReducer<AppUIOthers>({
-    fetchDataStatus:{}
+    fetchDataStatus: {}
 }, {
-    [projectFetchData.type]: (state,action:PayloadAction<ProjectFetchDataPayload>):any => {
+    [projectFetchData.type]: (state, action: PayloadAction<ProjectFetchDataPayload>): any => {
         return {
             ...state,
             fetchDataStatus: {
                 ...state.fetchDataStatus,
-                [action.payload.sourceType]:FetchDataStatus.LOADING
+                [action.payload.sourceType]: FetchDataStatus.LOADING
             }
         }
     },
-    [projectFetchDataSucceeded.type]: (state,action:PayloadAction<ProjectDataChangedPayload>):any => {
+    [projectFetchDataSucceeded.type]: (state, action: PayloadAction<ProjectDataChangedPayload>): any => {
         return {
             ...state,
             fetchDataStatus: {
                 ...state.fetchDataStatus,
-                [action.payload.sourceType]:FetchDataStatus.COMPLETE
+                [action.payload.sourceType]: FetchDataStatus.COMPLETE
             }
         }
     },
-    [projectFetchDataFailed.type]: (state,action:any):any => {
+    [projectFetchDataFailed.type]: (state, action: any): any => {
         return {
             ...state,
             fetchDataStatus: {
                 ...state.fetchDataStatus,
-                [action.meta.payload.sourceType]:FetchDataStatus.NONE
+                [action.meta.payload.sourceType]: FetchDataStatus.NONE
             }
         }
     }
@@ -208,6 +208,6 @@ export const uiOthersReducer = createReducer<AppUIOthers>({
 export const uiReducer = combineReducers<AppUI>({
     editor: uiEditorReducer,
     preview: uiPreviewReducer,
-    export : uiExportReducer,
+    export: uiExportReducer,
     others: uiOthersReducer
 })

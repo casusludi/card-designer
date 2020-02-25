@@ -1,5 +1,6 @@
 
-.card {
+.card,
+.card-verso {
     /*
     carte magique standard :
     width: 63mm;
@@ -22,9 +23,22 @@
 }
 
 .card-title {
+    position: absolute;
+    top: 7mm;
+    left: 5mm;
+    right: 5mm;
     text-align: center;
     font-size: 13pt;
     font-weight: bold;
+}
+
+.card-desc {
+    position: absolute;
+    top: 14mm;
+    left: 5mm;
+    right: 5mm;
+    bottom: 14mm;
+    font-size: 10pt;
 }
 
 .card-value{
@@ -33,5 +47,11 @@
     left: 5mm;
     right: 5mm;
     text-align: center;
-    font-size: 24px;
+    font-size: 24pt;
+    font-weight: bold;
 } 
+
+.card-verso {
+    text-align: center;
+    background-color: DimGray;
+}

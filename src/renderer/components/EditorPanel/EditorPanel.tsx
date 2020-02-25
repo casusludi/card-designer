@@ -18,7 +18,6 @@ import ExportEditor from "./ExportEditor/ExportEditor";
 import Checkbox from "../Misc/Checkbox/Checkbox";
 import { EditorPreferences } from "../../services/Preferences";
 
-
 export type EditorPanelProps = {
     project: Project | null
     width: number
@@ -81,7 +80,7 @@ function EditorPanel(props: EditorPanelProps) {
                 <React.Fragment>
                     <TabNav className="EditorPanel__Tabs" >
                         <TabNavItem label="Config">
-                            <ConfigEditor width={props.width} config={props.project.config} onValidChange={onConfigValidChange} />
+                            <ConfigEditor width={props.width} config={props.project.config} onValidChange={onConfigValidChange} instanceId={props.project.path} />
                         </TabNavItem>
                         <TabNavItem label="Card Type">
                             <TemplateEditor width={props.width} template={props.ui.selection?.cardType} files={props.project.files} onFileChanged={onFileChanged} />

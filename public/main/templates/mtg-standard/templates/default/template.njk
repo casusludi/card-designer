@@ -1,6 +1,12 @@
+{% if card.isRecto %}
 <div class="card">
     <img class="card-bg" src="/templates/default/assets/card-bg.svg" />
     <div class="card-title">{{card.name}}</div>
     {% if card.desc %}<div class="card-desc">{{card.desc}}</div>{% endif %}
     {% if card.desc %}<div class="card-value">{{card.value}}</div>{% endif %}
 </div>
+{% else %}
+<div class="card-verso" >
+    Verso
+</div>
+{% endif %}

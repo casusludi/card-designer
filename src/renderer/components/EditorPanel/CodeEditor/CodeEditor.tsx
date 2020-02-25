@@ -18,20 +18,21 @@ import { Dispatch } from "redux";
 import { projectSaving } from "../../../redux/project";
 
 export type CodeEditorProps = {
+    instanceId: string
     code: string
     mode: string
     className?: string
     onValidChange?: (code: string) => void
     onChange?: (code: string) => void
     debouncedChangeTime: number
-    width?:number,
+    width?: number,
     dispatch: Dispatch
 }
 
 export type CodeEditorState = {
     code: string
     validCode: string | null,
-    internalId:string
+    internalId: string
 }
 
 class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
@@ -51,8 +52,8 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
     private onValidChangeDebounced: ((code: string) => void) | null = null
     private onChangeDebounced: ((code: string) => void) | null = null
 
-    resize(){
-        if(this.editor){
+    resize() {
+        if (this.editor) {
             this.editor.resize();
             this.editor.renderer.updateFull();
         }
@@ -70,7 +71,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
             if (annotations.length == 0) {
                 const code = this.editor.getSession().getValue();
                 if (code != this.state.validCode) {
-                   
+
                     if (this.onValidChangeDebounced && this.state.validCode) {
                         this.onValidChangeDebounced(code);
                     }
@@ -80,23 +81,18 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
         }
     }
 
-   
-
     componentDidUpdate(prevProps: CodeEditorProps) {
 
-        if (prevProps.code != this.props.code && this.state.code != this.props.code) {
-            console.log("code changed");
-            this.setState({code:this.props.code})
-            // hack to clear undo manager.
-            // @TODO find a better way to clear undo without delay
+        if (prevProps.instanceId != this.props.instanceId) {
+            this.setState({ code: this.props.code })
             setTimeout(() => {
-                if(this.editor){
-                    this.editor.getSession().setUndoManager(new UndoManager());
+                if (this.editor) {
+                    this.editor.session.setUndoManager(new UndoManager());
                 }
-            },1)
-            
+            }, 1)
         }
-        
+
+
         if ((
             prevProps.onValidChange != this.props.onValidChange
             || prevProps.debouncedChangeTime != this.props.debouncedChangeTime
@@ -113,18 +109,18 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
             && this.props.onChange) {
             this.onChangeDebounced = _.debounce(this.props.onChange, this.props.debouncedChangeTime);
         }
-        if(this.props.width != prevProps.width){
+        if (this.props.width != prevProps.width) {
             this.resize();
         }
     }
 
-    editorOnLoad(editor:IEditorProps){
+    editorOnLoad(editor: IEditorProps) {
         this.editor = editor;
 
         // define project saving, because externals shortcuts dont trigger ine the code panel
         this.editor.commands.addCommand({
             name: 'save',
-            bindKey: {win: "ctrl+s", mac: "cmd+s"},
+            bindKey: { win: "ctrl+s", mac: "cmd+s" },
             exec: () => {
                 this.props.dispatch(projectSaving())
             }
@@ -143,21 +139,22 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
         return (
             <div className={"CodeEditor" + (this.props.className ? ' ' + this.props.className : '')}>
                 <div className="CodeEditor__background full-space" onClick={this.backGroundOnClick.bind(this)} ></div>
-                    <AceEditor
-                        onLoad={this.editorOnLoad.bind(this)}
-                        mode={this.props.mode}
-                        theme="pastel_on_dark"
-                        enableBasicAutocompletion={true}
-                        enableLiveAutocompletion={true}
-                        wrapEnabled={true}
-                        width={''}
-                        maxLines={Infinity}
-                        editorProps={{ $blockScrolling: Infinity }}
-                        value={this.state.code}
-                        onChange={this.onChange.bind(this)}
-                        onValidate={this.onValidate.bind(this)}
-                        name={this.state.internalId}
-                    />
+                <AceEditor
+                    onLoad={this.editorOnLoad.bind(this)}
+                    mode={this.props.mode}
+                    theme="pastel_on_dark"
+                    enableBasicAutocompletion={true}
+                    enableLiveAutocompletion={true}
+                    wrapEnabled={true}
+                    width={''}
+                    maxLines={Infinity}
+                    editorProps={{ $blockScrolling: Infinity }}
+                    value={this.state.code}
+                    onChange={this.onChange.bind(this)}
+                    onValidate={this.onValidate.bind(this)}
+                    name={this.state.internalId}
+                />
+                {/*<div style={{ position: "absolute", bottom: 0, backgroundColor: 'red' }}>{this.props.instanceId}</div>*/}
             </div>
         );
     }

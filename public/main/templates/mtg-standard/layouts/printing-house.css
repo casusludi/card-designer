@@ -1,8 +1,7 @@
 body  
 { 
-    margin: 3mm;  
     font-size: 12pt;
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Arial";
 }
 
 *{
@@ -14,18 +13,12 @@ body
     
 
     @page {  
-        size:70mm 100mm;
-        margin: 0;  
+        size:63mm 88mm;
+        margin: 0mm;  
     }  
     
-}
-
-.card-group{ 
-    display: flex;
-    flex-flow: wrap;
 }
 
 .card-group:not(:first-child){
     margin-top: 3mm;
 }
-

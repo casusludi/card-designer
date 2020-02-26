@@ -1,5 +1,5 @@
 import './PageNav.scss';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Checkbox from '../Checkbox/Checkbox';
 import { ProjectPageSelection } from '../../../services/Project';
 import _ from 'lodash';
@@ -25,12 +25,22 @@ function sortNumbers(a:number,b:number):number{
 export default function PageNav(props:PageNavProps){
 
     const [state,setState] = useState<PageNavState>({
-        allPages:true,
+        allPages:props.selection.length == 0 || props.selection.length == props.total,
         stringSelection:convertSelectionToString(props.selection),
         selection: props.selection
     });
 
+
+    useEffect(()=> {
+        setSelection(props.selection);
+    },[props.total])
+
     function onAllPagesChange(value:boolean){
+
+        if(value){
+            setSelection([]);
+        }
+
         setState({
             ...state,
             allPages: value
@@ -54,11 +64,11 @@ export default function PageNav(props:PageNavProps){
                 if(!isNaN(bVal) && bVal >= aVal){
                     const diff = bVal-aVal;
                     if(next){
-                        const start = Math.min(bVal+1,props.total);
-                        const end = Math.min(start+diff,props.total);
+                        const evenTotal = props.total%2==1?props.total+1:props.total; 
+                        const start = Math.min(bVal+1,evenTotal);
+                        const end = Math.min(start+diff,evenTotal);
                         console.log(start,end)
                         if(start!=end)newSelection = _.range(start,end+1)
-                        console.log(newSelection)
                     }else{
                         const end = Math.max(aVal-1,1);
                         const start = Math.max(end-diff,1);
@@ -75,12 +85,16 @@ export default function PageNav(props:PageNavProps){
     }
 
     function setSelection(selection:ProjectPageSelection,stringSelection:string|null=null){
+        
+        if(!_.isEqual(selection,state.selection)){
+            props.onChange(selection);
+        }
         setState({
             ...state,
             selection,
             stringSelection: stringSelection?stringSelection:convertSelectionToString(selection)
         })
-        //props.onChange(selection);
+        
     }
 
     function canNav(next:boolean):boolean{
@@ -95,7 +109,8 @@ export default function PageNav(props:PageNavProps){
                 const bVal = parseInt(b);
                 if(!isNaN(bVal) && bVal >= aVal){
                     if(next){
-                        return bVal+1 < props.total
+                        const evenTotal = props.total%2==1?props.total+1:props.total;
+                        return bVal+1 < evenTotal
                     }else{
                         return aVal-1 > 1
                     }
@@ -108,7 +123,6 @@ export default function PageNav(props:PageNavProps){
 
     function onInputChange(text:string){
         const selection = convertStringToSelection(text);
-        console.log(selection);
         setSelection(selection,text)
     }
 

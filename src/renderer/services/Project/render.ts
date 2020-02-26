@@ -64,7 +64,18 @@ export async function renderNJKToHtml(project:Project,selection:ProjectSelection
         return env.renderString(template,{card:aCard});
     });
 
-    const cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
+    let cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
+
+    if(selection.pages.length > 0){
+        console.log(selection.pages);
+        //const cardsPerPages = selection.layout.cardsPerPage;
+        const cardCount = cards.length;
+        cards = _.reduce(selection.pages,(items,o)=> {
+            console.log(`page : ${o}`)
+            return items
+        },[])
+    }
+
     const globalVars = {
         layoutCSSPath: selection.layout.styles,
         templateCSSPath: selection.cardType.styles

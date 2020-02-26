@@ -9,7 +9,7 @@ export type SelectProps = {
     id: string
     label?: string
     labelOnTop?:boolean
-    defaultValue?: any
+    value?: any
     options: SelectOptionsArray
     disabled?:boolean
     onChange?: (value: any) => void
@@ -21,7 +21,7 @@ export default function Select(props: SelectProps) {
         <div className={"Select "+(props.labelOnTop?" Select_labeltop":"")+(props.disabled?" Select_disabled":"")}>
             {props.label && <label className="Select__label" htmlFor={props.id}>{props.label} : </label>}
             <div className="Select__wrapper" >
-                <select id={props.id} disabled={props.disabled} defaultValue={_.findKey(props.options, (o: SelectOptionsArrayItem) => o.value == props.defaultValue)}
+                <select id={props.id} disabled={props.disabled} value={_.findKey(props.options, (o: SelectOptionsArrayItem) => o.value == props.value)}
                     onChange={e => {
                         if (props.onChange) {
                             const key: number = parseInt(e.target.value);

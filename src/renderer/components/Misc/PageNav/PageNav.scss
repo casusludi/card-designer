@@ -1,6 +1,10 @@
+.PageNav {
+    display: flex;
+    align-items: center;
+}
 
 .PageNav__input {
-    max-width: 42px;
+    max-width: 52px;
     text-align: center;
 }
 
@@ -8,4 +12,12 @@
     min-width: 30px;
     display: inline-flex;
     justify-content: center;
+}
+
+.PageNav__total {
+    margin-left: 7px;
+}
+
+.PageNav__total_disabled {
+    opacity: 0.5;
 }

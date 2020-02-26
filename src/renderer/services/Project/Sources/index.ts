@@ -1,9 +1,10 @@
-import { Project, ProjectSourceData, PROJECT_CACHE_FOLDER, ProjectFile, ProjectConfig } from "..";
+import { Project, ProjectSourceData, PROJECT_CACHE_FOLDER, ProjectFile, ProjectConfig, ProjectDataItem } from "..";
 import { fetchFromGSheet } from "./GSheets";
 import { User, AuthType } from "../../Auth";
 import fse from 'fs-extra';
 import path from 'path';
 import { v4 as uuidv4} from "uuid";
+import _ from "lodash";
 
 
 export enum ProjectSourceType {
@@ -143,4 +144,17 @@ export async function getCachedData(project: Project, sourceType: ProjectSourceT
             }
         default: throw new Error(`Source type '${sourceType}' not found.`)
     }
+}
+
+
+export function countCards(data:ProjectDataItem):number{
+
+    return _.reduce(data.cards,(sum,o) => {
+        if(o["_COUNT"]){
+            sum += parseInt(o["_COUNT"]);
+        }else{
+            sum ++;
+        }
+        return sum;
+    },0)
 }

@@ -103,10 +103,14 @@ export type Project = {
     data:EnumDictionary<ProjectSourceType,ProjectSourceData>
 }
 
+export type ProjectPageSelection = Array<number>;
+
 export type ProjectSelection = {
     cardType:ProjectTemplate|undefined|null,
-    layout:ProjectTemplate|undefined|null,
+    layout:ProjectLayout|undefined|null,
     data:ProjectDataItem|undefined|null
+    pages:ProjectPageSelection
+
 }
 
 const schemaValidator = new Validator();
@@ -268,7 +272,8 @@ export async function exportProjectStrip(project:Project,templateName:string,lay
     const selection:ProjectSelection = {
         cardType: project.cardTypes[templateName],
         layout: project.layouts[layoutId],
-        data: data
+        data: data,
+        pages:[]
     }
     const html = await renderSelectionAsHtml(project, selection);
     if(!html){

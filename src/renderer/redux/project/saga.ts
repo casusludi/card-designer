@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -163,7 +163,9 @@ const editorSelectionSelect = (state: ApplicationState) => state.ui.editor.selec
 
 function* saga_renderProjectSelectionFromEditor(filter:RenderFilter=RenderFilter.ALL) {
     const selection = yield select(editorSelectionSelect);
-    yield put(projectRender({ selection, filter }));
+    if(selection){
+        yield put(projectRender({ selection, filter }));
+    }
 }
 
 function* saga_autoRenderProjectSelectionFromEditor(action: AnyAction) {
@@ -173,7 +175,9 @@ function* saga_autoRenderProjectSelectionFromEditor(action: AnyAction) {
 
 function* saga_renderProjectAtOpening() {
     const selection = yield select(editorSelectionSelect);
-    yield put(projectRender({ selection, filter:RenderFilter.ALL }));
+    if(selection){
+        yield put(projectRender({ selection, filter:RenderFilter.ALL }));
+    }
 }
 
 function* saga_exportProject(action:PayloadAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string, cardTypes:Array<string>}>){
@@ -237,7 +241,7 @@ export default function* projectSaga() {
         yield takeEvery(projectFetchDataSucceeded.type, saga_projectFetchDataSucceeded),
         yield takeLatest(projectSaving.type, saga_saveProject),
         yield takeLatest(projectRender.type, saga_renderProjectSelection),
-        yield takeLatest(projectOpenSucceeded.type, saga_renderProjectAtOpening),
+        yield takeLatest(projectReady.type, saga_renderProjectAtOpening),
         yield takeLatest([
             projectFileChanged.type,
             projectDataChanged.type,

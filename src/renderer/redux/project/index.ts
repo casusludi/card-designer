@@ -37,6 +37,7 @@ export const projectSavingFailed = createAction('project/savingFailed',asError()
 export const projectSaved = createAction<{project:Project}>('project/saved');
 export const projectClosing = createAction<{project:Project}>('project/closing');
 export const projectClosed = createAction<{project:Project}>('project/closed');
+export const projectReady = createAction<{project:Project}>('project/ready');
 export const projectRender = createAction<{selection:ProjectSelection, filter:RenderFilter}>('project/render');
 export const projectRenderFailed = createAction<Error>('project/renderFailed'); // Not considered here as a App error
 export const projectRendered = createAction('project/rendered');

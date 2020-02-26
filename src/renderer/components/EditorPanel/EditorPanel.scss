@@ -51,6 +51,10 @@
     & > *:not(:last-child) {
         margin-right: 5px;
     }
+
+    &:not(:last-child) {
+        margin-bottom: 5px;
+    }
 }
 
 .EditorPanel__ActionBar-line_center {

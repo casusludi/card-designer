@@ -1,4 +1,4 @@
-import { RenderFilter, Project } from "../Project"
+import { RenderFilter, Project, ProjectPageSelection } from "../Project"
 import { ProjectSourceType } from "../Project/Sources"
 import { firstKeyOfObject } from "../../utils";
 import path from 'path';
@@ -10,7 +10,7 @@ export type LayoutPreferences = {
     editorWidth:number
 }
 
-export type ExportPreferences = {
+export type ProjectExportPreferences = {
     selectedLayoutId:string|null|undefined
     selectedSourceType:ProjectSourceType
     selectedCardTypes:Array<string>
@@ -18,17 +18,37 @@ export type ExportPreferences = {
 }
 
 export type AllExportPreferences = {
-    [projectPath:string]:ExportPreferences
+    [projectPath:string]:ProjectExportPreferences
+}
+
+export type ProjectSelectionPreference = {
+    cardType:string|undefined|null
+    layout:string|undefined|null
+    source:ProjectSourceType
+    pages:ProjectPageSelection
 }
 
 export type EditorPreferences = {
     autoRenderFilter:RenderFilter
 }
 
+export type EditorProjectPreferences = {
+    selection:ProjectSelectionPreference
+}
+
+export type ProjectPreferences = {
+    selection:ProjectSelectionPreference
+    export:ProjectExportPreferences
+}
+
+export type AllProjectPreferences = {
+    [projectPath:string]:ProjectPreferences
+}
+
 export type Preferences = {
-    layout:LayoutPreferences,
-    editor:EditorPreferences,
-    export:AllExportPreferences
+    layout:LayoutPreferences
+    editor:EditorPreferences
+    projects:AllProjectPreferences
 }
 
 
@@ -39,12 +59,14 @@ export function savePrefInLocalStorage(preferences:Preferences) {
 export function loadPrefFromLocalStorage() {
     const prefRaw = window.localStorage.getItem(PREF_KEY);
     if (prefRaw) {
-        return JSON.parse(prefRaw);
+        const pref =  JSON.parse(prefRaw);
+
+        return pref;
     }
     return null
 }
 
-export function createDefaultExportPreferences(project:Project):ExportPreferences{
+export function createDefaultExportPreferences(project:Project):ProjectExportPreferences{
      return {
          selectedLayoutId: firstKeyOfObject(project.layouts),
          exportFolderPath: project.path?path.join(project.path,'export'):null,

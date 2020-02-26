@@ -13,12 +13,12 @@ import { replacer } from "../../../utils";
 import { remote } from "electron";
 import ProgressBar from "../../Misc/ProgressBar/ProgressBar";
 import { projectExport } from "../../../redux/project";
-import { ExportPreferences, createDefaultExportPreferences } from "../../../services/Preferences";
+import { ProjectExportPreferences, createDefaultExportPreferences } from "../../../services/Preferences";
 import Checkbox from "../../Misc/Checkbox/Checkbox";
 
 export type ExportEditorProps = {
     project: Project | null
-    preferences: ExportPreferences | null
+    preferences: ProjectExportPreferences | null
     dispatch: Dispatch
     ui: AppUIExport
 }
@@ -151,8 +151,8 @@ function ExportEditor(props: ExportEditorProps) {
             {props.project && props.preferences &&
                 <React.Fragment>
                     <div className="ExportEditor__line">
-                        <Select id="ExportEditor__LayoutSelect-select" label="Layout" labelOnTop={true} defaultValue={props.preferences?.selectedLayoutId && props.project?.layouts[props.preferences.selectedLayoutId]} onChange={selectedLayoutChanged} options={_.map(props.project?.layouts, (o, k) => ({ label: k, value: o }))} />
-                        <Select id="ExportEditor__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.preferences?.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
+                        <Select id="ExportEditor__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.preferences?.selectedLayoutId && props.project?.layouts[props.preferences.selectedLayoutId]} onChange={selectedLayoutChanged} options={_.map(props.project?.layouts, (o, k) => ({ label: k, value: o }))} />
+                        <Select id="ExportEditor__SourceSelect-select" label="Source" labelOnTop={true} value={props.preferences?.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
                         <FolderInput className="ExportEditor__FolderInput" label="Export Folder : " labelOnTop={true} path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
                     </div>
                     <div className="ExportEditor__line">
@@ -178,7 +178,7 @@ function ExportEditor(props: ExportEditorProps) {
 function mapStateToProps(state: ApplicationState) {
     let preferences = null;
     if (state.project) {
-        preferences = state.preferences.export[state.project.path];
+        preferences = state.preferences.projects[state.project.path]?.export;
         if (!preferences) {
             preferences = createDefaultExportPreferences(state.project);
         }

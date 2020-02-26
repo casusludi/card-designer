@@ -17,6 +17,7 @@ import Select from "../Misc/Select/Select";
 import ExportEditor from "./ExportEditor/ExportEditor";
 import Checkbox from "../Misc/Checkbox/Checkbox";
 import { EditorPreferences } from "../../services/Preferences";
+import PageNav from "../Misc/PageNav/PageNav";
 
 export type EditorPanelProps = {
     project: Project | null
@@ -28,9 +29,9 @@ export type EditorPanelProps = {
 
 
 export type AppUIEditor = {
-	selectedSourceType:ProjectSourceType
-    selection:ProjectSelection|undefined|null
-    lastError: Error|null|undefined
+    selectedSourceType: ProjectSourceType
+    selection: ProjectSelection | undefined | null
+    lastError: Error | null | undefined
 }
 
 
@@ -40,14 +41,14 @@ function EditorPanel(props: EditorPanelProps) {
         props.dispatch(projectConfigChanged({ config }));
     }
 
-    function selectedTemplateChanged(value:any) {
-        console.log("selectedTemplateChanged",value)
+    function selectedTemplateChanged(value: any) {
+        console.log("selectedTemplateChanged", value)
         if (props.project) {
             props.dispatch(uiEditorSelectedTemplateChanged({ template: value }))
         }
     }
 
-    function selectedLayoutChanged(value:any) {
+    function selectedLayoutChanged(value: any) {
         if (props.project) {
             props.dispatch(uiEditorSelectedLayoutChanged({ layout: value }))
         }
@@ -69,7 +70,7 @@ function EditorPanel(props: EditorPanelProps) {
         }
     }
 
-    function onAutoRenderChanged(value:boolean) {
+    function onAutoRenderChanged(value: boolean) {
         const filter = value ? RenderFilter.ALL : RenderFilter.NONE;
         props.dispatch(prefAutoRenderFilterChanged({ autoRenderFilter: filter }))
     }
@@ -89,7 +90,7 @@ function EditorPanel(props: EditorPanelProps) {
                             <TemplateEditor width={props.width} template={props.ui.selection?.layout} files={props.project.files} onFileChanged={onFileChanged} />
                         </TabNavItem>
                         <TabNavItem label="Export">
-                           <ExportEditor />
+                            <ExportEditor />
                         </TabNavItem>
 
                     </TabNav>
@@ -102,15 +103,20 @@ function EditorPanel(props: EditorPanelProps) {
                             <div className="MessagerAlert__error">
                                 No data found in source <b>{props.ui.selectedSourceType}</b> for template <b>{props.ui.selection.cardType?.id}</b>
                             </div>}
-                        <div className="EditorPanel__ActionBar-line">
-                            <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} defaultValue={props.ui.selection?.cardType} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes,(o,k)=>({label:k,value:o}))} />
-                            <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} defaultValue={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts,(o,k)=>({label:k,value:o}))} />
-                            <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources,(o,k)=>({label:o,value:o}))} />
-               
+                        <div className="EditorPanel__ActionBar-line EditorPanel__ActionBar-line_center">
+                            <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} defaultValue={props.ui.selection?.cardType} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes, (o, k) => ({ label: k, value: o }))} />
+                            <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} defaultValue={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts, (o, k) => ({ label: k, value: o }))} />
+                            <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} defaultValue={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
+
+                            
+                        </div>
+                        <div className="EditorPanel__ActionBar-line ">
+                            <PageNav />
                             <div className="ActionBar__RenderingBox button-bar">
                                 <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>
                                 <Checkbox id="EditorPanelAutoRenderCheckBox" buttonStyle={true} label="Auto" defaultChecked={props.editorPreferences.autoRenderFilter == RenderFilter.ALL} onChange={onAutoRenderChanged} />
                             </div>
+
                         </div>
                     </div>
                 </React.Fragment>

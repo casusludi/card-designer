@@ -20,7 +20,7 @@
     top:0;
     left: 0;
     right: 0;
-    bottom: 65px;
+    bottom: 105px;
 }
 
 .EditorPanel__ActionBar {
@@ -29,8 +29,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 59px;
+    height: 99px;
     padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
 
     & > .MessagerAlert__error{
         position: absolute;
@@ -51,6 +53,9 @@
     }
 }
 
+.EditorPanel__ActionBar-line_center {
+    justify-content: center;
+}
 
 
 

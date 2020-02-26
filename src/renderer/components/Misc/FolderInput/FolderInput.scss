@@ -22,8 +22,9 @@
 
 .FolderInput__input {
     position: relative;
-    border: none;
     flex: 1;
+    border: 1px solid $medium-grey;
+    padding: 0 5px;
 }
 
 .FolderInput__button {

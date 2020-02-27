@@ -1,10 +1,10 @@
 import { call, put, takeLatest, all, takeEvery, select, delay, throttle } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath, createNewProjectFromTemplate } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath, createNewProjectFromTemplate, saveProjectAs } from '../../services/Project';
 
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged, uiEditorSelectedPagesChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -118,6 +118,17 @@ function* saga_saveProject(action: any) {
             const savedProject = yield call(saveProject, project);
             yield put(projectSaved({project:savedProject}));
         }
+    } catch (e) {
+        yield projectSavingFailed(e);
+    }
+}
+
+function* saga_saveProjectAs(action: any) {
+    try {
+        const project: Project = yield select(selectProject);
+        const savedProject = yield call(saveProjectAs, project);
+        yield put(projectSaved({project:savedProject}));
+        
     } catch (e) {
         yield projectSavingFailed(e);
     }
@@ -238,6 +249,7 @@ export default function* projectSaga() {
         yield takeEvery(projectFetchData.type, saga_fetchData),
         yield takeEvery(projectFetchDataSucceeded.type, saga_projectFetchDataSucceeded),
         yield takeLatest(projectSaving.type, saga_saveProject),
+        yield takeLatest(projectSavingAs.type, saga_saveProjectAs),
         yield takeLatest(projectRender.type, saga_renderProjectSelection),
         yield takeLatest(projectReady.type, saga_renderProjectAtOpening),
         yield throttle(1000,[

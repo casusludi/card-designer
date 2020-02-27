@@ -19,6 +19,7 @@ import { remote } from 'electron';
 import WindowControls from '../WindowControls/WindowControls';
 import { LayoutPreferences } from '../../services/Preferences';
 import path from 'path';
+import Modal from '../Misc/Modal/Modal';
 
 export type AppUIOthers = {
 	fetchDataStatus:{
@@ -135,12 +136,20 @@ class App extends Component<AppProps> {
 				<header className="layout__header">
 					{/*<div className="project-name">{state.project && state.project.name} {state.projectModified && <span className="project-modified-status"> &#9679;</span>}</div>*/}
 					<div className="project-bar right-align">
+						<Modal opener={(show) => <button type="button" className="button button-about" onClick={() => show()}><i className="fas fa-info"></i></button>} >
+						<div className="AppInfos">
+							<div className="AppInfos__Content">
+							<div className="AppInfos__title"><img className="AppInfos__AppLogo" src="./icon.png" /><div>Cardmaker<br />Studio</div></div>
+            				<div className="AppInfos__subtitle">By <img className="AppInfos__CsldLogo" src="./images/casusludi-logo.png" alt="Casus Ludi"/> © 2020</div>
+							</div>
+						</div>
+						</Modal>
 						<div className="button-bar">
-							<button className="button" onClick={() => this.createNewProject()}><i className="icon far fa-file"></i></button>
-							<button className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
-							<button className="button" disabled={!this.props.project?.modified && !this.props.project?.isNew} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
-							<button className="button button-save-as" disabled={!this.props.project} onClick={() => this.props.dispatch(projectSavingAs())}><i className="icon far fa-save"></i><span>as</span></button>
-							<button className="button" disabled={!this.props.project} onClick={() => this.openReloadProject()} ><i className="fas fa-sync"></i></button>
+							<button type="button" className="button" onClick={() => this.createNewProject()}><i className="icon far fa-file"></i></button>
+							<button type="button" className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
+							<button type="button" className="button" disabled={!this.props.project?.modified && !this.props.project?.isNew} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
+							<button type="button" className="button button-save-as" disabled={!this.props.project} onClick={() => this.props.dispatch(projectSavingAs())}><i className="icon far fa-save"></i><span>as</span></button>
+							<button type="button" className="button" disabled={!this.props.project} onClick={() => this.openReloadProject()} ><i className="fas fa-sync"></i></button>
 						</div>
 					</div>
 					<div className="layout__header-title">

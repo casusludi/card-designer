@@ -54,3 +54,39 @@
         background-color: $dark-grey;
     }
 }
+
+.button-about{
+    margin-right: 15px;
+}
+
+.AppInfos {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppInfos__title {
+    font-family: 'Roboto';
+    font-size: 4.6rem;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.AppInfos__subtitle {
+    text-align: right;
+}
+
+.AppInfos__AppLogo {
+    width: 128px;
+    height: auto;
+}
+
+.AppInfos__CsldLogo {
+    width: auto;
+    vertical-align: middle;
+    height: 28px;
+}

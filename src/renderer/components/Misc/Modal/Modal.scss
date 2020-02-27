@@ -1,0 +1,33 @@
+@import "../../../styles/variables.scss";
+
+.Modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width:100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.Modal__Background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+  
+.Modal__Content {
+    background: $dark-grey;
+    max-width: 80%;
+    width: 640px;
+    height: 480px;
+    z-index: 9;
+    box-shadow: 0px 2px 4px 1px #000000;
+}
+  

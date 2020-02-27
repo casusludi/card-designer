@@ -12,11 +12,34 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow:BrowserWindow|null;
+let splashWindow:BrowserWindow|null;
 let serve:Serve|null;
+
+async function createSplashWindow(){
+  const splash = new BrowserWindow({
+    frame: false,
+    show: false,
+    width: 640, height: 360,
+    title:'Cardmaker Studio',
+    darkTheme: true,
+    backgroundColor: '#2C2828',
+    webPreferences: {
+        
+    }
+  })
+  splash?.setResizable(false)
+
+  const url = path.join(app.getAppPath(),'/splash.html')
+  await splash.loadURL(url)
+  splash.webContents.openDevTools();
+  splash.show();
+  return splash;
+}
 
 function createMainWindow() {
   const window = new BrowserWindow({
     frame: false,
+    show: false,
     width: 1280, height: 768,
     title:'Cardmaker Studio',
     darkTheme: true,
@@ -26,25 +49,6 @@ function createMainWindow() {
       webviewTag: true
     }
   })
-
-  /*
-  const menuTemplate:Electron.MenuItemConstructorOptions[] = [
-    { 
-      role: 'help',
-      submenu: [
-        {
-          label: 'Open Dev Tools',
-          click: () => {
-            window.webContents.openDevTools()
-          }
-        }
-      ]
-    }
-  ]
-
-  const menu = Menu.buildFromTemplate(menuTemplate);
-
-  window.setMenu(menu);*/
 
   window.setMenu(null);
 
@@ -96,6 +100,8 @@ app.on('activate', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', async () => {
+
+  splashWindow = await createSplashWindow();
   
   protocol.registerStringProtocol(settings.customScheme, function(request:any,callback:any) {
     // do nothing : just force Windows to associate the scheme with this app
@@ -108,6 +114,10 @@ app.on('ready', async () => {
 
   serve = await makeServe(port);
   mainWindow = createMainWindow();
+  mainWindow.webContents.once('did-finish-load',() => {
+    splashWindow?.close();
+    mainWindow?.show();
+  })
 
   ipcMain.handle('html-to-pdf', async (event, html: string, base: string,overrides?:ServeOverrides) => {
     return await serve?.convertToPdf(html,base,overrides)

@@ -145,7 +145,7 @@ class App extends Component<AppProps> {
 					</div>
 					<div className="layout__header-title">
 						<img className="ImageIcon ImageIcon_small Header__AppIcon" src="./icon.png" />
-						Cardmaker Studio
+						<div className="Header__AppName">Cardmaker Studio</div>
 						{this.props.project && <div className="project-bar__name">
 							- {this.props.project.name}
 							<button className="button button-frameless" onClick={() => this.openProjectFolder()} ><i className="icon far fa-folder-open"></i></button>

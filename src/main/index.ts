@@ -23,15 +23,15 @@ async function createSplashWindow(){
     title:'Cardmaker Studio',
     darkTheme: true,
     backgroundColor: '#2C2828',
+    resizable: false,
     webPreferences: {
         
     }
   })
-  splash?.setResizable(false)
 
   const url = path.join(app.getAppPath(),'/splash.html')
   await splash.loadURL(url)
-  splash.webContents.openDevTools();
+  //splash.webContents.openDevTools();
   splash.show();
   return splash;
 }

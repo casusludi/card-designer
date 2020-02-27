@@ -15,6 +15,10 @@ export type Serve = {
     close: () => void
 }
 
+function timeout(ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const COOKIE_NAME = 'cardmaker-id'
 
 export default async function makeServe(port: number): Promise<Serve> {
@@ -121,6 +125,11 @@ export default async function makeServe(port: number): Promise<Serve> {
             });
 
             await pdfWin.loadURL(`http://localhost:${port}/${id}`);
+            // add a delay of 100ms before print to pdf to get the page fully loaded and rendered (with all fonts loaded)
+            // without this timeout, the pdf can be generated with no text or partials texts
+            // event like 'did-finish-load' (return by the loadURL() promise) or 'ready-to-show' are not sufficient to ensure the correctly text display
+            // add a delay can sufficient but not consistently but I have no better idea currently
+            await timeout(100);
             const data = await pdfWin.webContents.printToPDF({ printBackground: true });
             pdfWin.close();
 

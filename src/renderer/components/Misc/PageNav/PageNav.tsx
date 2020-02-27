@@ -1,5 +1,5 @@
 import './PageNav.scss';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Checkbox from '../Checkbox/Checkbox';
 import { ProjectPageSelection } from '../../../services/Project';
 import _ from 'lodash';
@@ -96,7 +96,6 @@ export default class PageNav extends React.Component<PageNavProps,PageNavState>{
     }
 
     setSelection(selection:ProjectPageSelection,stringSelection:string|null=null){
-        console.log(selection,(this.state.selection));
         if(!_.isEqual(selection,this.state.selection)){
             this.props.onChange(selection);
         }
@@ -104,13 +103,17 @@ export default class PageNav extends React.Component<PageNavProps,PageNavState>{
             selection,
             stringSelection: stringSelection?stringSelection:this.convertSelectionToString(selection)
         })
-
-        
     }
 
     canNav(next:boolean):boolean{
         if(this.state.allPages) return false;
         if(this.state.stringSelection.split(/,|-/).length > 1) return false;
+        const a = this.state.stringSelection;
+        const aVal = parseInt(a);
+        if(!isNaN(aVal) && aVal > 0){
+            return next?aVal < this.props.total:aVal > 1
+        }
+
         /*const [a,b] = this.state.stringSelection.split('-');
         const aVal = parseInt(a);
         if(!isNaN(aVal) && aVal > 0){
@@ -204,7 +207,7 @@ export default class PageNav extends React.Component<PageNavProps,PageNavState>{
 
     render(){
         return (
-            <div className="PageNav">
+            <div className={"PageNav"+(this.props.total==0?" PageNav_disabled":"")}>
                 <label >
                     Page(s) : 
                 </label>

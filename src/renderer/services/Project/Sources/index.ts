@@ -150,10 +150,12 @@ export async function getCachedData(project: Project, sourceType: ProjectSourceT
 export function countCards(data:ProjectDataItem):number{
 
     return _.reduce(data.cards,(sum,o) => {
-        if(o["_COUNT"]){
-            sum += parseInt(o["_COUNT"]);
-        }else{
-            sum ++;
+        if(!o["_SKIP"]){
+            if(o["_COUNT"]){
+                sum += parseInt(o["_COUNT"]);
+            }else{
+                sum ++;
+            }
         }
         return sum;
     },0)

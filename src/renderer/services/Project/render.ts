@@ -80,6 +80,8 @@ export async function renderNJKToHtml(project:Project,selection:ProjectSelection
 
     }
 
+    console.log(cards);
+
     const globalVars = {
         layoutCSSPath: selection.layout.styles,
         templateCSSPath: selection.cardType.styles

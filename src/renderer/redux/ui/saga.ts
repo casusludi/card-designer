@@ -30,36 +30,36 @@ function* saga_initSelectionFromPreference(action:any){
     const project = app.project;
     if(project){
         const projectPreference = preferences.projects[project?.path];
-        if(projectPreference){
+        const previousSelection = projectPreference?.selection;
 
-            let cardType = _.find(project.cardTypes, o => o.id ==  projectPreference.selection.cardType);
-            if(!cardType){
-                cardType = project?.cardTypes[firstKeyOfObject(project?.cardTypes)]
-            }
-            let layout =  _.find(project.layouts, o => o.id ==  projectPreference.selection.layout)
-            if(!layout){
-                layout = project?.layouts[firstKeyOfObject(project?.layouts)]
-            }
-            let selectedSourceType = projectPreference.selection.source;
-            if(!selectedSourceType){
-                selectedSourceType = project?.availablesSources[1] || ProjectSourceType.NONE;
-            }
-
-            const data = (cardType && cardType.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == cardType?.id) : null
-
-            let pages = projectPreference.selection.pages || []
-
-            yield put(uiEditorSelectionChanged({
-                selectedSourceType,
-                selection:{
-                    cardType,
-                    layout,
-                    data,
-                    pages
-                }
-            }))
-            yield put(projectReady({project}))
+        let cardType = previousSelection?_.find(project.cardTypes, o => o.id ==  previousSelection.cardType):null;
+        if(!cardType){
+            cardType = project?.cardTypes[firstKeyOfObject(project?.cardTypes)]
         }
+        let layout =  previousSelection?_.find(project.layouts, o => o.id ==  previousSelection.layout):null
+        if(!layout){
+            layout = project?.layouts[firstKeyOfObject(project?.layouts)]
+        }
+        let selectedSourceType = previousSelection?.source;
+        if(!selectedSourceType){
+            selectedSourceType = project?.availablesSources[1] || ProjectSourceType.NONE;
+        }
+
+        const data = (cardType && cardType.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == cardType?.id) : null
+
+        let pages = previousSelection?.pages || []
+
+        yield put(uiEditorSelectionChanged({
+            selectedSourceType,
+            selection:{
+                cardType,
+                layout,
+                data,
+                pages
+            }
+        }))
+        yield put(projectReady({project}))
+        
     }
 }
 

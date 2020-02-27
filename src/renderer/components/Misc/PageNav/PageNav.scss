@@ -21,3 +21,8 @@
 .PageNav__total_disabled {
     opacity: 0.5;
 }
+
+.PageNav_disabled {
+    pointer-events: none;
+    opacity: 0.3;
+}

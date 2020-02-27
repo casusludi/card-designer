@@ -86,7 +86,7 @@ function EditorPanel(props: EditorPanelProps) {
         if(!selection.data) return 0;
         const cardPerPages = selection.layout.cardsPerPage;
         const cardLength = countCards(selection.data);
-        return Math.floor(cardLength/cardPerPages);
+        return Math.ceil(cardLength/cardPerPages);
     }
 
     return (

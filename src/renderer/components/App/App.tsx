@@ -139,8 +139,8 @@ class App extends Component<AppProps> {
 							<button className="button" onClick={() => this.createNewProject()}><i className="icon far fa-file"></i></button>
 							<button className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
 							<button className="button" disabled={!this.props.project?.modified && !this.props.project?.isNew} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
-							<button className="button button-save-as" onClick={() => this.props.dispatch(projectSavingAs())}><i className="icon far fa-save"></i><span>as</span></button>
-							<button className="button" onClick={() => this.openReloadProject()} ><i className="fas fa-sync"></i></button>
+							<button className="button button-save-as" disabled={!this.props.project} onClick={() => this.props.dispatch(projectSavingAs())}><i className="icon far fa-save"></i><span>as</span></button>
+							<button className="button" disabled={!this.props.project} onClick={() => this.openReloadProject()} ><i className="fas fa-sync"></i></button>
 						</div>
 					</div>
 					<div className="layout__header-title">

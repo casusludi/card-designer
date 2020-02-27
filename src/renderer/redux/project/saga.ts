@@ -1,11 +1,11 @@
-import { call, put, takeLatest, all, takeEvery, select, delay } from 'redux-saga/effects';
+import { call, put, takeLatest, all, takeEvery, select, delay, throttle } from 'redux-saga/effects';
 import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath, createNewProjectFromTemplate } from '../../services/Project';
 
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
 import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady } from '.';
-import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged } from '../ui';
+import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged, uiEditorSelectedPagesChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
 import { ServeOverrides } from '../../../main/serve';
@@ -129,11 +129,9 @@ function* saga_renderProjectSelection(action: any) {
         const selection: ProjectSelection = action.payload.selection;
         const project: Project = yield select(selectProject);
         const filter:RenderFilter = action.payload.filter;
-        const html = yield call(renderSelectionAsHtml,project, action.payload.selection)
-
-
-        if (html && project && selection.cardType && selection.layout) {
-            if (filter != RenderFilter.NONE) {
+        if (filter != RenderFilter.NONE) {
+            const html = yield call(renderSelectionAsHtml,project, action.payload.selection)
+            if (html && project && selection.cardType && selection.layout) {
                 let templateStylesPath = selection.cardType.styles;
                 let layoutStylesPath = selection.layout.styles;
                 if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;
@@ -242,11 +240,12 @@ export default function* projectSaga() {
         yield takeLatest(projectSaving.type, saga_saveProject),
         yield takeLatest(projectRender.type, saga_renderProjectSelection),
         yield takeLatest(projectReady.type, saga_renderProjectAtOpening),
-        yield takeLatest([
+        yield throttle(1000,[
             projectFileChanged.type,
             projectDataChanged.type,
             uiEditorSelectedLayoutChanged.type,
             uiEditorSelectedDataChanged.type,
+            uiEditorSelectedPagesChanged.type,
         ], saga_autoRenderProjectSelectionFromEditor),
         yield takeLatest(projectConfigChanged.type, saga_reloadProjectWhenConfigChanged),
         yield takeLatest(projectExport.type, saga_exportProject)

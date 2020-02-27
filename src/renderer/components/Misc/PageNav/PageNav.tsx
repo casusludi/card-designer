@@ -22,40 +22,51 @@ function sortNumbers(a:number,b:number):number{
     return 0
 }
 
-export default function PageNav(props:PageNavProps){
+export default class PageNav extends React.Component<PageNavProps,PageNavState>{
 
-    const [state,setState] = useState<PageNavState>({
-        allPages:props.selection.length == 0 || props.selection.length == props.total,
-        stringSelection:convertSelectionToString(props.selection),
-        selection: props.selection
-    });
+    state = {
+        allPages:this.props.selection.length == 0 || this.props.selection.length == this.props.total,
+        stringSelection:this.convertSelectionToString(this.props.selection),
+        selection: this.props.selection
+    };
 
-
-    useEffect(()=> {
-        setSelection(props.selection);
-    },[props.total])
-
-    function onAllPagesChange(value:boolean){
-
-        if(value){
-            setSelection([]);
+    componentDidUpdate(prevProps:PageNavProps){
+        if(prevProps.total != this.props.total){
+            this.setSelection(this.state.allPages?[]:this.convertStringToSelection('1'));
         }
-
-        setState({
-            ...state,
-            allPages: value
-        })
     }
 
-    function onNavChange(next:boolean){
-        if(state.stringSelection.split(',').length > 1) return;
-        const [a,b] = state.stringSelection.split('-');
+    onAllPagesChange(value:boolean){
+
+        this.setState({
+            allPages:value
+        })
+
+        this.setSelection(value?[]:this.convertStringToSelection('1'))
+    }
+
+    onNavChange(next:boolean){
+        if(this.state.allPages) return;
+        if(this.state.stringSelection.split(/,|-/).length > 1) return;
+        const a = this.state.stringSelection;
+        const aVal = parseInt(a);
+        let newSelection:Array<number>|null = null;
+        if(!isNaN(aVal) && aVal > 0){
+            if(next){
+                newSelection = [Math.min(aVal+1,this.props.total)];
+            }else{
+                newSelection = [Math.max(aVal-1,1)];
+            }
+        }
+        /*
+        if(this.state.stringSelection.split(',').length > 1) return;
+        const [a,b] = this.state.stringSelection.split('-');
         const aVal = parseInt(a);
         let newSelection:Array<number>|null = null;
         if(!isNaN(aVal) && aVal > 0){
             if(!b){
                 if(next){
-                    newSelection = [Math.min(aVal+1,props.total)];
+                    newSelection = [Math.min(aVal+1,this.props.total)];
                 }else{
                     newSelection = [Math.max(aVal-1,1)];
                 }
@@ -64,7 +75,7 @@ export default function PageNav(props:PageNavProps){
                 if(!isNaN(bVal) && bVal >= aVal){
                     const diff = bVal-aVal;
                     if(next){
-                        const evenTotal = props.total%2==1?props.total+1:props.total; 
+                        const evenTotal = this.props.total%(diff+1)==1?this.props.total+diff-1:this.props.total; 
                         const start = Math.min(bVal+1,evenTotal);
                         const end = Math.min(start+diff,evenTotal);
                         console.log(start,end)
@@ -76,64 +87,64 @@ export default function PageNav(props:PageNavProps){
                     }
                 }
             }
-        }
+        }*/
 
         if(newSelection){
-            setSelection(newSelection)
+            this.setSelection(newSelection)
         }
 
     }
 
-    function setSelection(selection:ProjectPageSelection,stringSelection:string|null=null){
-        
-        if(!_.isEqual(selection,state.selection)){
-            props.onChange(selection);
+    setSelection(selection:ProjectPageSelection,stringSelection:string|null=null){
+        console.log(selection,(this.state.selection));
+        if(!_.isEqual(selection,this.state.selection)){
+            this.props.onChange(selection);
         }
-        setState({
-            ...state,
+        this.setState({
             selection,
-            stringSelection: stringSelection?stringSelection:convertSelectionToString(selection)
+            stringSelection: stringSelection?stringSelection:this.convertSelectionToString(selection)
         })
+
         
     }
 
-    function canNav(next:boolean):boolean{
-        if(state.allPages) return false;
-        if(state.stringSelection.split(',').length > 1) return false;
-        const [a,b] = state.stringSelection.split('-');
+    canNav(next:boolean):boolean{
+        if(this.state.allPages) return false;
+        if(this.state.stringSelection.split(/,|-/).length > 1) return false;
+        /*const [a,b] = this.state.stringSelection.split('-');
         const aVal = parseInt(a);
         if(!isNaN(aVal) && aVal > 0){
             if(!b){
-                return next?aVal < props.total:aVal > 1
+                return next?aVal < this.props.total:aVal > 1
             }else{
                 const bVal = parseInt(b);
                 if(!isNaN(bVal) && bVal >= aVal){
                     if(next){
-                        const evenTotal = props.total%2==1?props.total+1:props.total;
+                        const diff = bVal-aVal;
+                        const evenTotal = this.props.total%(diff+1)==1?this.props.total+diff-1:this.props.total;
                         return bVal+1 < evenTotal
                     }else{
                         return aVal-1 > 1
                     }
                 }
             }
-        }
+        }*/
         
         return true;
     }
 
-    function onInputChange(text:string){
-        const selection = convertStringToSelection(text);
-        setSelection(selection,text)
+    onInputChange(text:string){
+        const selection = this.convertStringToSelection(text);
+        this.setSelection(selection,text)
     }
 
-    function onInputBlur(){
-        setState({
-            ...state,
-            stringSelection: convertSelectionToString(state.selection)
+    onInputBlur(){
+        this.setState({
+            stringSelection: this.convertSelectionToString(this.state.selection)
         })
     }
 
-    function convertStringToSelection(text:string):ProjectPageSelection{
+    convertStringToSelection(text:string):ProjectPageSelection{
         const parts = text.split(',');
         let ret:Array<number> = [];
         for(let i = 0,c=parts.length;i<c;i++){
@@ -141,11 +152,11 @@ export default function PageNav(props:PageNavProps){
             const aVal = parseInt(a);
             if(!isNaN(aVal) && aVal > 0){
                 if(!b){
-                    ret.push(Math.min(aVal,props.total))
+                    ret.push(Math.min(aVal,this.props.total))
                 }else{
                     const bVal = parseInt(b);
                     if(!isNaN(bVal) && bVal >= aVal){
-                        const range = _.range(aVal,Math.min(bVal,props.total)+1);
+                        const range = _.range(aVal,Math.min(bVal,this.props.total)+1);
                         ret = ret.concat(range)
                     }
                 }
@@ -157,7 +168,7 @@ export default function PageNav(props:PageNavProps){
             .value();
     }
 
-    function convertSelectionToString(selection:ProjectPageSelection):string{
+    convertSelectionToString(selection:ProjectPageSelection):string{
         const filteredSelection = _.chain(selection)
             .uniq()
             .sort(sortNumbers)
@@ -183,24 +194,26 @@ export default function PageNav(props:PageNavProps){
 
             return ret;
         }else{
-            if(props.total == 1){
+            if(this.props.total == 1){
                 return '1'
             }
-            return `1-${props.total}`
+            return `1-${this.props.total}`
         }
        
     }
 
-    return (
-        <div className="PageNav">
-            <label >
-                Page(s) : 
-            </label>
-            <button type="button" disabled={!canNav(false)} className="PageNav__button button button-frameless" onClick={() => onNavChange(false)}  ><i className="fas fa-chevron-left"></i></button>
-            <input type="text" disabled={state.allPages}  className="PageNav__input input-field" value={state.stringSelection} onBlur={()=>onInputBlur()} onChange={e => onInputChange(e.target.value)} />
-            <span className={"PageNav__total"+(state.allPages?' PageNav__total_disabled':'')}> / {props.total}</span>
-            <button type="button" disabled={!canNav(true)}  className="PageNav__button button button-frameless" onClick={() => onNavChange(true)} ><i className="fas fa-chevron-right"></i></button>
-            <Checkbox id="PageNav__allPages" label="All pages" defaultChecked={state.allPages} onChange={onAllPagesChange} />
-        </div>
-    )
+    render(){
+        return (
+            <div className="PageNav">
+                <label >
+                    Page(s) : 
+                </label>
+                <button type="button" disabled={!this.canNav.bind(this)(false)} className="PageNav__button button button-frameless" onClick={() => this.onNavChange(false)}  ><i className="fas fa-chevron-left"></i></button>
+                <input type="text" disabled={this.state.allPages}  className="PageNav__input input-field" value={this.state.stringSelection} onBlur={()=>this.onInputBlur()} onChange={e => this.onInputChange(e.target.value)} />
+                <span className={"PageNav__total"+(this.state.allPages?' PageNav__total_disabled':'')}> / {this.props.total}</span>
+                <button type="button" disabled={!this.canNav.bind(this)(true)}  className="PageNav__button button button-frameless" onClick={() => this.onNavChange(true)} ><i className="fas fa-chevron-right"></i></button>
+                <Checkbox id="PageNav__allPages" label="All pages" defaultChecked={this.state.allPages} onChange={this.onAllPagesChange.bind(this)} />
+            </div>
+        )
+    }
 }

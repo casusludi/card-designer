@@ -67,13 +67,17 @@ export async function renderNJKToHtml(project:Project,selection:ProjectSelection
     let cards = applyMetaVariableEffects(metaVariables,selection.data.cards);
 
     if(selection.pages.length > 0){
-        console.log(selection.pages);
-        //const cardsPerPages = selection.layout.cardsPerPage;
-        const cardCount = cards.length;
-        cards = _.reduce(selection.pages,(items,o)=> {
-            console.log(`page : ${o}`)
-            return items
+        const cardsPerPages = selection.layout.cardsPerPage;
+
+        cards = _.reduce(selection.pages,(selectedCards:any[],o)=> {
+
+            const i = o-1;
+            const start = i*cardsPerPages;
+            const end = start+cardsPerPages;
+            const extractedCards = cards.slice(start,end);
+            return selectedCards.concat(extractedCards);
         },[])
+
     }
 
     const globalVars = {

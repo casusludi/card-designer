@@ -1,0 +1,4 @@
+== Installation
+
+1. Download the Cardmaker Studio installer
+2. Once it is downloaded, run the installer (Cardmaker Studio Setup <version>.exe)

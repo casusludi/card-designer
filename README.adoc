@@ -1,0 +1,11 @@
+= Cardmaker Studio
+
+== Cardmaker Documentation
+
+You can read the doc link:doc/index.adoc[here].
+
+== License
+
+Copyright (c) Casus Ludi. All rights reserved.
+
+Licensed under the link:LICENSE.txt[MIT] license.

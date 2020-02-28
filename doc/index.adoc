@@ -1,0 +1,22 @@
+= Cardmaker Documentation
+:toc:
+
+include::overview.adoc[]
+
+include::installation.adoc[]
+
+include::configuration.adoc[]
+
+include::templating.adoc[]
+
+include::export.adoc[]
+
+include::contributing.adoc[]
+
+include::roadmap.adoc[]
+
+include::faq.adoc[]
+
+include::credits.adoc[]
+
+include::license.adoc[]

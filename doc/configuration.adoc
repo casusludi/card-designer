@@ -1,0 +1,13 @@
+== Configuration
+
+=== Card Types
+
+=== Layouts
+
+=== Sources
+
+==== Google Sheets
+
+==== External JSON
+
+==== Mockup 

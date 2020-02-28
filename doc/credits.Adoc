@@ -1,0 +1,7 @@
+== Credits
+
+- "chrome" icons : https://github.com/microsoft/vscode-codicons 
+- Others icons : https://fontawesome.com/
+- Logo : Tiphaine Hardy <tiphaine@casusludi.com>
+- Maintainer : Pierre Chabiland <pierre@casusludi.com>
+- Casus Ludi © 2020 http://www.casusludi.com

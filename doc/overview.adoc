@@ -1,0 +1,3 @@
+== Overview
+
+Card Maker Studio is an editor dedicated to the creation of playing cards.

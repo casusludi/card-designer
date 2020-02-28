@@ -2,4 +2,5 @@
 
 - Cardmaker Studio available on MacOs and Linux ?
 
-- 
+- How Cardmaker Studio works ?
+

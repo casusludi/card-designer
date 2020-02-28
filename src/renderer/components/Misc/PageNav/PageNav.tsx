@@ -25,7 +25,7 @@ function sortNumbers(a:number,b:number):number{
 export default class PageNav extends React.Component<PageNavProps,PageNavState>{
 
     state = {
-        allPages:this.props.selection.length == 0 || this.props.selection.length == this.props.total,
+        allPages:this.props.selection.length == 0,
         stringSelection:this.convertSelectionToString(this.props.selection),
         selection: this.props.selection
     };

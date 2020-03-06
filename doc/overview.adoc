@@ -25,12 +25,16 @@ Ex : If you would write Magic the gathering cards :
 - planeswalker another template
 - Instant, Sorcery, Enchantment and Artifact another card type template
 
+Refer to <<configuration.adoc#cardtypes,Card Type Configuration>> and <<templating.adoc#cardtypes,Write Card Type>> for more information.
+
 ==== Layout templates
 
 Layout templates are also written with the same system above (HTML/CSS/Nunjucks).
 
 Layouts provide a covenant way to define different sort of print formats. 
 Need a format to print on the office printer without verso and a format for the printing house with verso? Layout templates can specify that. 
+
+Refer to <<configuration.adoc#layouts,Layouts Configuration>> and <<templating.adoc#layouts,Write Layout>> for more information.
 
 ==== Data Source types
 

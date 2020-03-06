@@ -3,17 +3,86 @@
 
 The configuration is ```cardmaker.json```. It can be edited ine the editor on the Config tab on the right of the editor
 
+.Configuration tab
+image::assets/configuration-tab.png[]
+
+[#cardtypes]
 === Card Types
 
+[source,json]
+----
+"cardTypes": {
+    "default": {
+        "template": "templates/default/template.njk",
+        "styles": "templates/default/styles.css"
+    }
+},
+----
+
+[#layouts]
 === Layouts
+
+[source,json]
+----
+"layouts": {
+    "printer": {
+        "cardsPerPage":9,
+        "template": "layouts/printer.njk",
+        "styles": "layouts/printer.css"
+    },
+    "printing-house": {
+        "cardsPerPage":1,
+        "template": "layouts/printing-house.njk",
+        "styles": "layouts/printing-house.css"
+    }
+},
+----
 
 === Sources
 
 [#gsheets]
 ==== Google Sheets
 
+[source,json]
+----
+"sources": {
+    "gsheets": {
+        "sheetId": null
+    }
+}
+----
+
 [#externaljson]
 ==== External JSON
 
+[source,json]
+----
+"sources": {
+  
+    "json": {
+        "path": "data.json"
+    }
+}
+----
+
 [#mockup]
 ==== Mockup 
+
+[source,json]
+----
+"sources": {
+    "mockup": [
+        {
+            "id": "default",
+            "cards": [
+                {
+                    "name": "A Card Name",
+                    "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus hendrerit ac sem elementum cursus. Nunc sagittis ex nec varius volutpat. Sed condimentum quam sapien, nec accumsan enim aliquam sed.",
+                    "value": "10",
+                    "_COUNT": "11"
+                }
+            ]
+        }
+    ]
+}
+----

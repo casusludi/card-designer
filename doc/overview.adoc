@@ -25,7 +25,7 @@ Ex : If you would write Magic the gathering cards :
 - planeswalker another template
 - Instant, Sorcery, Enchantment and Artifact another card type template
 
-Refer to <<configuration.adoc#cardtypes,Card Type Configuration>> and <<templating.adoc#card-types,Write Card Type>> for more information.
+Refer to <<configuration.adoc#card-types,Card Type Configuration>> and <<templating.adoc#card-types,Write Card Type>> for more information.
 
 ==== Layout templates
 
@@ -52,13 +52,13 @@ Refer to <<configuration.adoc#mockup,Mockup Configuration>> for more information
 
 A JSON file in the project folder. Currently very basic support for it (Now reload data when the file change)
 
-Refer to <<configuration.adoc#externaljson,External JSON Configuration>> for more information.
+Refer to <<configuration.adoc#external-json,External JSON Configuration>> for more information.
 
 ==== Google Sheets Source
 
 It's possible to link Google Sheets document to the editor to fetch data from it. 
 
-Refer to <<configuration.adoc#gsheets,Google Sheets Configuration>> for more information.
+Refer to <<configuration.adoc#google-sheets,Google Sheets Configuration>> for more information.
 
 
 

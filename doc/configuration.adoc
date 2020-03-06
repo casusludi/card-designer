@@ -6,7 +6,6 @@ The configuration is ```cardmaker.json```. It can be edited ine the editor on th
 .Configuration tab
 image::assets/configuration-tab.png[]
 
-[#cardtypes]
 === Card Types
 
 [source,json]
@@ -19,7 +18,6 @@ image::assets/configuration-tab.png[]
 },
 ----
 
-[#layouts]
 === Layouts
 
 [source,json]
@@ -40,7 +38,6 @@ image::assets/configuration-tab.png[]
 
 === Sources
 
-[#gsheets]
 ==== Google Sheets
 
 [source,json]
@@ -52,7 +49,6 @@ image::assets/configuration-tab.png[]
 }
 ----
 
-[#externaljson]
 ==== External JSON
 
 [source,json]
@@ -65,7 +61,6 @@ image::assets/configuration-tab.png[]
 }
 ----
 
-[#mockup]
 ==== Mockup 
 
 [source,json]

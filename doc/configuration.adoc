@@ -10,6 +10,12 @@ image::assets/configuration-tab.png[]
 
 == Card Types
 
+``cardTypes`` is a dictionary of templates. The key is the card type id. The value is an object with two attributes : 
+
+- ``template`` : the path of the html/nunjucks template file relative to the folder project.
+- ``styles`` : the path of the CSS file relative to the folder project.
+
+.Card type in the template MTG Standard
 [source,json]
 ----
 "cardTypes": {
@@ -20,8 +26,17 @@ image::assets/configuration-tab.png[]
 },
 ----
 
+Refer to <<overview.adoc#card-type-templates,Card type Overview>> and <<templating.adoc#card-types,Templating Card Types>> for more information.
+
 == Layouts
 
+``layouts`` is a dictionary of templates. The key is the layout id. The value is an object with three attributes : 
+
+- ``cardsPerPage`` : the number of cards displayed by pages
+- ``template`` : the path of the html/nunjucks template file relative to the folder project.
+- ``styles`` : the path of the CSS file relative to the folder project.
+
+.Layouts in the template MTG Standard
 [source,json]
 ----
 "layouts": {
@@ -38,21 +53,34 @@ image::assets/configuration-tab.png[]
 },
 ----
 
+Refer to <<overview.adoc#layout-templates,Layout Overview>> and <<templating.adoc#layouts,Templating Layouts>> for more information.
+
 == Sources
 
 === Google Sheets
 
+Google Sheets need one thing ``sheetId`` : the id of the spreadsheet from which to retrieve data. 
+It can be found here : 
+
+image:assets/gsheet-example.PNG[]
+
+.Example of Google Sheets Source
 [source,json]
 ----
 "sources": {
     "gsheets": {
-        "sheetId": null
+        "sheetId": "1QJm95kTdpR9XT6fC7sirsPRVFjOOri74-jH3mSd1gf8"
     }
 }
 ----
 
+Refer to <<data.adoc#google-sheets,Google Sheet Data Source>> for more information.
+
 === External JSON
 
+- ``path`` the path of the json file relative of the project folder.
+
+.External JSON source in the template MTG Standard
 [source,json]
 ----
 "sources": {
@@ -63,8 +91,14 @@ image::assets/configuration-tab.png[]
 }
 ----
 
+Refer to <<data.adoc#json-format,JSON Data Source>> for more information.
+
 === Mockup 
 
+Mockup data are plain json directly ine the cardmaker.json.
+Refer to <<data.adoc#json-format,JSON Data Source>> for more details.
+
+.Mockup source in the template MTG Standard
 [source,json]
 ----
 "sources": {

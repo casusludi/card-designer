@@ -71,5 +71,9 @@ Refer to <<configuration.adoc#google-sheets,Google Sheets Configuration>> for mo
 - Refresh the current project image:assets/project-button-refresh.jpg[]
 - Open the folder of the current project with image:assets/project-open-folder.png[]
 
+== Basic Manipulations
+
+// here details for selecting card type, layout, render, pages etc...
+
 
 

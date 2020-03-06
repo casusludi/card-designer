@@ -1,4 +1,4 @@
 = Installation
 
-1. Download the link:https://github.com/casusludi/cardmaker-studio/releases/tag/1.0.0[Cardmaker Studio installer]
+1. Download the link:https://github.com/casusludi/cardmaker-studio/releases/[Cardmaker Studio installer]
 2. Once it is downloaded, run the installer (Cardmaker Studio Setup <version>.exe)

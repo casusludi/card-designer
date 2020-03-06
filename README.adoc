@@ -4,6 +4,10 @@
 
 You can read the doc link:doc/index.adoc[here].
 
+== Download latest version
+
+See in the link:https://github.com/casusludi/cardmaker-studio/releases/[Release page]
+
 == License
 
 Copyright (c) Casus Ludi. All rights reserved.

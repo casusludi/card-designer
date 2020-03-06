@@ -12,7 +12,7 @@ A project contains some parts :
 
 The configuration file is ```cardmaker.json```.
 
-Refer to <<configuration.adoc#,Configuration Part>> for more information.
+Refer to <<configuration.adoc,Configuration Part>> for more information.
 
 
 ==== Card type templates

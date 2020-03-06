@@ -1,5 +1,7 @@
 = Cardmaker Documentation
 
+image:assets/logo-title.png[]
+
 link:overview.adoc[Overview]
 
 link:installation.adoc[Installation]

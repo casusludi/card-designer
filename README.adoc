@@ -7,7 +7,7 @@ image:doc/assets/logo-title.png[]
 image:doc/assets/main.png[]
 Cardmaker Studio with an open project
 
-== Cardmaker Documentation
+== Documentation
 
 You can read the doc link:doc/index.adoc[here].
 

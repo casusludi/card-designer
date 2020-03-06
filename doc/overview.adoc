@@ -62,4 +62,9 @@ It's possible to link Google Sheets document to the editor to fetch data from it
 Refer to <<configuration.adoc#google-sheets,Google Sheets Configuration>> for more information.
 
 
+== Basics operations
+
+
+
+
 

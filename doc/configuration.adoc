@@ -1,20 +1,19 @@
 [#configuration]
 == Configuration
 
+The configuration is ```cardmaker.json```. It can be edited ine the editor on the Config tab on the right of the editor
+
 === Card Types
 
 === Layouts
 
 === Sources
 
-[[gsheets]]
+[#gsheets]
 ==== Google Sheets
 
-[[externaljson]]
+[#externaljson]
 ==== External JSON
 
-[[mockup]]
-==== Mockup
-
-[[blabla]]
-Blabla blabla
+[#mockup]
+==== Mockup 

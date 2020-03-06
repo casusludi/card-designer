@@ -25,7 +25,7 @@ Ex : If you would write Magic the gathering cards :
 - planeswalker another template
 - Instant, Sorcery, Enchantment and Artifact another card type template
 
-Refer to <<configuration.adoc#cardtypes,Card Type Configuration>> and <<templating.adoc#cardtypes,Write Card Type>> for more information.
+Refer to <<configuration.adoc#cardtypes,Card Type Configuration>> and <<templating.adoc#card-types,Write Card Type>> for more information.
 
 ==== Layout templates
 

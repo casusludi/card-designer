@@ -39,8 +39,8 @@ Refer to <<configuration.adoc#layouts,Layouts Configuration>> and <<templating.a
 
 === Data Source types
 
-Card type templates needs to be filled with data to create fully cards.
-Data sources types provide differents manner to provide data to the editor. 
+Card type templates need to be filled with data to create fully cards.
+Data sources types provide different manner to provide data to the editor. 
 All data are written in https://en.wikipedia.org/wiki/JSON[JSON]
 
 === Mockup Data Source
@@ -62,9 +62,14 @@ It's possible to link Google Sheets document to the editor to fetch data from it
 Refer to <<configuration.adoc#google-sheets,Google Sheets Configuration>> for more information.
 
 
-== Basics operations
+== Basic Project Operations
 
-
+- Create a new project with image:assets/project-button-new.jpg[]
+- Open a new project with image:assets/project-button-open.jpg[]
+- Save the current project with image:assets/project-button-save.jpg[]
+- Duplicate the current project with image:assets/project-button-save-as.jpg[]
+- Refresh the current project image:assets/project-button-refresh.jpg[]
+- Open the folder of the current project with image:assets/project-open-folder.png[]
 
 
 

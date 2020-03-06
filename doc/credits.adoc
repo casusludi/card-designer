@@ -1,4 +1,4 @@
-== Credits
+= Credits
 
 - "chrome" icons : https://github.com/microsoft/vscode-codicons 
 - Others icons : https://fontawesome.com/

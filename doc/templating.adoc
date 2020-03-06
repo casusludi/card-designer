@@ -1,11 +1,12 @@
-== Templating
+= Templating
+:toc:
 
-=== Card Types
+== Card Types
 
-=== Layouts
+== Layouts
 
-=== Write a template with HTML and NunJucks
+== Write a template with HTML and NunJucks
 
-=== Styling with CSS
+== Styling with CSS
 
-=== Template variants
+== Template variants

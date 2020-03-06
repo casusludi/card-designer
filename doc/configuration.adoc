@@ -1,12 +1,13 @@
 [#configuration]
-== Configuration
+= Configuration
+:toc:
 
 The configuration is ```cardmaker.json```. It can be edited ine the editor on the Config tab on the right of the editor
 
 .Configuration tab
 image::assets/configuration-tab.png[]
 
-=== Card Types
+== Card Types
 
 [source,json]
 ----
@@ -18,7 +19,7 @@ image::assets/configuration-tab.png[]
 },
 ----
 
-=== Layouts
+== Layouts
 
 [source,json]
 ----
@@ -36,9 +37,9 @@ image::assets/configuration-tab.png[]
 },
 ----
 
-=== Sources
+== Sources
 
-==== Google Sheets
+=== Google Sheets
 
 [source,json]
 ----
@@ -49,7 +50,7 @@ image::assets/configuration-tab.png[]
 }
 ----
 
-==== External JSON
+=== External JSON
 
 [source,json]
 ----
@@ -61,7 +62,7 @@ image::assets/configuration-tab.png[]
 }
 ----
 
-==== Mockup 
+=== Mockup 
 
 [source,json]
 ----

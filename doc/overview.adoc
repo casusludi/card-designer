@@ -1,7 +1,7 @@
 = Overview
 :toc:
 
-Card Maker Studio is an editor dedicated to the creation of playing cards.
+Cardmaker Studio is an editor dedicated to the creation of playing cards.
 
 == Project Concepts
 

@@ -1,0 +1,12 @@
+= Data Sources
+:toc:
+
+== Variables 
+
+=== The _COUNT variable
+
+=== The _SKIP variable
+
+== JSON Format for Mockup and External JSON File
+
+== Google Sheets

@@ -8,6 +8,8 @@ link:installation.adoc[Installation]
 
 link:configuration.adoc[Configuration]
 
+link:data.adoc[Data Sources]
+
 link:templating.adoc[Templating]
 
 link:export.adoc[Export to PDF]

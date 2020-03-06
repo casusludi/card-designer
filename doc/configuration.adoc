@@ -6,8 +6,11 @@
 
 === Sources
 
+[#gsheets]
 ==== Google Sheets
 
+[#externaljson]
 ==== External JSON
 
+[#mockup]
 ==== Mockup 

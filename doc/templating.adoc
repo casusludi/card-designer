@@ -7,3 +7,5 @@
 === Write a template with HTML and NunJucks
 
 === Styling with CSS
+
+=== Template variants

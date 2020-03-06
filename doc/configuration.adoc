@@ -5,6 +5,7 @@
 The configuration is ```cardmaker.json```. It can be edited ine the editor on the Config tab on the right of the editor
 
 .Configuration tab
+[.text-center]
 image::assets/configuration-tab.png[]
 
 == Card Types

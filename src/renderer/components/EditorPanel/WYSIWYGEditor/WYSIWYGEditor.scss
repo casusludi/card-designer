@@ -1,5 +1,6 @@
 @import "../../../styles/variables.scss";
 
+
 .WYSIWYGEditor__Card {
     background-color: $white;
     position: relative;
@@ -7,4 +8,34 @@
 
 .CardTypeBoxView {
     position: absolute;
+    box-sizing: border-box;
+}
+
+.CardTypeBoxView_selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid red;
+}
+
+.WYSIWYGEditor__Canvas {
+    overflow: auto;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.WYSIWYGEditor__Card {
+    border: 1px solid $light-grey;
+    box-shadow: 5px 5px 10px 4px rgba(0,0,0,1);
+    margin: 15px;
+}
+
+.WYSIWYGEditor__Tabs {
+    height: 50%;
 }

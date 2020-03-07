@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from "react"
+import React, { ReactNode } from "react"
 import './TabNav.scss';
 
 export enum TabNavHeaderPosition {
@@ -40,29 +40,53 @@ export type TabNavProps  = {
     currentTab:number
     headerPosition: TabNavHeaderPosition
     children: Array<any>
+    onTabChange?:(tab:number) => void
 }
 
-export default function TabNav(props:TabNavProps){
-    const [state,setState] = useState({
-        currentTab:props.currentTab
-    });
+export type TabNavState  = {
+    currentTab:number
+}
 
-    return (
-        <div className={"TabNav "+(props.className?props.className:'')+(props.headerPosition == TabNavHeaderPosition.BOTTOM?' TabNav_header-bottom':'')}>
-            <div className="TabNav__headers">
-                {props.children.map( (t,i) => (<HeaderButton key={i} index={i} onSelect={(index) => setState({currentTab:index})}  selected={state.currentTab == i}>{t.props.label}</HeaderButton>))}
+export default class TabNav extends React.Component<TabNavProps,TabNavState>{
+
+    static defaultProps = {
+        className:"",
+        headerPosition: TabNavHeaderPosition.TOP,
+        currentTab: 0
+    }
+
+    state = {
+        currentTab:this.props.currentTab
+    }
+
+    componentDidUpdate(prevProps:TabNavProps,prevState:TabNavState){
+        if(prevProps.currentTab != this.props.currentTab){
+            this.setState({
+                currentTab: this.props.currentTab
+            })
+        }
+
+        if(prevState.currentTab != this.state.currentTab){
+           if(this.props.onTabChange){
+               this.props.onTabChange(this.state.currentTab);
+           }
+        }
+    }
+
+    render(){
+        return (
+            <div className={"TabNav "+(this.props.className?this.props.className:'')+(this.props.headerPosition == TabNavHeaderPosition.BOTTOM?' TabNav_header-bottom':'')}>
+                <div className="TabNav__headers">
+                    {this.props.children.map( (t,i) => (<HeaderButton key={i} index={i} onSelect={(index) => this.setState({currentTab:index})}  selected={this.state.currentTab == i}>{t.props.label}</HeaderButton>))}
+                </div>
+                <div className="TabNav__contents">
+                    {this.props.children.map( (t,i) => <div className="TabNavItem__content" key={i} style={this.state.currentTab != i?{display:'none'}:{}} >{t}</div>)}
+                </div>
             </div>
-            <div className="TabNav__contents">
-                {props.children.map( (t,i) => <div className="TabNavItem__content" key={i} style={state.currentTab != i?{display:'none'}:{}} >{t}</div>)}
-            </div>
-        </div>
 
-    )
+        )
+    }
 }
 
-TabNav.defaultProps = {
-    className:"",
-    headerPosition: TabNavHeaderPosition.TOP,
-    currentTab: 0
-}
+
 

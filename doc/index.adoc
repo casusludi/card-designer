@@ -1,4 +1,4 @@
-= Cardmaker Documentation
+= Card Designer Documentation
 
 image:assets/logo-title.png[]
 

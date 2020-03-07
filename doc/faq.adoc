@@ -1,6 +1,6 @@
 = FAQ
 
-- Cardmaker Studio available on MacOs and Linux ?
+- Card Designer available on MacOs and Linux ?
 
-- How Cardmaker Studio works ?
+- How Card Designer works ?
 

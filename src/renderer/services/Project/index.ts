@@ -146,7 +146,7 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigC
 export async function openProjectFromDialog(): Promise<Project | null> {
 
     const result = await showOpenDialog({
-        title: 'Open Cardmaker Studio Project',
+        title: 'Open Card Designer Project',
         properties: ["openDirectory"]
 
     });
@@ -253,7 +253,7 @@ export async function saveProjectAs(project:Project):Promise<Project>{
     let projectPath = null;
 
     const result = await showSaveDialog({
-        title: 'Open Cardmaker Studio Project'
+        title: 'Open Card Designer Project'
     });
 
     if (!result.canceled && result.filePath != "") {

@@ -1,11 +1,11 @@
-= Cardmaker Studio
+= Card Designer
 
 [.text-center]
 image:doc/assets/logo-title.png[]
 
 [.text-center]
 image:doc/assets/main.png[]
-Cardmaker Studio with an open project
+Card Designer with an open project
 
 == Documentation
 

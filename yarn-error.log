@@ -41,7 +41,7 @@ npm manifest:
     "license": "ISC",
     "build": {
       "appId": "casusludi.cardmakerstudio",
-      "productName": "Cardmaker Studio",
+      "productName": "Card Designer",
       "directories": {
         "output": "releases"
       },

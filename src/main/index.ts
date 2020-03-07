@@ -20,7 +20,7 @@ async function createSplashWindow(){
     frame: false,
     show: false,
     width: 640, height: 360,
-    title:'Cardmaker Studio',
+    title:'Card Designer',
     darkTheme: true,
     backgroundColor: '#2C2828',
     resizable: false,
@@ -41,7 +41,7 @@ function createMainWindow() {
     frame: false,
     show: false,
     width: 1280, height: 768,
-    title:'Cardmaker Studio',
+    title:'Card Designer',
     darkTheme: true,
     backgroundColor: '#2C2828',
     webPreferences: {

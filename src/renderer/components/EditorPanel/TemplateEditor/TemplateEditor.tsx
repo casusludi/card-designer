@@ -4,6 +4,7 @@ import TabNav, { TabNavItem, TabNavHeaderPosition } from '../../Misc/TabNav/TabN
 import CodeEditor from '../CodeEditor/CodeEditor';
 
 import './TemplateEditor.scss';
+import WYSIWYGEditor from '../WYSIWYGEditor';
 
 
 export type TemplateEditorProps = {
@@ -28,6 +29,7 @@ export default function TemplateEditor(props: TemplateEditorProps) {
                     <TabNav className="TemplateEditor__Tabs" headerPosition={TabNavHeaderPosition.TOP} >
                         <TabNavItem label="Template"><CodeEditor width={props.width} className="full-space" mode="html" onChange={(code) => props.template && props.onFileChanged(props.template.template, code)} code={templateFile.content} instanceId={templateFile.instanceId} path={props.template.template} /></TabNavItem>
                         <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.template && props.onFileChanged(props.template.styles, code)} code={styleFile.content} instanceId={styleFile.instanceId} path={props.template.styles} /></TabNavItem>
+                        <TabNavItem label="Canvas"><WYSIWYGEditor /></TabNavItem>
                     </TabNav>
                 </div> :
                 <div>No Template</div>

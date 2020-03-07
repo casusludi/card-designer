@@ -1,0 +1,10 @@
+@import "../../../styles/variables.scss";
+
+.WYSIWYGEditor__Card {
+    background-color: $white;
+    position: relative;
+}
+
+.CardTypeBoxView {
+    position: absolute;
+}

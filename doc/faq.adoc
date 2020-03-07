@@ -1,4 +1,4 @@
-== FAQ
+= FAQ
 
 - Cardmaker Studio available on MacOs and Linux ?
 

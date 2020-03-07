@@ -1,22 +1,25 @@
 = Cardmaker Documentation
-:toc:
 
-include::overview.adoc[]
+image:assets/logo-title.png[]
 
-include::installation.adoc[]
+link:overview.adoc[Overview]
 
-include::configuration.adoc[]
+link:installation.adoc[Installation]
 
-include::templating.adoc[]
+link:configuration.adoc[Configuration]
 
-include::export.adoc[]
+link:data.adoc[Data Sources]
 
-include::contributing.adoc[]
+link:templating.adoc[Templating]
 
-include::roadmap.adoc[]
+link:export.adoc[Export to PDF]
 
-include::faq.adoc[]
+link:contributing.adoc[Contributing]
 
-include::credits.adoc[]
+link:roadmap.adoc[Roadmap]
 
-include::license.adoc[]
+link:faq.adoc[FAQ]
+
+link:credits.adoc[Credits]
+
+link:license.adoc[License]

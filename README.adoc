@@ -1,8 +1,19 @@
 = Cardmaker Studio
 
-== Cardmaker Documentation
+[.text-center]
+image:doc/assets/logo-title.png[]
+
+[.text-center]
+image:doc/assets/main.png[]
+Cardmaker Studio with an open project
+
+== Documentation
 
 You can read the doc link:doc/index.adoc[here].
+
+== Download latest version
+
+See in the link:https://github.com/casusludi/cardmaker-studio/releases/[Release page]
 
 == License
 

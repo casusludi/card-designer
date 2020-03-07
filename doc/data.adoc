@@ -1,0 +1,25 @@
+= Data Sources
+:toc:
+
+== Meta Variables 
+
+=== The _COUNT variable
+
+Repeat a card N times ( N is defined in a card line )
+
+=== The _SKIP variable
+
+if equal to 1 or TRUE, skip the card line
+
+[#json-format]
+== JSON Format for Mockup and External JSON File
+
+== Google Sheets
+
+=== Authenticate with a Google Account
+
+=== Data format in Sheets
+
+=== Fetch Data from the sheets
+
+

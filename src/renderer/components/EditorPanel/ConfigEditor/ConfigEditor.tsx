@@ -1,7 +1,7 @@
 import React from "react";
 import CodeEditor from "../CodeEditor/CodeEditor"
 import "./ConfigEditor.scss";
-import { ProjectConfig } from "../../../services/Project";
+import { ProjectConfig, CARDMAKER_CONFIG_FILE } from "../../../services/Project";
 
 export type ConfigEditorProps = {
     instanceId:string
@@ -26,7 +26,7 @@ export default function ConfigEditor(props:ConfigEditorProps) {
 
     return (
         <div className="ConfigEditor full-space">
-            <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onValidChange}  code={JSON.stringify(props.config,null,4)} instanceId={props.instanceId} path="cardmaker.json"/>
+            <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onValidChange}  code={JSON.stringify(props.config,null,4)} instanceId={props.instanceId} path={CARDMAKER_CONFIG_FILE}/>
         </div>
     )
     

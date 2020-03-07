@@ -1,5 +1,5 @@
 {
-  "name": "cardmaker-studio",
+  "name": "card-designer",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -11,8 +11,8 @@
   "author": "Pierre Chabiland <pierre@casusludi.com>",
   "license": "ISC",
   "build": {
-    "appId": "casusludi.cardmakerstudio",
-    "productName": "Cardmaker Studio",
+    "appId": "casusludi.card-designer",
+    "productName": "Card Designer",
     "directories": {
       "output": "releases"
     },

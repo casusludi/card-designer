@@ -10,7 +10,7 @@ import { renderNJKToHtml} from './render';
 import fse from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
 
-const CARDMAKER_CONFIG_FILE = 'cardmaker.json';
+const CARDMAKER_CONFIG_FILE = 'config.json';
 const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
 
 export const PROJECT_CACHE_FOLDER = '.cache';

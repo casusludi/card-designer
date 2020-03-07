@@ -139,7 +139,7 @@ class App extends Component<AppProps> {
 						<Modal opener={(show) => <button type="button" className="button button-about" onClick={() => show()}><i className="fas fa-info"></i></button>} >
 						<div className="AppInfos">
 							<div className="AppInfos__Content">
-							<div className="AppInfos__title"><img className="AppInfos__AppLogo" src="./icon.png" /><div>Cardmaker<br />Studio</div></div>
+							<div className="AppInfos__title"><img className="AppInfos__AppLogo" src="./icon.png" /><div>Card<br />Designer</div></div>
             				<div className="AppInfos__subtitle">By <img className="AppInfos__CsldLogo" src="./images/casusludi-logo.png" alt="Casus Ludi"/> © 2020</div>
 							</div>
 						</div>
@@ -154,7 +154,7 @@ class App extends Component<AppProps> {
 					</div>
 					<div className="layout__header-title">
 						<img className="ImageIcon ImageIcon_small Header__AppIcon" src="./icon.png" />
-						<div className="Header__AppName">Cardmaker Studio</div>
+						<div className="Header__AppName">Card Designer</div>
 						{this.props.project && <div className="project-bar__name">
 							- {this.props.project.name}
 							<button className="button button-frameless" onClick={() => this.openProjectFolder()} ><i className="icon far fa-folder-open"></i></button>

@@ -30,9 +30,6 @@
     right: 0;
     bottom: 0;
     height: 99px;
-    padding-bottom: 5px;
-    display: flex;
-    flex-direction: column;
 
     & > .MessagerAlert__error{
         position: absolute;
@@ -41,27 +38,6 @@
         right: 20%;
     }
 }
-
-.EditorPanel__ActionBar-line{
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    padding: 5px 5px 0 5px;
-
-    & > *:not(:last-child) {
-        margin-right: 5px;
-    }
-
-    &:not(:last-child) {
-        margin-bottom: 5px;
-    }
-}
-
-.EditorPanel__ActionBar-line_center {
-    justify-content: center;
-}
-
-
 
 .ActionBar__RenderingBox {
     display: flex;

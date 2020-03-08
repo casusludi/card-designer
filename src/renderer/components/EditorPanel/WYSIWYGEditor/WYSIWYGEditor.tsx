@@ -1,6 +1,8 @@
 import React from "react";
 import './WYSIWYGEditor.scss';
 import TabNav, { TabNavItem } from "../../Misc/TabNav/TabNav";
+import Input from "../../Misc/Input";
+import Checkbox from "../../Misc/Checkbox/Checkbox";
 
 
 export enum CardTypeBoxType {
@@ -51,7 +53,9 @@ export type CardTypeBox = {
 export type CardTypeData = {
     width:number
     height:number
-    boxes:Array<CardTypeBox>
+    haveVerso:boolean
+    rectoBoxes:Array<CardTypeBox>
+    versoBoxes:Array<CardTypeBox>
 }
 
 export type WYSIWYGEditorProps = {
@@ -123,7 +127,8 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps,WY
         cardTypeData: {
             width: 63,
             height: 87.5,
-            boxes:[
+            haveVerso:true,
+            rectoBoxes:[
                 {
                     ref:"pouet",
                     type: CardTypeBoxType.Text,
@@ -139,7 +144,8 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps,WY
                         align: TextAlign.Center
                     }
                 }
-            ]
+            ],
+            versoBoxes:[]
         }
     }
 
@@ -164,21 +170,34 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps,WY
         return (
             <div className="WYSIWYGEditor full-space">
                 <div className="WYSIWYGEditor__Canvas">
-                    <div className="WYSIWYGEditor__Card" style={{
+                    <div className="WYSIWYGEditor__Card WYSIWYGEditor__CardRecto" style={{
                         width: `${this.state.cardTypeData.width}mm`,
                         height: `${this.state.cardTypeData.height}mm`
                     }}>
-                        {this.state.cardTypeData.boxes.map( (box,i) => <CardTypeBoxView data={box} key={i} selected={i == this.state.boxIndexSelected} onChange={(newBox) => this.onBoxChange(i,newBox)} onSelect={(selectedBox) => this.onBoxSelect(i,selectedBox) } />)}
+                        {this.state.cardTypeData.rectoBoxes.map( (box,i) => <CardTypeBoxView data={box} key={i} selected={i == this.state.boxIndexSelected} onChange={(newBox) => this.onBoxChange(i,newBox)} onSelect={(selectedBox) => this.onBoxSelect(i,selectedBox) } />)}
                     </div>
+                    {this.state.cardTypeData.haveVerso && <div className="WYSIWYGEditor__Card WYSIWYGEditor__CardVerso" style={{
+                        width: `${this.state.cardTypeData.width}mm`,
+                        height: `${this.state.cardTypeData.height}mm`
+                    }}>
+                        {this.state.cardTypeData.versoBoxes.map( (box,i) => <CardTypeBoxView data={box} key={i} selected={i == this.state.boxIndexSelected} onChange={(newBox) => this.onBoxChange(i,newBox)} onSelect={(selectedBox) => this.onBoxSelect(i,selectedBox) } />)}
+                    </div>}
                 </div>
                 <div>
                 <TabNav className="WYSIWYGEditor__Tabs" currentTab={this.state.currentTab} onTabChange={this.onTabChange.bind(this)} >
                         <TabNavItem label="Card Settings">
-                            <input className="input-field" type="number" defaultValue={this.state.cardTypeData.width}  />
-                            <input className="input-field" type="number" defaultValue={this.state.cardTypeData.height} />
+                            <div className="ContentWithLine">
+                                <div className="ContentWithLine__Line">
+                                    <Input label="width : " labelOnTop={true}  type="number" defaultValue={this.state.cardTypeData.width} units="mm"  />
+                                    <Input label="height : " labelOnTop={true} type="number" defaultValue={this.state.cardTypeData.height} units="mm" />
+                                    <Checkbox label="With Verso"   defaultChecked={this.state.cardTypeData.haveVerso} />
+                                </div>
+                            </div>
                         </TabNavItem>
                         <TabNavItem label="Boxes">
-                            
+                            <div className="WYSIWYGEditor__TabContent">
+                                
+                            </div>
                         </TabNavItem>
 
                     </TabNav>

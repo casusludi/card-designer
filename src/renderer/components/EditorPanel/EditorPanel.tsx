@@ -108,7 +108,7 @@ function EditorPanel(props: EditorPanelProps) {
                         </TabNavItem>
 
                     </TabNav>
-                    <div className="EditorPanel__ActionBar">
+                    <div className="EditorPanel__ActionBar ContentWithLine">
                         {props.ui.lastError &&
                             <div className="MessagerAlert__error">
                                 {props.ui.lastError.message}
@@ -117,7 +117,7 @@ function EditorPanel(props: EditorPanelProps) {
                             <div className="MessagerAlert__error">
                                 No data found in source <b>{props.ui.selectedSourceType}</b> for template <b>{props.ui.selection.cardType?.id}</b>
                             </div>}
-                        {props.ui.selection && <div className="EditorPanel__ActionBar-line">
+                        {props.ui.selection && <div className="ContentWithLine__Line">
                             <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} value={props.ui.selection?.cardType} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes, (o, k) => ({ label: k, value: o }))} />
                             <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts, (o, k) => ({ label: k, value: o }))} />
                             <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} value={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
@@ -127,7 +127,7 @@ function EditorPanel(props: EditorPanelProps) {
                             </div>
                             
                         </div>}
-                        {props.ui.selection && <div className="EditorPanel__ActionBar-line EditorPanel__ActionBar-line_center">
+                        {props.ui.selection && <div className="ContentWithLine__Line ContentWithLine__Line_center">
                             <PageNav onChange={onPageNavChanged} selection={props.ui.selection?.pages || []} total={getTotalPages(props.ui.selection)} />
                         </div>}
                     </div>

@@ -1,22 +1,33 @@
 import React from "react";
 import './Checkbox.scss'
+import uuid from "uuid/v4";
 
 export type CheckboxProps = {
-    id: string
+    id?: string
     label: string
     defaultChecked: boolean
-    buttonStyle?:boolean
-    onChange: (value: boolean) => void
+    buttonStyle?: boolean
+    onChange?: (value: boolean) => void
 }
 
-export default function Checkbox(props: CheckboxProps) {
+export type CheckboxState = {
+    id: string
+}
 
-    return (
-        <div className={"Checkbox"+(props.buttonStyle?" Checkbox__buttonStyle":"")}>
-            <input className="Checkbox__input" type="checkbox" id={props.id} name={props.id} defaultChecked={props.defaultChecked} onChange={e => props.onChange(e.target.checked)} />
-            <label className="Checkbox__label" htmlFor={props.id}>
-                {props.label}
-        </label>
-        </div>
-    )
+export default class Checkbox extends React.Component<CheckboxProps,CheckboxState> {
+
+    state = {
+        id:this.props.id?this.props.id:uuid()
+    }
+
+    render() {
+        return (
+            <div className={"Checkbox" + (this.props.buttonStyle ? " Checkbox__buttonStyle" : "")}>
+                <input className="Checkbox__input" type="checkbox" id={this.state.id} name={this.props.id} defaultChecked={this.props.defaultChecked} onChange={e => this.props.onChange && this.props.onChange(e.target.checked)} />
+                <label className="Checkbox__label" htmlFor={this.state.id}>
+                    {this.props.label}
+                </label>
+            </div>
+        )
+    }
 }

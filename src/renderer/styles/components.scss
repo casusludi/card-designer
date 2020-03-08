@@ -121,3 +121,29 @@
         background-color: $medium-grey;
     }
 }
+
+
+.ContentWithLine {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 5px;
+}
+
+.ContentWithLine__Line {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding: 5px 5px 0 5px;
+
+    & > *:not(:last-child) {
+        margin-right: 5px;
+    }
+
+    &:not(:last-child) {
+        margin-bottom: 5px;
+    }
+}
+
+.ContentWithLine__Line_center {
+    justify-content: center;
+}

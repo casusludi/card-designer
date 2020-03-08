@@ -1,0 +1,54 @@
+@import "../../../styles/variables.scss";
+
+.Input{
+    display: flex;
+}
+
+.Input__label{
+    align-self: center;
+    padding-right: 5px;
+}
+
+.Input__wrapper {
+    display: flex;
+    width: 10em;
+    border: 1px solid $medium-grey;
+    border-bottom: 2px solid $medium-grey;
+   
+    box-shadow: 0 1px 2px 0px #000000;
+
+    &:disabled {
+        opacity: 0.3;
+        background-color: $medium-grey;
+    }
+}
+
+.Input__input {
+    border: none;
+    padding: 0 5px;
+    min-height: 28px;
+    width: 100%;
+
+    &[type="number"]{
+        text-align: right;
+    }
+}
+
+.Input__units {
+    background-color: $white;
+    color: $medium-grey;
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+}
+
+
+.Input_labeltop {
+    display: block;
+    position: relative;
+    & > label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,15 @@
+@import "../../../styles/variables.scss";
+
+.ActivableInput__wrapper {
+    display: flex;
+
+    .Input__wrapper{
+        width: 7em;
+    }
+}
+
+.ActivableInput_desactivated {
+    .ActivableInput__label {
+        color: $medium-grey;
+    }
+}

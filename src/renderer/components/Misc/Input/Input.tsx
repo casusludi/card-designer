@@ -15,7 +15,7 @@ export type InputProps = {
     units?:string
     defaultValue?:string|number
     value?:string|number
-    onChange?:(e:React.ChangeEvent<HTMLInputElement>) => void
+    onChange?:(value:string|number) => void
 }
 
 export type InputState = {
@@ -41,7 +41,7 @@ export default class Input extends React.Component<InputProps>{
                         name={this.props.name} 
                         defaultValue={this.props.defaultValue}
                         value={this.props.value}
-                        onChange={this.props.onChange}
+                        onChange={e => this.props.onChange && this.props.onChange(e.target.value)}
                         />
                     {this.props.units && <div className="Input__units">{this.props.units}</div>}
                 </div>

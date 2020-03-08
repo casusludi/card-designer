@@ -4,8 +4,8 @@ import uuid from "uuid/v4";
 
 export type CheckboxProps = {
     id?: string
-    label: string
-    defaultChecked: boolean
+    label?: string
+    defaultChecked?: boolean
     buttonStyle?: boolean
     onChange?: (value: boolean) => void
 }

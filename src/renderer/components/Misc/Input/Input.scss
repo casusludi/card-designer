@@ -32,6 +32,11 @@
     &[type="number"]{
         text-align: right;
     }
+
+    &:disabled {
+        color: $light-grey;
+        background-color: $medium-grey;
+    }
 }
 
 .Input__units {
@@ -50,5 +55,15 @@
         display: block;
         margin-bottom: 5px;
         font-size: 0.8rem;
+    }
+}
+
+.Input__disabled {
+    opacity: 0.3;
+    
+
+    .Input__units {
+        color: $light-grey;
+        background-color: $medium-grey;
     }
 }

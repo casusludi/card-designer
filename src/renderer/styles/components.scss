@@ -122,12 +122,18 @@
     }
 }
 
+.Content {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
 
 .ContentWithLine {
     display: flex;
     flex-direction: column;
     padding-bottom: 5px;
 }
+
 
 .ContentWithLine__Line {
     display: flex;
@@ -147,3 +153,21 @@
 .ContentWithLine__Line_center {
     justify-content: center;
 }
+
+.ContentWithColumn {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+
+    padding: 5px 0 5px 5px;
+
+    &:not(:last-child) {
+        margin-left: 5px;
+    }
+}
+
+/*
+.ContentWithColumn__Col {
+
+}
+*/

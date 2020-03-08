@@ -23,7 +23,7 @@
 
 .WYSIWYGEditor__Canvas {
     overflow: auto;
-    height: 50%;
+    height: 60%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,11 +33,17 @@
 .WYSIWYGEditor__Card {
     border: 1px solid $light-grey;
     box-shadow: 5px 5px 10px 4px rgba(0,0,0,1);
-    margin: 15px;
+    margin: 15px 15px 10px 15px;
+}
+
+.WYSIWYGEditor__CardBoxLabel {
+    text-align: center;
+    font-style: italic;
+    color: $light-grey;
 }
 
 .WYSIWYGEditor__Tabs {
-    height: 50%;
+    height: 40%;
 }
 
 .WYSIWYGEditor__TabContent {

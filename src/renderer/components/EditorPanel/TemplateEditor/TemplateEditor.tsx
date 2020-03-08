@@ -5,6 +5,7 @@ import CodeEditor from '../CodeEditor/CodeEditor';
 
 import './TemplateEditor.scss';
 import WYSIWYGEditor from '../WYSIWYGEditor';
+import Checkbox from '../../Misc/Checkbox';
 
 
 export type TemplateEditorProps = {
@@ -25,7 +26,7 @@ export default function TemplateEditor(props: TemplateEditorProps) {
         <React.Fragment>
             {props.template && templateFile && styleFile ?
                 <div className="TemplateEditor full-space">
-                    <div className="TemplateEditor__header"><span className="TemplateEditor__header-label">{props.template.id}</span></div>
+                    <div className="TemplateEditor__header"><span className="TemplateEditor__header-label">{props.template.id}</span><Checkbox label="Advanced" /></div>
                     <TabNav className="TemplateEditor__Tabs" headerPosition={TabNavHeaderPosition.TOP} >
                         <TabNavItem label="Template"><CodeEditor width={props.width} className="full-space" mode="html" onChange={(code) => props.template && props.onFileChanged(props.template.template, code)} code={templateFile.content} instanceId={templateFile.instanceId} path={props.template.template} /></TabNavItem>
                         <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.template && props.onFileChanged(props.template.styles, code)} code={styleFile.content} instanceId={styleFile.instanceId} path={props.template.styles} /></TabNavItem>

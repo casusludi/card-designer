@@ -38,16 +38,17 @@ export type CardTypeBoxText = {
     size: number
 }
 
+type Dimension = number | "auto" ;
 
 export type CardTypeBox = {
     ref: string // variable name
     type: CardTypeBoxType
-    top?: number | "auto" 
-    left?: number | "auto" 
-    bottom?: number | "auto" 
-    right?: number | "auto" 
-    width?: number | "auto" 
-    height?: number | "auto" 
+    top: Dimension
+    left: Dimension
+    bottom: Dimension
+    right: Dimension
+    width: Dimension
+    height: Dimension
     data: CardTypeBoxText
 }
 
@@ -114,6 +115,31 @@ class CardTypeBoxView extends React.Component<CardTypeBoxViewProps> {
         return (
             <div className={"CardTypeBoxView" + (this.props.selected ? ' CardTypeBoxView_selected' : '')} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
                 {this.props.data.ref}
+                {this.props.data.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
+                    style={{
+                        top:`-${this.props.data.top}mm`,
+                        height:`${this.props.data.top}mm`
+                    }}
+                ></div>}
+                {this.props.data.left != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_left"
+                    style={{
+                        left:`-${this.props.data.left}mm`,
+                        width:`${this.props.data.left}mm`
+                    }}
+                ></div>}
+                {this.props.data.bottom != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_bottom"
+                    style={{
+                        bottom:`-${this.props.data.bottom}mm`,
+                        height:`${this.props.data.bottom}mm`
+                    }}
+                
+                ></div>}
+                {this.props.data.right != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_right"
+                    style={{
+                        right:`-${this.props.data.right}mm`,
+                        width:`${this.props.data.right}mm`
+                    }}
+                ></div>}
             </div>
         )
     }
@@ -137,6 +163,8 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
                     left: 5,
                     width: 20,
                     height: 10,
+                    right:"auto" as Dimension,
+                    bottom:"auto" as Dimension,
                     data: {
                         color: "red",
                         size: 12,

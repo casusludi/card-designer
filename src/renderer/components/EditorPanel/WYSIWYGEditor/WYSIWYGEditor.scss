@@ -18,7 +18,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px solid red;
+    border: 1px solid $light-grey;
 }
 
 .WYSIWYGEditor__Canvas {
@@ -48,4 +48,30 @@
 
 .WYSIWYGEditor__TabContent {
     padding: 5px;
+}
+
+.CardTypeBoxView__Line {
+    position: absolute;
+}
+
+.CardTypeBoxView_selected {
+    .CardTypeBoxView__Line_top {
+        border-left: 1px dashed $light-grey;
+        left: 50%;
+    }
+
+    .CardTypeBoxView__Line_left {
+        border-bottom: 1px dashed $light-grey;
+        bottom: 50%;
+    }
+
+    .CardTypeBoxView__Line_bottom {
+        border-left: 1px dashed $light-grey;
+        left: 50%;
+    }
+
+    .CardTypeBoxView__Line_right {
+        border-bottom: 1px dashed $light-grey;
+        bottom: 50%;
+    }
 }

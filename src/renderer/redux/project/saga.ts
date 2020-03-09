@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectRawConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs, projectConfigChanged } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged, uiEditorSelectedPagesChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -72,7 +72,7 @@ function* saga_reloadProjectWhenConfigChanged(action:any){
     try {
         const oldProject: Project = yield select(selectProject);
 
-        const newProject = yield call(loadProjectFromConfig, oldProject.config,oldProject.path,oldProject.isNew);
+        const newProject = yield call(loadProjectFromConfig, oldProject.rawConfig,oldProject.path,oldProject.isNew);
         if (newProject) {
             newProject.modified = true;
             yield put(projectReloadSucceeded({ project: newProject }))
@@ -143,25 +143,27 @@ function* saga_renderProjectSelection(action: any) {
         if (filter != RenderFilter.NONE) {
             const html = yield call(renderSelectionAsHtml,project, action.payload.selection)
             if (html && project && selection.cardType && selection.layout) {
-                let templateStylesPath = selection.cardType.styles;
-                let layoutStylesPath = selection.layout.styles;
-                if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;
-                if (layoutStylesPath[0] != '/') layoutStylesPath = '/' + layoutStylesPath;
-                const overrides: ServeOverrides = {
-                    [templateStylesPath]: project.files[selection.cardType.styles].content,
-                    [layoutStylesPath]: project.files[selection.layout.styles].content
-                }
-                const htmlUrl = yield call(serveHtml, "html-preview", html, project.path, overrides)
-                if(filter == RenderFilter.ALL || filter == RenderFilter.HTML){
-                    yield put(uiPreviewHtmlUrlChanged({ htmlUrl }));
-                }
-                if(filter == RenderFilter.ALL || filter == RenderFilter.PDF){
+                if(selection.cardType.styles && selection.layout.styles){
+                    let templateStylesPath = selection.cardType.styles;
+                    let layoutStylesPath = selection.layout.styles;
+                    if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;
+                    if (layoutStylesPath[0] != '/') layoutStylesPath = '/' + layoutStylesPath;
+                    const overrides: ServeOverrides = {
+                        [templateStylesPath]: project.files[selection.cardType.styles].content,
+                        [layoutStylesPath]: project.files[selection.layout.styles].content
+                    }
+                    const htmlUrl = yield call(serveHtml, "html-preview", html, project.path, overrides)
+                    if(filter == RenderFilter.ALL || filter == RenderFilter.HTML){
+                        yield put(uiPreviewHtmlUrlChanged({ htmlUrl }));
+                    }
+                    if(filter == RenderFilter.ALL || filter == RenderFilter.PDF){
 
-                    const t = Date.now();
-                    const pdf = yield call(convertHtmlToPdf, html, project.path, overrides)
-                    yield put(uiPreviewPdfChanged({ pdf, renderTime:Date.now()-t }))
+                        const t = Date.now();
+                        const pdf = yield call(convertHtmlToPdf, html, project.path, overrides)
+                        yield put(uiPreviewPdfChanged({ pdf, renderTime:Date.now()-t }))
+                    }
+                    yield put(projectRendered())
                 }
-                yield put(projectRendered())
             }
         }
     } catch (e) {
@@ -259,7 +261,10 @@ export default function* projectSaga() {
             uiEditorSelectedDataChanged.type,
             uiEditorSelectedPagesChanged.type,
         ], saga_autoRenderProjectSelectionFromEditor),
-        yield takeLatest(projectConfigChanged.type, saga_reloadProjectWhenConfigChanged),
+        yield takeLatest([
+            projectRawConfigChanged.type,
+            projectConfigChanged.type,
+        ], saga_reloadProjectWhenConfigChanged),
         yield takeLatest(projectExport.type, saga_exportProject)
     ])
 }

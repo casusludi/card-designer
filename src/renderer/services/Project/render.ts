@@ -50,6 +50,8 @@ export async function renderNJKToHtml(project:Project,selection:ProjectSelection
     if(!selection.data) return null;
     if(!selection.layout) return null;
     if(!selection.cardType) return null;
+    if(!selection.cardType.template) return null;
+    if(!selection.layout.template) return null;
 
     const template = project.files[selection.cardType.template].content;
     const layout = project.files[selection.layout.template].content;
@@ -61,7 +63,7 @@ export async function renderNJKToHtml(project:Project,selection:ProjectSelection
 
     env.addFilter('template', function(card,isRecto:boolean|string=true) {
         const aCard = {...card, isRecto: typeof(isRecto) === 'boolean'?isRecto:isRecto == "recto"}
-        return env.renderString(template,{card:aCard});
+        return env.renderString(template,{card:aCard, base:selection.cardType?.base});
     });
 
     let cards = applyMetaVariableEffects(metaVariables,selection.data.cards);

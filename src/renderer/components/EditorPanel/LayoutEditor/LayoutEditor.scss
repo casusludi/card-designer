@@ -1,0 +1,26 @@
+@import "../../../styles/variables.scss";
+
+.LayoutEditor {
+    position: relative;
+}
+
+.LayoutEditor__header {
+    height: 25px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.LayoutEditor__header-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.LayoutEditor__Tabs {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

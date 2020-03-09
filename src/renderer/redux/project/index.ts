@@ -30,6 +30,7 @@ export const projectFetchData = createAction<ProjectFetchDataPayload>('projectDa
 export const projectFetchDataSucceeded = createAction<ProjectDataChangedPayload>('projectData/fetchSucceded');
 export const projectFetchDataFailed = createAction('projectData/fetchFailed',asError());
 export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
+export const projectRawConfigChanged = createAction<{rawConfig:string}>('projectRawConfig/changed');
 export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
 export const projectSaving = createAction('project/saving');
 export const projectSavingAs = createAction('project/savingAs');
@@ -67,6 +68,15 @@ export const projectReducer = createReducer<Project | null>(null, {
             ...state,
             modified: true,
             config: action.payload.config
+        }
+    },
+    [projectRawConfigChanged.type]: (state, action:PayloadAction<{rawConfig:string}>) => {
+        if (!state) return null;
+        if(_.isEqual(action.payload.rawConfig,state.rawConfig)) return state;
+        return {
+            ...state,
+            modified: true,
+            rawConfig: action.payload.rawConfig
         }
     },
     [projectSaved.type]: (state,action:PayloadAction<{project:Project}>) => action.payload.project,

@@ -43,8 +43,10 @@ export type ProjectDataItem = {
 
 export type ProjectConfig = {
     version:string,
-    cardTypes: { [key: string]: ProjectConfigCardType }
-    layouts: { [key: string]: ProjectConfigLayout }
+    //cardTypes: { [key: string]: ProjectConfigCardType }
+    //layouts: { [key: string]: ProjectConfigLayout }
+    cardTypes: { [key: string]: string }
+    layouts: { [key: string]: string }
     sources: {
         gsheets?: {
             sheetId: string
@@ -68,15 +70,38 @@ export type ProjectSourceData = {
     data:Array<ProjectDataItem>
 }
 
-export type ProjectTemplate = {
+export type ProjectCardType = {
     id:string
     base:string
-    template:string
-    styles:string
+    config:ProjectConfigCardType
+    rawConfig:string
+    configPath:string
+    template:string|null
+    styles:string|null
 }
 
-export type ProjectLayout = ProjectTemplate & {
+export type ProjectLayout = {
+    id:string
+    base:string
+    config:ProjectConfigLayout
+    rawConfig:string
+    configPath:string
+    template:string|null
+    styles:string|null
     cardsPerPage:number
+}
+
+export interface ProjectConfigTemplate {
+    template:string
+    styles:string
+    base:string
+}
+
+export interface ProjectTemplate {
+    id:string
+    template:string|null
+    styles:string|null
+    base:string
 }
 
 export enum ProjectExportStatus {
@@ -99,8 +124,8 @@ export type Project = {
     modified:boolean,
     path: string,
     config: ProjectConfig,
-    rawConfig: any,
-    cardTypes: { [key: string]: ProjectTemplate }
+    rawConfig: string,
+    cardTypes: { [key: string]: ProjectCardType }
     layouts: { [key: string]: ProjectLayout }
     files:ProjectFiles
     availablesSources: Array<ProjectSourceType>
@@ -110,7 +135,7 @@ export type Project = {
 export type ProjectPageSelection = Array<number>;
 
 export type ProjectSelection = {
-    cardType:ProjectTemplate|undefined|null,
+    cardType:ProjectCardType|undefined|null,
     layout:ProjectLayout|undefined|null,
     data:ProjectDataItem|undefined|null
     pages:ProjectPageSelection
@@ -119,32 +144,82 @@ export type ProjectSelection = {
 
 const schemaValidator = new Validator();
 
-async function loadTemplate(projectPath:string,id:string,template:ProjectConfigCardType,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
-   
-    if(!files[template.template]){
-        const hbsPath = path.join(projectPath,template.base, template.template);
-        const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.template} missing.`) }); 
-        files[template.template] = {
-            instanceId: uuidv4(),
-            path:template.template,
-            content:hbsRawData.toString()
-        }
-    }
-    if(!files[template.styles]){
-        const stylesPath = path.join(projectPath,template.base, template.styles);
-        const stylesRawData =  await fse.readFile(stylesPath).catch(() => { throw new Error(`${template.styles} missing.`) });
-        files[template.styles] = {
-            instanceId: uuidv4(),
-            path:template.styles,
-            content:stylesRawData.toString()
-        }
-    }
+
+
+async function loadCardTypeFromFile(projectPath:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectCardType>{
+    const rawConfig = fse.readFileSync(path.join(projectPath,configPath)).toString();
+ 
+    return loadCardType(projectPath, rawConfig, configPath,id,files);
+}
+
+
+async function loadCardType(projectPath:string, rawConfig:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectCardType>{
+
+    const config:ProjectConfigCardType = JSON.parse(rawConfig)
+    config.base = path.dirname(configPath);
     
     return {
         id,
-        template:template.template,
-        styles:template.styles,
-        base:template.base
+        ...await loadTemplate(projectPath,config,id,files),
+        config,
+        rawConfig,
+        configPath
+    }
+}
+
+
+async function loadLayoutFromFile(projectPath:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectLayout>{
+    const rawConfig = fse.readFileSync(path.join(projectPath,configPath)).toString();
+ 
+    return loadLayout(projectPath, rawConfig, configPath,id,files);
+}
+
+
+async function loadLayout(projectPath:string, rawConfig:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectLayout>{
+
+    const config:ProjectConfigLayout = JSON.parse(rawConfig)
+    config.base = path.dirname(configPath);
+    
+    return {
+        id,
+        ...await loadTemplate(projectPath,config,id,files),
+        cardsPerPage:config.cardsPerPage,
+        config,
+        rawConfig,
+        configPath
+    }
+}
+
+async function loadTemplate(projectPath:string,config:ProjectConfigTemplate,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
+
+    let templatePathFromProject = null;
+    let stylesPathFromProject = null;
+    if(!files[config.template]){
+        const tplPath = path.join(projectPath,config.base, config.template);
+        const tplRawData =  await fse.readFile(tplPath).catch(() => { throw new Error(`${config.template} missing.`) }); 
+        templatePathFromProject = path.join(config.base,config.template);
+        files[templatePathFromProject] = {
+            instanceId: uuidv4(),
+            path:templatePathFromProject,
+            content:tplRawData.toString()
+        }
+    }
+    if(!files[config.styles]){
+        const stylesPath = path.join(projectPath,config.base, config.styles);
+        const stylesRawData =  await fse.readFile(stylesPath).catch(() => { throw new Error(`${config.styles} missing.`) });
+        stylesPathFromProject = path.join(config.base,config.styles);
+        files[stylesPathFromProject] = {
+            instanceId: uuidv4(),
+            path:stylesPathFromProject,
+            content:stylesRawData.toString()
+        }
+    }
+
+    return {
+        id,
+        template:templatePathFromProject,
+        styles:stylesPathFromProject,
+        base: config.base
     }
 }
 
@@ -171,30 +246,6 @@ export async function openLastProject():Promise<Project|null>{
     return null;
 }
 
-export async function initConfig(rawConfig:any,projectPath:string):Promise<ProjectConfig>{
-
-    const cardTypes:{[key:string]:ProjectConfigCardType} = _.mapValues(rawConfig.cardTypes, o => {
-
-        const cardType:ProjectConfigCardType = JSON.parse(fse.readFileSync(path.join(projectPath,o)).toString())
-        cardType.base = path.dirname(o)
-        return cardType
-    })
-
-    const layouts:{[key:string]:ProjectConfigLayout} = _.mapValues(rawConfig.layouts, o => {
-
-        const cardType:ProjectConfigLayout = JSON.parse(fse.readFileSync(path.join(projectPath,o)).toString())
-        cardType.base = path.dirname(o)
-        return cardType
-    })
-
-    const config:ProjectConfig = {
-        ...rawConfig,
-        cardTypes,
-        layouts
-    }
-    console.log(cardTypes,layouts,config)
-    return config
-}
 
 export async function loadProjectFromPath(projectPath:string,isNew:boolean=false){
     try{
@@ -202,11 +253,22 @@ export async function loadProjectFromPath(projectPath:string,isNew:boolean=false
     }catch(e){
         console.log(e)
     }
+
     const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
     const rawData =  await fse.readFile(configFilePath).catch(() => { throw new Error(`${CARDMAKER_CONFIG_FILE} missing.`) });
-    const rawConfig = JSON.parse(rawData.toString())
+    const rawConfig = rawData.toString();
+   
+    return await loadProjectFromConfig(rawConfig,projectPath,isNew).then( project => {
+        window.localStorage.setItem(LAST_PROJECT_PATH_STORAGE_KEY,projectPath);
+        return project;
+    });
+}
 
-    const validationResult = schemaValidator.validate(rawConfig,projectSchema);
+export async function loadProjectFromConfig(rawConfig:string,projectPath:string,isNew:boolean=false, files:{[key:string]:ProjectFile} = {}){
+
+    const config: ProjectConfig = JSON.parse(rawConfig);
+
+    const validationResult = schemaValidator.validate(config,projectSchema);
     if(validationResult.errors.length > 0){
         const messages = _.chain(validationResult.errors)
             .map(e => '• '+e.message)
@@ -214,17 +276,9 @@ export async function loadProjectFromPath(projectPath:string,isNew:boolean=false
             .value();
             throw new Error(`${CARDMAKER_CONFIG_FILE} validation failed : \n${messages}`)
     }
-    const config: ProjectConfig = await initConfig(rawConfig,projectPath);
-    return await loadProjectFromConfig(config,projectPath,isNew).then( project => {
-        window.localStorage.setItem(LAST_PROJECT_PATH_STORAGE_KEY,projectPath);
-        rawConfig.rawConfig = rawConfig
-        return project;
-    });
-}
 
-export async function loadProjectFromConfig(config:ProjectConfig,projectPath:string,isNew:boolean=false, files:{[key:string]:ProjectFile} = {}){
-    const templates = await Promise.all(_.map(config.cardTypes, (o,k) => loadTemplate(projectPath,k,o,files)))
-    const layouts = await Promise.all(_.map(config.layouts, (o,k) => loadTemplate(projectPath,k,o,files)))
+    const cardTypes = await Promise.all(_.map(config.cardTypes, (o,k) => loadCardTypeFromFile(projectPath,o,k,files)))
+    const layouts = await Promise.all(_.map(config.layouts, (o,k) => loadLayoutFromFile(projectPath,o,k,files)))
    
     const name = _.upperFirst(path.basename(projectPath));
     const project: Project = {
@@ -233,10 +287,10 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
         isNew,
         path: projectPath,
         config,
-        cardTypes: _.keyBy(templates, o => o.id),
-        layouts: _.chain(layouts).map(o => ({...o,cardsPerPage:config.layouts[o.id].cardsPerPage})).keyBy(o => o.id).value(),
+        cardTypes: _.keyBy(cardTypes, o => o.id),
+        layouts: _.keyBy(layouts, o => o.id),
         files,
-        rawConfig:{},
+        rawConfig:rawConfig,
         availablesSources: getAvailableSources(config),
         data:{}
     }

@@ -1,16 +1,16 @@
 import React from "react";
 import TabNav, { TabNavItem } from "../Misc/TabNav/TabNav";
 import "./EditorPanel.scss";
-import { Project, ProjectConfig, RenderFilter, ProjectSelection, ProjectPageSelection } from "../../services/Project";
+import { Project, RenderFilter, ProjectSelection, ProjectPageSelection } from "../../services/Project";
 import ConfigEditor from "./ConfigEditor/ConfigEditor";
 import { connect } from "react-redux";
 import { ApplicationState } from "../..";
 import { Dispatch } from "redux";
-import { projectConfigChanged, projectFileChanged, projectRender } from "../../redux/project";
+import { projectFileChanged, projectRender, projectRawConfigChanged } from "../../redux/project";
 import _ from "lodash";
 
 import { uiEditorSelectedTemplateChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedSourceTypeChanged, uiEditorSelectedPagesChanged } from "../../redux/ui";
-import TemplateEditor from "./TemplateEditor/TemplateEditor";
+import CardTypeEditor from "./CardTypeEditor";
 import { ProjectSourceType, countCards } from "../../services/Project/Sources";
 import { prefAutoRenderFilterChanged } from "../../redux/preferences";
 import Select from "../Misc/Select/Select";
@@ -18,6 +18,7 @@ import ExportEditor from "./ExportEditor/ExportEditor";
 import Checkbox from "../Misc/Checkbox/Checkbox";
 import { EditorPreferences } from "../../services/Preferences";
 import PageNav from "../Misc/PageNav/PageNav";
+import LayoutEditor from "./LayoutEditor";
 
 export type EditorPanelProps = {
     project: Project | null
@@ -37,8 +38,9 @@ export type AppUIEditor = {
 
 function EditorPanel(props: EditorPanelProps) {
 
-    function onConfigValidChange(config: ProjectConfig) {
-        props.dispatch(projectConfigChanged({ config }));
+    function onConfigValidChange(rawConfig: string) {
+       // props.dispatch(projectConfigChanged({ config }));
+        props.dispatch(projectRawConfigChanged({ rawConfig }));
     }
 
     function selectedTemplateChanged(value: any) {
@@ -95,13 +97,13 @@ function EditorPanel(props: EditorPanelProps) {
                 <React.Fragment>
                     <TabNav className="EditorPanel__Tabs" >
                         <TabNavItem label="Config">
-                            <ConfigEditor width={props.width} config={props.project.config} onValidChange={onConfigValidChange} instanceId={props.project.path} />
+                            <ConfigEditor width={props.width} config={props.project.config} rawConfig={props.project.rawConfig} onValidChange={onConfigValidChange} instanceId={props.project.path} />
                         </TabNavItem>
                         <TabNavItem label="Card Type">
-                            <TemplateEditor width={props.width} template={props.ui.selection?.cardType} files={props.project.files} onFileChanged={onFileChanged} />
+                            <CardTypeEditor width={props.width} cardType={props.ui.selection?.cardType} files={props.project.files} onFileChanged={onFileChanged} />
                         </TabNavItem>
                         <TabNavItem label="Layout">
-                            <TemplateEditor width={props.width} template={props.ui.selection?.layout} files={props.project.files} onFileChanged={onFileChanged} />
+                            <LayoutEditor width={props.width} layout={props.ui.selection?.layout} files={props.project.files} onFileChanged={onFileChanged} />
                         </TabNavItem>
                         <TabNavItem label="Export">
                             <ExportEditor />

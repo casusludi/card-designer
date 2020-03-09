@@ -1,10 +1,10 @@
 @import "../../../styles/variables.scss";
 
-.TemplateEditor {
+.CardTypeEditor {
     position: relative;
 }
 
-.TemplateEditor__header {
+.CardTypeEditor__header {
     height: 25px;
     padding: 5px;
     display: flex;
@@ -12,12 +12,12 @@
     justify-content: center;
 }
 
-.TemplateEditor__header-label {
+.CardTypeEditor__header-label {
     font-size: 1.2rem;
     font-weight: bold;
 }
 
-.TemplateEditor__Tabs {
+.CardTypeEditor__Tabs {
     position: absolute;
     top: 36px;
     left: 0;

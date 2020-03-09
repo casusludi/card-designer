@@ -1,0 +1,85 @@
+@import "../../../../styles/variables.scss";
+
+.CardTypeBoxView {
+    position: absolute;
+    box-sizing: border-box;
+}
+
+.CardTypeBoxView_selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px dashed $darkest-grey;
+}
+
+
+.CardTypeBoxView__Ref {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.CardTypeBoxView__Line {
+    display: none;
+    position: absolute;
+}
+
+.CardTypeBoxView__LineLabel {
+    position: absolute;
+    color: $medium-grey;
+    font-size: 7pt;
+
+}
+
+.CardTypeBoxView__Line_top {
+    border-left: 1px dashed $light-grey;
+    left: 50%;
+    .CardTypeBoxView__LineLabel {
+        top: 50%;
+        left: 1mm;
+        transform: translateY(-50%);
+    }
+}
+
+.CardTypeBoxView__Line_left {
+    border-bottom: 1px dashed $light-grey;
+    bottom: 50%;
+
+    .CardTypeBoxView__LineLabel {
+        bottom: 1mm;
+        left: 50%;
+        transform-origin: bottom left;
+        transform: translateX(-50%);
+    }
+}
+
+.CardTypeBoxView__Line_bottom {
+    border-left: 1px dashed $light-grey;
+    left: 50%;
+    .CardTypeBoxView__LineLabel {
+        top: 50%;
+        left: 1mm;
+        transform: translateY(-50%);
+    }
+}
+
+.CardTypeBoxView__Line_right {
+    border-bottom: 1px dashed $light-grey;
+    bottom: 50%;
+    .CardTypeBoxView__LineLabel {
+        bottom: 1mm;
+        left: 50%;
+        transform-origin: bottom left;
+        transform: translateX(-50%);
+    }
+}
+
+.CardTypeBoxView_selected {
+
+    .CardTypeBoxView__Line {
+        display: block;
+    }
+    
+}

@@ -12,6 +12,7 @@ type ActivableInputProps =  {
     label?:string
     labelOnTop?:boolean
     units?:string
+    pattern?:string
     defaultValue?:string|number
     value?:string|number
     activated?:boolean
@@ -28,6 +29,14 @@ export default class ActivableInput extends React.Component<ActivableInputProps,
     state = {
         id:this.props.id || uuid(),
         activated: this.props.activated!==undefined?this.props.activated:true
+    }
+
+    componentDidUpdate(prevProps:ActivableInputProps){
+        if(prevProps.activated != this.props.activated){
+            this.setState({
+                activated:!!this.props.activated
+            })
+        }
     }
 
     onInputChange(value:string|number|null){
@@ -57,10 +66,11 @@ export default class ActivableInput extends React.Component<ActivableInputProps,
                         units={this.props.units}
                         defaultValue={this.props.defaultValue}
                         value={this.props.value}
+                        pattern={this.props.pattern}
                         disabled={this.props.disabled || !this.state.activated}
                         onChange={this.onInputChange.bind(this)}
                     />
-                    <Checkbox onChange={this.onCheckboxChange.bind(this)} defaultChecked={this.state.activated} />
+                    <Checkbox onChange={this.onCheckboxChange.bind(this)} checked={this.state.activated} />
                 </div>
             </div>
         )

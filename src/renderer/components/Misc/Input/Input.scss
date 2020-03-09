@@ -29,9 +29,9 @@
     min-height: 28px;
     width: 100%;
 
-    &[type="number"]{
+    /*&[type="number"]{*/
         text-align: right;
-    }
+    /*}*/
 
     &:disabled {
         color: $light-grey;

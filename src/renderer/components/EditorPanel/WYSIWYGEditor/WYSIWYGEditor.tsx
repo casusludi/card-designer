@@ -4,60 +4,20 @@ import TabNav, { TabNavItem } from "../../Misc/TabNav/TabNav";
 import Input from "../../Misc/Input";
 import Checkbox from "../../Misc/Checkbox/Checkbox";
 import ActivableInput from "../../Misc/ActivableInput";
+import { CardTypeData, CardTypeBoxType, FontWeight, FontStyle, TextAlign, Dimension, CardTypeBox } from "./types";
+import CardTypeBoxView from "./CardTypeBoxView";
 
-
-export enum CardTypeBoxType {
-    Text = "text",
-    Image = "image"
+type CSSDimensionView = {
+    name:string,
+    value:Dimension,
+    onChange:(name:string,value:Dimension)=>void
 }
 
-export enum FontWeight {
-    Normal = "normal",
-    Bold = "bold",
-    Bolder = "bolder",
-    Lighter = "lighter",
-}
+function CSSDimensionView(props:CSSDimensionView){
 
-export enum FontStyle {
-    Normal = "normal",
-    Italic = "italic",
-    Oblique = "oblique",
-}
-
-export enum TextAlign {
-    Center = "center",
-    Left = "left",
-    Right = "right",
-}
-
-export type CardTypeBoxText = {
-    color: string
-    weight: FontWeight | number
-    style: FontStyle
-    align: TextAlign
-    size: number
-}
-
-type Dimension = number | "auto" ;
-
-export type CardTypeBox = {
-    ref: string // variable name
-    type: CardTypeBoxType
-    top: Dimension
-    left: Dimension
-    bottom: Dimension
-    right: Dimension
-    width: Dimension
-    height: Dimension
-    data: CardTypeBoxText
-}
-
-export type CardTypeData = {
-    width: number
-    height: number
-    haveVerso: boolean
-    rectoBoxes: Array<CardTypeBox>
-    versoBoxes: Array<CardTypeBox>
+    return (
+        <ActivableInput type="text" pattern="/[.0-9]*|auto/" label={props.name+" : "} units={props.value != "auto"?"mm":""} labelOnTop={true} defaultValue={props.value} activated={props.value != "auto"} onChange={(value) => props.onChange(props.name,value?value as Dimension:"auto")} />
+    )
 }
 
 export type WYSIWYGEditorProps = {
@@ -66,90 +26,18 @@ export type WYSIWYGEditorProps = {
 
 export type WYSIWYGEditorState = {
     cardTypeData: CardTypeData
-    boxIndexSelected: number
+    selectedBox: CardTypeBox|null
+    selectedBoxRectoIndex: number
+    selectedBoxVersoIndex: number
     currentTab: number
-}
-
-type CardTypeBoxViewProps = {
-    data: CardTypeBox
-    selected: boolean
-    onSelect: (box: CardTypeBox) => void
-    onChange: (box: CardTypeBox) => void
-}
-
-function cssAbsPos(value: number | undefined | null | string): string {
-    if (!value || value === "auto") return "auto";
-    return `${value}mm`;
-}
-
-
-
-class CardTypeBoxView extends React.Component<CardTypeBoxViewProps> {
-
-    createBoxViewCSS() {
-        const styles = {
-            top: cssAbsPos(this.props.data.top),
-            bottom: cssAbsPos(this.props.data.bottom),
-            left: cssAbsPos(this.props.data.left),
-            right: cssAbsPos(this.props.data.right),
-            width: cssAbsPos(this.props.data.width),
-            height: cssAbsPos(this.props.data.height),
-
-        }
-
-        switch (this.props.data.type) {
-            case CardTypeBoxType.Text: return {
-                ...styles,
-                color: this.props.data.data.color,
-                fontSize: `${this.props.data.data.size}pt`,
-                fontStyle: this.props.data.data.style,
-                fontWeight: this.props.data.data.weight,
-                textAlign: this.props.data.data.align,
-            }
-        }
-
-        return styles;
-    }
-
-    render() {
-        return (
-            <div className={"CardTypeBoxView" + (this.props.selected ? ' CardTypeBoxView_selected' : '')} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
-                {this.props.data.ref}
-                {this.props.data.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
-                    style={{
-                        top:`-${this.props.data.top}mm`,
-                        height:`${this.props.data.top}mm`
-                    }}
-                ></div>}
-                {this.props.data.left != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_left"
-                    style={{
-                        left:`-${this.props.data.left}mm`,
-                        width:`${this.props.data.left}mm`
-                    }}
-                ></div>}
-                {this.props.data.bottom != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_bottom"
-                    style={{
-                        bottom:`-${this.props.data.bottom}mm`,
-                        height:`${this.props.data.bottom}mm`
-                    }}
-                
-                ></div>}
-                {this.props.data.right != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_right"
-                    style={{
-                        right:`-${this.props.data.right}mm`,
-                        width:`${this.props.data.right}mm`
-                    }}
-                ></div>}
-            </div>
-        )
-    }
-
 }
 
 export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, WYSIWYGEditorState>{
 
     state = {
-        boxIndexSelected: -1,
+        selectedBox: null,
+        selectedBoxRectoIndex:-1,
+        selectedBoxVersoIndex:-1,
         currentTab: 0,
         cardTypeData: {
             width: 63,
@@ -157,10 +45,10 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
             haveVerso: true,
             rectoBoxes: [
                 {
-                    ref: "pouet",
+                    ref: "title",
                     type: CardTypeBoxType.Text,
-                    top: 5,
-                    left: 5,
+                    top: 30,
+                    left: 40,
                     width: 20,
                     height: 10,
                     right:"auto" as Dimension,
@@ -172,9 +60,45 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
                         style: FontStyle.Normal,
                         align: TextAlign.Center
                     }
+                },
+                {
+                    ref: "desc",
+                    type: CardTypeBoxType.Text,
+                    top: "auto" as Dimension,
+                    left: "auto" as Dimension,
+                    width: 20,
+                    height: 10,
+                    right: 5,
+                    bottom: 5,
+                    data: {
+                        color: "red",
+                        size: 12,
+                        weight: FontWeight.Bold,
+                        style: FontStyle.Normal,
+                        align: TextAlign.Center
+                    }
                 }
             ],
-            versoBoxes: []
+            versoBoxes: [
+                {
+                    ref: "verso_title",
+                    type: CardTypeBoxType.Text,
+                    top: "auto" as Dimension,
+                    left: "auto" as Dimension,
+                    width: 20,
+                    height: 10,
+                    right: 5,
+                    bottom: 5,
+                    data: {
+                        color: "red",
+                        size: 12,
+                        weight: FontWeight.Bold,
+                        style: FontStyle.Normal,
+                        align: TextAlign.Center
+                    }
+                }
+
+            ]
         }
     }
 
@@ -182,10 +106,12 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
 
     }
 
-    onBoxSelect(index: number, box: CardTypeBox) {
+    onBoxSelect(index: number, box: CardTypeBox,isRecto:boolean) {
         this.setState({
             currentTab: 1,
-            boxIndexSelected: index
+            selectedBox: box,
+            selectedBoxRectoIndex:isRecto?index:-1,
+            selectedBoxVersoIndex:!isRecto?index:-1
         })
     }
 
@@ -195,7 +121,47 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
         })
     }
 
+    onCSSDimensionChange(name:string,value:Dimension){
+        console.log(name,value)
+        if(this.state.selectedBox){
+            // @ts-ignore
+            // if we use selectedBox:CardTypeBox|null, TS define this.state.selectedBox only on null never in CardTypeBox
+            // => Trigger TS errors later
+            // It's not the good way to solve it. But it's currently the only I found
+            const selectedBox = {...this.state.selectedBox,[name]:value};
+            if(this.state.selectedBoxRectoIndex>=0){
+                const rectoBoxes = [...this.state.cardTypeData.rectoBoxes];
+                rectoBoxes[this.state.selectedBoxRectoIndex] = selectedBox;
+                this.setState({
+                    selectedBox,
+                    cardTypeData:{
+                        ...this.state.cardTypeData,
+                        rectoBoxes
+                    }
+                })
+            }
+            if(this.state.selectedBoxVersoIndex>=0){
+                const versoBoxes = [...this.state.cardTypeData.versoBoxes];
+                versoBoxes[this.state.selectedBoxVersoIndex] = selectedBox;
+                this.setState({
+                    selectedBox,
+                    cardTypeData:{
+                        ...this.state.cardTypeData,
+                        versoBoxes
+                    }
+                })
+            }
+            
+        }
+    }
+
     render() {
+        // @ts-ignore
+        // if we use selectedBox:CardTypeBox|null, TS define this.state.selectedBox only on null never in CardTypeBox
+        // => Trigger TS errors later
+        // It's not the good way to solve it. But it's currently the only I found
+        const selectedBox:CardTypeBox = this.state.selectedBox;
+        const selectedBoxKey = `${this.state.selectedBoxRectoIndex};${this.state.selectedBoxVersoIndex}`;
         return (
             <div className="WYSIWYGEditor full-space">
                 <div className="WYSIWYGEditor__Canvas">
@@ -204,7 +170,7 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
                             width: `${this.state.cardTypeData.width}mm`,
                             height: `${this.state.cardTypeData.height}mm`
                         }}>
-                            {this.state.cardTypeData.rectoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={i == this.state.boxIndexSelected} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox)} />)}
+                            {this.state.cardTypeData.rectoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == this.state.selectedBox} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox,true)} />)}
                         </div>
                         <div className="WYSIWYGEditor__CardBoxLabel">Recto</div>
                     </div>
@@ -214,7 +180,7 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
                                 width: `${this.state.cardTypeData.width}mm`,
                                 height: `${this.state.cardTypeData.height}mm`
                             }}>
-                                {this.state.cardTypeData.versoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={i == this.state.boxIndexSelected} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox)} />)}
+                                {this.state.cardTypeData.versoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == this.state.selectedBox} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox,false)} />)}
                             </div>
                             <div className="WYSIWYGEditor__CardBoxLabel">Verso</div>
                         </div>
@@ -232,19 +198,19 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
                             </div>
                         </TabNavItem>
                         <TabNavItem label="Boxes">
-                            <div className="ContentWithColumn">
+                            {selectedBox && <div className="ContentWithColumn">
                                 <div className="ContentWithColumn__Col">
-                                    <ActivableInput type="number" label="top : " units="mm" labelOnTop={true} />
-                                    <ActivableInput type="number" label="left : " units="mm" labelOnTop={true} />
-                                    <ActivableInput type="number" label="bottom : " units="mm" labelOnTop={true} activated={false} />
-                                    <ActivableInput type="number" label="right : " units="mm" labelOnTop={true} activated={false} />
+                                    <CSSDimensionView name="top" value={selectedBox.top} key={"top:"+selectedBoxKey} onChange={this.onCSSDimensionChange.bind(this)}/>
+                                    <CSSDimensionView name="left" value={selectedBox.left} key={"left:"+selectedBoxKey}  onChange={this.onCSSDimensionChange.bind(this)} />
+                                    <CSSDimensionView name="bottom" value={selectedBox.bottom} key={"bottom:"+selectedBoxKey}  onChange={this.onCSSDimensionChange.bind(this)} />
+                                    <CSSDimensionView name="right" value={selectedBox.right} key={"right:"+selectedBoxKey}  onChange={this.onCSSDimensionChange.bind(this)} />
+                                   
                                 </div>
                                 <div className="ContentWithColumn__Col">
-                                    <ActivableInput type="number" label="width : " units="mm" labelOnTop={true} />
-                                    <ActivableInput type="number" label="height : " units="mm" labelOnTop={true} />
+                                    <CSSDimensionView name="width" value={selectedBox.width} key={"width:"+selectedBoxKey}  onChange={this.onCSSDimensionChange.bind(this)} />
+                                    <CSSDimensionView name="height" value={selectedBox.height} key={"height:"+selectedBoxKey}  onChange={this.onCSSDimensionChange.bind(this)} />
                                 </div>
-
-                            </div>
+                            </div>}
                         </TabNavItem>
 
                     </TabNav>

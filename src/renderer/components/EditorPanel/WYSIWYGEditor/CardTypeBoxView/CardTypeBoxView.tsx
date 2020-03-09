@@ -12,7 +12,7 @@ type CardTypeBoxViewProps = {
 }
 
 function cssAbsPos(value: number | undefined | null | string): string {
-    if (!value || value === "auto") return "auto";
+    if (value === undefined || value === null || value === "auto") return "auto";
     return `${value}mm`;
 }
 

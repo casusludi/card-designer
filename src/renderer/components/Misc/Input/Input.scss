@@ -25,9 +25,10 @@
 
 .Input__input {
     border: none;
-    padding: 0 5px;
+    padding: 0 2px 0 5px;
     min-height: 28px;
     width: 100%;
+    outline: none;
 
     /*&[type="number"]{*/
         text-align: right;
@@ -45,6 +46,7 @@
     display: flex;
     align-items: center;
     padding-right: 5px;
+    padding-bottom: 3px;
 }
 
 

@@ -14,9 +14,8 @@ type CSSDimensionView = {
 }
 
 function CSSDimensionView(props:CSSDimensionView){
-
     return (
-        <ActivableInput type="text" pattern="/[.0-9]*|auto/" label={props.name+" : "} units={props.value != "auto"?"mm":""} labelOnTop={true} defaultValue={props.value} activated={props.value != "auto"} onChange={(value) => props.onChange(props.name,value?value as Dimension:"auto")} />
+        <ActivableInput type="text" pattern="/[.0-9]*|auto/" defaultActivatedValue={0} desactivatedValue="auto" label={props.name+" : "} units={props.value != "auto"?"mm":""} labelOnTop={true} defaultValue={props.value} activated={props.value != "auto"} onChange={(value) => props.onChange(props.name,value as Dimension)} />
     )
 }
 
@@ -122,7 +121,6 @@ export default class WYSIWYGEditor extends React.Component<WYSIWYGEditorProps, W
     }
 
     onCSSDimensionChange(name:string,value:Dimension){
-        console.log(name,value)
         if(this.state.selectedBox){
             // @ts-ignore
             // if we use selectedBox:CardTypeBox|null, TS define this.state.selectedBox only on null never in CardTypeBox

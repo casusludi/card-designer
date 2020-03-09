@@ -32,6 +32,20 @@ export default class Input extends React.Component<InputProps>{
     /*componentDidUpdate(prevProps:InputProps){
 
     }*/
+    private inputRef:HTMLInputElement| null = null;
+
+    onUnitClick(){
+        if(this.inputRef){
+            this.inputRef.focus();
+            this.inputRef.select();
+        }
+    }
+
+    onInputFocus(){
+        if(this.inputRef){
+            this.inputRef.select();
+        }
+    }
 
     render(){
         return (
@@ -40,6 +54,7 @@ export default class Input extends React.Component<InputProps>{
                 <div className="Input__wrapper">
                     <input 
                         className="Input__input"
+                        ref={ ref => this.inputRef = ref}
                         type={this.props.type} 
                         disabled={this.props.disabled}
                         id={this.state.id} 
@@ -48,8 +63,9 @@ export default class Input extends React.Component<InputProps>{
                         value={this.props.value}
                         pattern={this.props.pattern}
                         onChange={e => this.props.onChange && this.props.onChange(e.target.value)}
+                        onFocus={this.onInputFocus.bind(this)}
                         />
-                    {this.props.units && <div className="Input__units">{this.props.units}</div>}
+                    {this.props.units && <div className="Input__units" onClick={this.onUnitClick.bind(this)}>{this.props.units}</div>}
                 </div>
             </div>
         )

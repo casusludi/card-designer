@@ -2,7 +2,7 @@ import path from 'path';
 
 import _ from 'lodash';
 import {Validator} from 'jsonschema';
-import projectSchema from './project.schema.json';
+import projectSchema from './schemas/project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
 import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
@@ -26,12 +26,14 @@ export enum RenderFilter {
 export type ProjectConfigCardType = {
     template:string
     styles:string
+    base:string
 }
 
 export type ProjectConfigLayout = {
     cardsPerPage:number
     template:string
     styles:string
+    base:string
 }
 
 export type ProjectDataItem = {
@@ -68,6 +70,7 @@ export type ProjectSourceData = {
 
 export type ProjectTemplate = {
     id:string
+    base:string
     template:string
     styles:string
 }
@@ -96,6 +99,7 @@ export type Project = {
     modified:boolean,
     path: string,
     config: ProjectConfig,
+    rawConfig: any,
     cardTypes: { [key: string]: ProjectTemplate }
     layouts: { [key: string]: ProjectLayout }
     files:ProjectFiles
@@ -118,7 +122,7 @@ const schemaValidator = new Validator();
 async function loadTemplate(projectPath:string,id:string,template:ProjectConfigCardType,files:{[key:string]:ProjectFile}):Promise<ProjectTemplate>{
    
     if(!files[template.template]){
-        const hbsPath = path.join(projectPath, template.template);
+        const hbsPath = path.join(projectPath,template.base, template.template);
         const hbsRawData =  await fse.readFile(hbsPath).catch(() => { throw new Error(`${template.template} missing.`) }); 
         files[template.template] = {
             instanceId: uuidv4(),
@@ -127,7 +131,7 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigC
         }
     }
     if(!files[template.styles]){
-        const stylesPath = path.join(projectPath, template.styles);
+        const stylesPath = path.join(projectPath,template.base, template.styles);
         const stylesRawData =  await fse.readFile(stylesPath).catch(() => { throw new Error(`${template.styles} missing.`) });
         files[template.styles] = {
             instanceId: uuidv4(),
@@ -139,7 +143,8 @@ async function loadTemplate(projectPath:string,id:string,template:ProjectConfigC
     return {
         id,
         template:template.template,
-        styles:template.styles
+        styles:template.styles,
+        base:template.base
     }
 }
 
@@ -166,6 +171,31 @@ export async function openLastProject():Promise<Project|null>{
     return null;
 }
 
+export async function initConfig(rawConfig:any,projectPath:string):Promise<ProjectConfig>{
+
+    const cardTypes:{[key:string]:ProjectConfigCardType} = _.mapValues(rawConfig.cardTypes, o => {
+
+        const cardType:ProjectConfigCardType = JSON.parse(fse.readFileSync(path.join(projectPath,o)).toString())
+        cardType.base = path.dirname(o)
+        return cardType
+    })
+
+    const layouts:{[key:string]:ProjectConfigLayout} = _.mapValues(rawConfig.layouts, o => {
+
+        const cardType:ProjectConfigLayout = JSON.parse(fse.readFileSync(path.join(projectPath,o)).toString())
+        cardType.base = path.dirname(o)
+        return cardType
+    })
+
+    const config:ProjectConfig = {
+        ...rawConfig,
+        cardTypes,
+        layouts
+    }
+    console.log(cardTypes,layouts,config)
+    return config
+}
+
 export async function loadProjectFromPath(projectPath:string,isNew:boolean=false){
     try{
         await fse.access(projectPath,fse.constants.W_OK | fse.constants.R_OK);
@@ -174,8 +204,9 @@ export async function loadProjectFromPath(projectPath:string,isNew:boolean=false
     }
     const configFilePath = path.join(projectPath, CARDMAKER_CONFIG_FILE);
     const rawData =  await fse.readFile(configFilePath).catch(() => { throw new Error(`${CARDMAKER_CONFIG_FILE} missing.`) });
-    const config: ProjectConfig = JSON.parse(rawData.toString());
-    const validationResult = schemaValidator.validate(config,projectSchema);
+    const rawConfig = JSON.parse(rawData.toString())
+
+    const validationResult = schemaValidator.validate(rawConfig,projectSchema);
     if(validationResult.errors.length > 0){
         const messages = _.chain(validationResult.errors)
             .map(e => '• '+e.message)
@@ -183,8 +214,10 @@ export async function loadProjectFromPath(projectPath:string,isNew:boolean=false
             .value();
             throw new Error(`${CARDMAKER_CONFIG_FILE} validation failed : \n${messages}`)
     }
+    const config: ProjectConfig = await initConfig(rawConfig,projectPath);
     return await loadProjectFromConfig(config,projectPath,isNew).then( project => {
         window.localStorage.setItem(LAST_PROJECT_PATH_STORAGE_KEY,projectPath);
+        rawConfig.rawConfig = rawConfig
         return project;
     });
 }
@@ -203,6 +236,7 @@ export async function loadProjectFromConfig(config:ProjectConfig,projectPath:str
         cardTypes: _.keyBy(templates, o => o.id),
         layouts: _.chain(layouts).map(o => ({...o,cardsPerPage:config.layouts[o.id].cardsPerPage})).keyBy(o => o.id).value(),
         files,
+        rawConfig:{},
         availablesSources: getAvailableSources(config),
         data:{}
     }

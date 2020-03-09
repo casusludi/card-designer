@@ -22,19 +22,7 @@
       "type": "object",
       "title": "The Templates Schema",
       "additionalProperties": {
-        "type": "object",
-        "required": [
-          "template",
-          "styles"
-        ],
-        "properties": {
-          "template": {
-            "type": "string"
-          },
-          "styles": {
-            "type": "string"
-          }
-        }
+        "type": "string"
       }
     },
     "layouts": {
@@ -42,23 +30,7 @@
       "type": "object",
       "title": "The Layouts Schema",
       "additionalProperties": {
-        "type": "object",
-        "required": [
-          "cardsPerPage",
-          "template",
-          "styles"
-        ],
-        "properties": {
-          "cardsPerPage":{
-            "type":"number"
-          },
-          "template": {
-            "type": "string"
-          },
-          "styles": {
-            "type": "string"
-          }
-        }
+        "type": "string"
       }
     },
     "sources": {

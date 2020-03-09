@@ -1,0 +1,5 @@
+{
+    "cardsPerPage":9,
+    "template": "./template.njk",
+    "styles": "./styles.css"
+}

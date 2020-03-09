@@ -153,7 +153,7 @@ async function loadCardTypeFromFile(projectPath:string,configPath:string,id:stri
 }
 
 
-async function loadCardType(projectPath:string, rawConfig:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectCardType>{
+export async function loadCardType(projectPath:string, rawConfig:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectCardType>{
 
     const config:ProjectConfigCardType = JSON.parse(rawConfig)
     config.base = path.dirname(configPath);
@@ -175,7 +175,7 @@ async function loadLayoutFromFile(projectPath:string,configPath:string,id:string
 }
 
 
-async function loadLayout(projectPath:string, rawConfig:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectLayout>{
+export async function loadLayout(projectPath:string, rawConfig:string,configPath:string,id:string,files:{[key:string]:ProjectFile}):Promise<ProjectLayout>{
 
     const config:ProjectConfigLayout = JSON.parse(rawConfig)
     config.base = path.dirname(configPath);

@@ -1,6 +1,7 @@
 import './CardTypeBoxView.scss';
 import React from 'react';
-import { CardTypeBoxType, CardTypeBox } from '../types';
+import { CardTypeBox, CardTypeBoxType } from '../../../../services/Project';
+
 
 
 

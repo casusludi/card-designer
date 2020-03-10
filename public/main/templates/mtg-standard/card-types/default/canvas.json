@@ -1,0 +1,61 @@
+{
+    "width": 63,
+    "height": 87.5,
+    "haveVerso": true,
+    "rectoBoxes": [
+        {
+            "ref": "title",
+            "type": "text",
+            "top": 30,
+            "left": 40,
+            "width": 20,
+            "height": 10,
+            "right":"auto" ,
+            "bottom":"auto" ,
+            "data": {
+                "color": "red",
+                "size": 12,
+                "weight": "bold",
+                "style": "normal",
+                "align": "center" 
+            }
+        },
+        {
+            "ref": "desc",
+            "type": "text",
+            "top": "auto",
+            "left": "auto",
+            "width": 20,
+            "height": 10,
+            "right":10 ,
+            "bottom":20 ,
+            "data": {
+                "color": "red",
+                "size": 12,
+                "weight": "bold",
+                "style": "normal",
+                "align": "center" 
+            }
+        }
+    ],
+    "versoBoxes": [
+        {
+            "ref": "verso_title",
+            "type": "text",
+            "top": 30,
+            "left": 40,
+            "width": 20,
+            "height": 10,
+            "right":"auto" ,
+            "bottom":"auto" ,
+            "data": {
+                "color": "red",
+                "size": 12,
+                "weight": "bold",
+                "style": "normal",
+                "align": "center" 
+            }
+        }
+
+    ]
+}

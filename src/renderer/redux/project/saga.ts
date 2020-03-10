@@ -4,7 +4,7 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectRawConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs, projectConfigChanged, projectCardTypeChanged, projectCardTypeChangeFailed, projectLayoutChangeFailed, projectLayoutChanged, projectCardTypeRawConfigChanged, projectLayoutRawConfigChanged, projectFilesUpdated } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectRawConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs, projectConfigChanged, cardTypeChanged, cardTypeChangeFailed, projectLayoutChangeFailed, projectLayoutChanged, cardTypeRawConfigChanged, projectLayoutRawConfigChanged, projectFilesUpdated } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged, uiEditorSelectedPagesChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -90,9 +90,8 @@ function* saga_reloadCardTypeWhenConfigChanged(action:PayloadAction<{id:string,r
     try {
         const project: Project = yield select(selectProject);
         const oldCardType = project.cardTypes[action.payload.id];
-        console.log('saga_reloadCardTypeWhenConfigChanged',oldCardType)
         if(!oldCardType){
-            yield put(projectCardTypeChangeFailed(new Error(`Card Type '${action.payload.id}' not found`)))
+            yield put(cardTypeChangeFailed(new Error(`Card Type '${action.payload.id}' not found`)))
             return;
         } 
 
@@ -105,14 +104,14 @@ function* saga_reloadCardTypeWhenConfigChanged(action:PayloadAction<{id:string,r
                 }
                 return ret;
             },{})
-            yield put(projectFilesUpdated({ files: newFiles }))
-            yield put(projectCardTypeChanged({ cardType: result.cardType }))
+            if(!_.isEmpty(newFiles))yield put(projectFilesUpdated({ files: newFiles }))
+            yield put(cardTypeChanged({ cardType: result.cardType }))
         } else {
-           yield put(projectCardTypeChangeFailed(new Error(`Card Type reloaded'${action.payload.id}' not found`)))
+           yield put(cardTypeChangeFailed(new Error(`Card Type reloaded'${action.payload.id}' not found`)))
         }
         
     } catch (e) {
-        yield projectCardTypeChangeFailed(e,action);
+        yield cardTypeChangeFailed(e,action);
     }
 }
 
@@ -130,7 +129,7 @@ function* saga_reloadLayoutWhenConfigChanged(action:PayloadAction<{id:string,raw
                 }
                 return ret;
             },{})
-            yield put(projectFilesUpdated({ files: newFiles }))
+            if(!_.isEmpty(newFiles))yield put(projectFilesUpdated({ files: newFiles }))
             yield put(projectLayoutChanged({ layout: result.layout }))
         } else {
            yield put(projectLayoutChangeFailed(new Error(`Layout '${action.payload.id}' not found`)))
@@ -322,7 +321,7 @@ export default function* projectSaga() {
             projectConfigChanged.type,
         ], saga_reloadProjectWhenConfigChanged),
         yield takeLatest([
-            projectCardTypeRawConfigChanged.type,
+            cardTypeRawConfigChanged.type,
         ], saga_reloadCardTypeWhenConfigChanged),
         yield takeLatest([
             projectLayoutRawConfigChanged.type,

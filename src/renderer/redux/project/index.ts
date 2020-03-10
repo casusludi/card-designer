@@ -1,5 +1,5 @@
 import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { Project, ProjectSourceData, ProjectConfig, ProjectSelection, RenderFilter, ProjectExportState, ProjectCardType, ProjectLayout, ProjectFiles } from '../../services/Project'
+import { Project, ProjectSourceData, ProjectConfig, ProjectSelection, RenderFilter, ProjectExportState, ProjectCardType, ProjectLayout, ProjectFiles, CardTypeCanvas } from '../../services/Project'
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { User } from '../../services/Auth';
 import { asError } from '../../utils/redux';
@@ -31,14 +31,7 @@ export const projectFetchDataSucceeded = createAction<ProjectDataChangedPayload>
 export const projectFetchDataFailed = createAction('projectData/fetchFailed',asError());
 export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
 export const projectRawConfigChanged = createAction<{rawConfig:string}>('projectRawConfig/changed');
-export const projectCardTypeRawConfigChanged = createAction<{id:string,rawConfig:string}>('projectCardTypeRawConfig/changed');
-export const projectCardTypeChanged = createAction<{cardType:ProjectCardType}>('projectCardType/changed');
-export const projectCardTypeChangeFailed = createAction('projectCardType/changeFailed',asError());
-export const projectLayoutRawConfigChanged = createAction<{id:string,rawConfig:string}>('projectLayoutRawConfig/changed');
-export const projectLayoutChanged = createAction<{layout:ProjectLayout}>('projectLayout/changed');
-export const projectLayoutChangeFailed = createAction('projectLayout/changeFailed',asError());
-export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
-export const projectFilesUpdated = createAction<{files:ProjectFiles}>('projectFiles/updated');
+
 export const projectSaving = createAction('project/saving');
 export const projectSavingAs = createAction('project/savingAs');
 export const projectSavingFailed = createAction('project/savingFailed',asError());
@@ -52,6 +45,16 @@ export const projectRendered = createAction('project/rendered');
 export const projectExport = createAction<{layoutId:string, sourceType:ProjectSourceType, exportFolderPath:string, cardTypes:Array<string>}>('project/export');
 export const projectExportFailed = createAction('project/exportFailed',asError());
 export const projectExportStateChanged = createAction<{ state:ProjectExportState }>("project/exportStateChanged");
+
+export const cardTypeRawConfigChanged = createAction<{id:string,rawConfig:string}>('cardTypeRawConfig/changed');
+export const cardTypeChanged = createAction<{cardType:ProjectCardType}>('cardType/changed');
+export const cardTypeCanvasChanged = createAction<{id:string,canvas:CardTypeCanvas}>('cardTypeCanvas/changed');
+export const cardTypeChangeFailed = createAction('cardType/changeFailed',asError());
+export const projectLayoutRawConfigChanged = createAction<{id:string,rawConfig:string}>('projectLayoutRawConfig/changed');
+export const projectLayoutChanged = createAction<{layout:ProjectLayout}>('projectLayout/changed');
+export const projectLayoutChangeFailed = createAction('projectLayout/changeFailed',asError());
+export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
+export const projectFilesUpdated = createAction<{files:ProjectFiles}>('projectFiles/updated');
 
 export const projectReducer = createReducer<Project | null>(null, {
     [projectOpenSucceeded.type]: (state, action: PayloadAction<{ project: Project }>) => action.payload.project,
@@ -86,7 +89,7 @@ export const projectReducer = createReducer<Project | null>(null, {
             rawConfig: action.payload.rawConfig
         }
     },
-    [projectCardTypeRawConfigChanged.type]: (state, action:PayloadAction<{id:string,rawConfig:string}>) => {
+    [cardTypeRawConfigChanged.type]: (state, action:PayloadAction<{id:string,rawConfig:string}>) => {
         if (!state) return null;
         const cardType = state.cardTypes[action.payload.id];
         if(!cardType) return state;
@@ -99,6 +102,23 @@ export const projectReducer = createReducer<Project | null>(null, {
                 [action.payload.id]:{
                     ...cardType,
                     rawConfig: action.payload.rawConfig
+                }
+            }
+        }
+    },
+    [cardTypeCanvasChanged.type]: (state, action:PayloadAction<{id:string,canvas:CardTypeCanvas}>) => {
+        if (!state) return null;
+        const cardType = state.cardTypes[action.payload.id];
+        if(!cardType) return state;
+        if(_.isEqual(action.payload.canvas,cardType.canvas)) return state;
+        return {
+            ...state,
+            modified: true,
+            cardTypes:{
+                ...state.cardTypes,
+                [action.payload.id]:{
+                    ...cardType,
+                    canvas: action.payload.canvas
                 }
             }
         }
@@ -120,7 +140,7 @@ export const projectReducer = createReducer<Project | null>(null, {
             }
         }
     },
-    [projectCardTypeChanged.type]: (state, action:PayloadAction<{cardType:ProjectCardType}>) => {
+    [cardTypeChanged.type]: (state, action:PayloadAction<{cardType:ProjectCardType}>) => {
         if (!state) return null;
         return {
             ...state,

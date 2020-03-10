@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react"
 import './TabNav.scss';
+import _ from "lodash";
 
 export enum TabNavHeaderPosition {
     TOP,
@@ -74,16 +75,16 @@ export default class TabNav extends React.Component<TabNavProps,TabNavState>{
     }
 
     render(){
+        const tabs = _.filter(this.props.children, o => o as TabNavItem);
         return (
             <div className={"TabNav "+(this.props.className?this.props.className:'')+(this.props.headerPosition == TabNavHeaderPosition.BOTTOM?' TabNav_header-bottom':'')}>
                 <div className="TabNav__headers">
-                    {this.props.children.map( (t,i) => (<HeaderButton key={i} index={i} onSelect={(index) => this.setState({currentTab:index})}  selected={this.state.currentTab == i}>{t.props.label}</HeaderButton>))}
+                    {tabs.map( (t,i) => (<HeaderButton key={i} index={i} onSelect={(index) => this.setState({currentTab:index})}  selected={this.state.currentTab == i}>{t.props.label}</HeaderButton>))}
                 </div>
                 <div className="TabNav__contents">
-                    {this.props.children.map( (t,i) => <div className="TabNavItem__content" key={i} style={this.state.currentTab != i?{display:'none'}:{}} >{t}</div>)}
+                    {tabs.map( (t,i) => <div className="TabNavItem__content" key={i} style={this.state.currentTab != i?{display:'none'}:{}} >{t}</div>)}
                 </div>
             </div>
-
         )
     }
 }

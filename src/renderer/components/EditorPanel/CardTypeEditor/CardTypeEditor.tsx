@@ -4,10 +4,11 @@ import TabNav, { TabNavItem, TabNavHeaderPosition } from '../../Misc/TabNav/TabN
 import CodeEditor from '../CodeEditor/CodeEditor';
 
 import './CardTypeEditor.scss';
-import WYSIWYGEditor from '../WYSIWYGEditor';
-import { projectCardTypeRawConfigChanged } from '../../../redux/project';
+
+import { cardTypeRawConfigChanged } from '../../../redux/project';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import CardTypeCanvasEditor from '../CardTypeCanvasEditor';
 
 export type CardTypeEditorProps = {
     // currently ProjectTemplate and ProjectLayout are identic. This change later
@@ -25,10 +26,10 @@ function CardTypeEditor(props: CardTypeEditorProps) {
 
     function onConfigChange(rawConfig: string) {
         if (props.cardType) {
-            props.dispatch(projectCardTypeRawConfigChanged({ id: props.cardType.id, rawConfig }));
+            props.dispatch(cardTypeRawConfigChanged({ id: props.cardType.id, rawConfig }));
         }
     }
-
+    console.log("props.cardType.config : ",props.cardType?.config);
     return (
         <React.Fragment>
             {props.cardType ?
@@ -38,9 +39,9 @@ function CardTypeEditor(props: CardTypeEditorProps) {
                         <TabNavItem label="Config">
                             <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onConfigChange} code={props.cardType.rawConfig} instanceId={props.cardType.configPath} path={props.cardType.configPath} />
                         </TabNavItem>
-                        {templateFile && <TabNavItem label="Template"><CodeEditor width={props.width} className="full-space" mode="html" onChange={(code) => props.cardType && props.cardType.template && props.onFileChanged(props.cardType.template, code)} code={templateFile.content} instanceId={templateFile.instanceId} path={props.cardType.template || ''} /></TabNavItem>}
-                        {styleFile && <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.cardType && props.cardType.styles && props.onFileChanged(props.cardType.styles, code)} code={styleFile.content} instanceId={styleFile.instanceId} path={props.cardType.styles || ''} /></TabNavItem>}
-                        <TabNavItem label="Canvas"><WYSIWYGEditor /></TabNavItem>
+                        {props.cardType.config.advanced && templateFile && <TabNavItem label="Template"><CodeEditor width={props.width} className="full-space" mode="html" onChange={(code) => props.cardType && props.cardType.template && props.onFileChanged(props.cardType.template, code)} code={templateFile.content} instanceId={templateFile.instanceId} path={props.cardType.template || ''} /></TabNavItem>}
+                        {props.cardType.config.advanced && styleFile && <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.cardType && props.cardType.styles && props.onFileChanged(props.cardType.styles, code)} code={styleFile.content} instanceId={styleFile.instanceId} path={props.cardType.styles || ''} /></TabNavItem>}
+                        <TabNavItem label="Canvas"><CardTypeCanvasEditor cardTypeCanvasId={props.cardType.id} cardTypeCanvas={props.cardType.canvas} /></TabNavItem>
                     </TabNav>
                 </div> :
                 <div>No Template</div>

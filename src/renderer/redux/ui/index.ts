@@ -3,7 +3,7 @@ import { ProjectDataItem, Project, ProjectExportStatus, ProjectExportState, Proj
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
 import { AppUI, AppUIOthers } from '../../components/App/App';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
-import { projectOpenSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered, projectClosing } from '../project';
+import { projectOpenSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered, projectClosing, cardTypeChanged } from '../project';
 
 import _ from 'lodash';
 import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
@@ -109,7 +109,20 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
             ...state,
             lastError: null
         }
-    }
+    },
+    [cardTypeChanged.type]: (state, action: PayloadAction<{ cardType:ProjectCardType }>) => {
+        if(state.selection && state.selection.cardType  && state.selection.cardType.id != action.payload.cardType.id) return state;
+        return {
+            ...state,
+            selection: {
+                layout: state.selection?.layout,
+                data: state.selection?.data,
+                cardType: action.payload.cardType,
+                pages:state.selection?.pages || []
+            }
+
+        }
+    },
 })
 
 

@@ -26,6 +26,8 @@ export enum RenderFilter {
 export type ProjectConfigCardType = {
     template: string
     styles: string
+    canvas: string
+    advanced:boolean
     base: string
 }
 
@@ -78,6 +80,7 @@ export type ProjectCardType = {
     configPath: string
     template: string | null
     styles: string | null
+    canvas: CardTypeCanvas
 }
 
 export type ProjectLayout = {
@@ -161,6 +164,65 @@ export type ProjectTemplateLoadResult = {
 }
 
 
+export enum CardTypeBoxType {
+    Text = "text",
+    Image = "image"
+}
+
+export enum FontWeight {
+    Normal = "normal",
+    Bold = "bold",
+    Bolder = "bolder",
+    Lighter = "lighter",
+}
+
+export enum FontStyle {
+    Normal = "normal",
+    Italic = "italic",
+    Oblique = "oblique",
+}
+
+export enum TextAlign {
+    Center = "center",
+    Left = "left",
+    Right = "right",
+}
+
+export type CardTypeBoxText = {
+    color: string
+    weight: FontWeight | number
+    style: FontStyle
+    align: TextAlign
+    size: number
+}
+
+export type Dimension = number | "auto" ;
+
+export type CardTypeBox = {
+    ref: string // variable name
+    type: CardTypeBoxType
+    top: Dimension
+    left: Dimension
+    bottom: Dimension
+    right: Dimension
+    width: Dimension
+    height: Dimension
+    data: CardTypeBoxText
+}
+
+export type CardTypeCanvas = {
+    width: number
+    height: number
+    haveVerso: boolean
+    rectoBoxes: Array<CardTypeBox>
+    versoBoxes: Array<CardTypeBox>
+}
+
+export async function loadCardTypeCanvas(canvasPath:string):Promise<CardTypeCanvas>{
+    const rawConfig = (await fse.readFile(canvasPath)).toString();
+    const config = JSON.parse(rawConfig);
+    return config;
+}
 
 async function loadCardTypeFromFile(projectPath: string, configPath: string, id: string): Promise<ProjectCardTypeLoadResult> {
     const rawConfig = fse.readFileSync(path.join(projectPath, configPath)).toString();
@@ -168,31 +230,30 @@ async function loadCardTypeFromFile(projectPath: string, configPath: string, id:
     return loadCardTypeFromRawConfig(projectPath, rawConfig, configPath, id);
 }
 
-
 export async function loadCardTypeFromRawConfig(projectPath: string, rawConfig: string, configPath: string, id: string): Promise<ProjectCardTypeLoadResult> {
 
     const config: ProjectConfigCardType = JSON.parse(rawConfig)
     config.base = path.dirname(configPath);
     const result = await loadTemplate(projectPath, config, id);
+    const canvas = await loadCardTypeCanvas(path.join(projectPath,config.base,config.canvas));
     return {
         cardType: {
             id,
             ...result.template,
             config,
             rawConfig,
-            configPath
+            configPath,
+            canvas
         },
         files: result.files
     }
 }
-
 
 async function loadLayoutFromFile(projectPath: string, configPath: string, id: string): Promise<ProjectLayoutLoadResult> {
     const rawConfig = fse.readFileSync(path.join(projectPath, configPath)).toString();
 
     return loadLayoutFromRawConfig(projectPath, rawConfig, configPath, id);
 }
-
 
 export async function loadLayoutFromRawConfig(projectPath: string, rawConfig: string, configPath: string, id: string): Promise<ProjectLayoutLoadResult> {
 
@@ -362,6 +423,7 @@ async function saveProjectAt(project: Project, projectPath: string): Promise<Pro
     const filesToSave = _.map(project.files, f => writeFile(path.join(projectPath, f.path), f.content))
     _.each(project.cardTypes, o => {
         filesToSave.push(writeFile(path.join(projectPath, o.configPath),o.rawConfig))
+        filesToSave.push(writeFile(path.join(projectPath, o.base,o.config.canvas),JSON.stringify(o.canvas,null,4)))
     })
     _.each(project.layouts, o => {
         filesToSave.push(writeFile(path.join(projectPath, o.configPath),o.rawConfig))

@@ -5,9 +5,7 @@
     "type": "object",
     "title": "The Root Schema",
     "required": [
-        "version",
-        "template",
-        "styles"
+        "version"
     ],
     "additionalProperties": true,
     "properties": {
@@ -20,6 +18,9 @@
             "type": "string"
         },
         "styles": {
+            "type": "string"
+        },
+        "canvas": {
             "type": "string"
         }
     }

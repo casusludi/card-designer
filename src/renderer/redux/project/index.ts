@@ -1,5 +1,5 @@
 import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { Project, ProjectSourceData, ProjectConfig, ProjectSelection, RenderFilter, ProjectExportState } from '../../services/Project'
+import { Project, ProjectSourceData, ProjectConfig, ProjectSelection, RenderFilter, ProjectExportState, ProjectCardType, ProjectLayout, ProjectFiles } from '../../services/Project'
 import { ProjectSourceType } from '../../services/Project/Sources';
 import { User } from '../../services/Auth';
 import { asError } from '../../utils/redux';
@@ -31,7 +31,14 @@ export const projectFetchDataSucceeded = createAction<ProjectDataChangedPayload>
 export const projectFetchDataFailed = createAction('projectData/fetchFailed',asError());
 export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
 export const projectRawConfigChanged = createAction<{rawConfig:string}>('projectRawConfig/changed');
+export const projectCardTypeRawConfigChanged = createAction<{id:string,rawConfig:string}>('projectCardTypeRawConfig/changed');
+export const projectCardTypeChanged = createAction<{cardType:ProjectCardType}>('projectCardType/changed');
+export const projectCardTypeChangeFailed = createAction('projectCardType/changeFailed',asError());
+export const projectLayoutRawConfigChanged = createAction<{id:string,rawConfig:string}>('projectLayoutRawConfig/changed');
+export const projectLayoutChanged = createAction<{layout:ProjectLayout}>('projectLayout/changed');
+export const projectLayoutChangeFailed = createAction('projectLayout/changeFailed',asError());
 export const projectFileChanged = createAction<{fileId:string,content:string}>('projectFile/changed');
+export const projectFilesUpdated = createAction<{files:ProjectFiles}>('projectFiles/updated');
 export const projectSaving = createAction('project/saving');
 export const projectSavingAs = createAction('project/savingAs');
 export const projectSavingFailed = createAction('project/savingFailed',asError());
@@ -77,6 +84,73 @@ export const projectReducer = createReducer<Project | null>(null, {
             ...state,
             modified: true,
             rawConfig: action.payload.rawConfig
+        }
+    },
+    [projectCardTypeRawConfigChanged.type]: (state, action:PayloadAction<{id:string,rawConfig:string}>) => {
+        if (!state) return null;
+        const cardType = state.cardTypes[action.payload.id];
+        if(!cardType) return state;
+        if(_.isEqual(action.payload.rawConfig,cardType.rawConfig)) return state;
+        return {
+            ...state,
+            modified: true,
+            cardTypes:{
+                ...state.cardTypes,
+                [action.payload.id]:{
+                    ...cardType,
+                    rawConfig: action.payload.rawConfig
+                }
+            }
+        }
+    },
+    [projectLayoutRawConfigChanged.type]: (state, action:PayloadAction<{id:string,rawConfig:string}>) => {
+        if (!state) return null;
+        const layout = state.layouts[action.payload.id];
+        if(!layout) return state;
+        if(_.isEqual(action.payload.rawConfig,layout.rawConfig)) return state;
+        return {
+            ...state,
+            modified: true,
+            layouts:{
+                ...state.layouts,
+                [action.payload.id]:{
+                    ...layout,
+                    rawConfig: action.payload.rawConfig
+                }
+            }
+        }
+    },
+    [projectCardTypeChanged.type]: (state, action:PayloadAction<{cardType:ProjectCardType}>) => {
+        if (!state) return null;
+        return {
+            ...state,
+            modified: true,
+            cardTypes:{
+                ...state.cardTypes,
+                [action.payload.cardType.id]:action.payload.cardType
+            }
+        }
+    },
+    [projectLayoutChanged.type]: (state, action:PayloadAction<{layout:ProjectLayout}>) => {
+        if (!state) return null;
+        return {
+            ...state,
+            modified: true,
+            layouts:{
+                ...state.layouts,
+                [action.payload.layout.id]:action.payload.layout
+            }
+        }
+    },
+    [projectFilesUpdated.type]: (state, action:PayloadAction<{files:ProjectFiles}>) => {
+        if (!state) return null;
+        return {
+            ...state,
+            modified: true,
+            files:{
+                ...state.files,
+                ...action.payload.files
+            }
         }
     },
     [projectSaved.type]: (state,action:PayloadAction<{project:Project}>) => action.payload.project,

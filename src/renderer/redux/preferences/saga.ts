@@ -2,7 +2,7 @@ import { ApplicationState } from "../..";
 import { select, put, takeLatest, all, takeEvery } from "redux-saga/effects";
 import { prefLoaded, prefLoadFromLocalStorage, prefAutoRenderFilterChanged, prefEditorWidthChanged, prefProjectExportChanged, prefProjectSelectionChanged } from ".";
 import { savePrefInLocalStorage, loadPrefFromLocalStorage } from "../../services/Preferences";
-import { uiEditorSelectedTemplateChanged, uiEditorSelectedSourceTypeChanged, uiEditorSelectedPagesChanged, uiEditorSelectedLayoutChanged } from "../ui";
+import { uiEditorSelectedCardTypeChanged, uiEditorSelectedSourceTypeChanged, uiEditorSelectedPagesChanged, uiEditorSelectedLayoutChanged } from "../ui";
 
 const selectApp = (state: ApplicationState) => state;
 const preferenceSelect = (state: ApplicationState) => state.preferences
@@ -49,7 +49,7 @@ export default function* prefSaga() {
             uiEditorSelectedLayoutChanged.type, 
             uiEditorSelectedPagesChanged.type,
             uiEditorSelectedSourceTypeChanged.type,
-            uiEditorSelectedTemplateChanged.type
+            uiEditorSelectedCardTypeChanged.type
         ],saga_projectSelectionChanged)
     ])
 }

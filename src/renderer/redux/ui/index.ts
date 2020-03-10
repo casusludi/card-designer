@@ -1,5 +1,5 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
-import { ProjectTemplate, ProjectDataItem, Project, ProjectExportStatus, ProjectExportState, ProjectPageSelection, ProjectLayout, ProjectSelection } from '../../services/Project';
+import { ProjectDataItem, Project, ProjectExportStatus, ProjectExportState, ProjectPageSelection, ProjectLayout, ProjectSelection, ProjectCardType } from '../../services/Project';
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
 import { AppUI, AppUIOthers } from '../../components/App/App';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
@@ -10,7 +10,7 @@ import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
 import { AppUIPreview } from '../../components/PreviewPanel/PreviewPanel';
 import { AppUIExport } from '../../components/EditorPanel/ExportEditor/ExportEditor';
 
-export const uiEditorSelectedTemplateChanged = createAction<{ template: ProjectTemplate }>("uiEditor/selectedTemplateChanged");
+export const uiEditorSelectedCardTypeChanged = createAction<{ cardType: ProjectCardType }>("uiEditor/selectedTemplateChanged");
 export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectLayout }>("uiEditor/selectedLayoutChanged");
 export const uiEditorSelectedSourceTypeChanged = createAction<{ sourceType: ProjectSourceType }>("uiEditor/selectedSourceTypeChanged");
 export const uiEditorSelectedDataChanged = createAction<{ data: ProjectDataItem | undefined | null }>("uiEditor/selectedDataChanged");
@@ -36,13 +36,13 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
             }
         }
     },
-    [uiEditorSelectedTemplateChanged.type]: (state, action: PayloadAction<{ template: ProjectTemplate }>) => {
+    [uiEditorSelectedCardTypeChanged.type]: (state, action: PayloadAction<{ cardType: ProjectCardType }>) => {
         return {
             ...state,
             selection: {
                 layout: state.selection?.layout,
                 data: state.selection?.data,
-                cardType: action.payload.template,
+                cardType: action.payload.cardType,
                 pages:state.selection?.pages || []
             }
 

@@ -9,7 +9,7 @@ import { Dispatch } from "redux";
 import { projectFileChanged, projectRender, projectRawConfigChanged } from "../../redux/project";
 import _ from "lodash";
 
-import { uiEditorSelectedTemplateChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedSourceTypeChanged, uiEditorSelectedPagesChanged } from "../../redux/ui";
+import { uiEditorSelectedCardTypeChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedSourceTypeChanged, uiEditorSelectedPagesChanged } from "../../redux/ui";
 import CardTypeEditor from "./CardTypeEditor";
 import { ProjectSourceType, countCards } from "../../services/Project/Sources";
 import { prefAutoRenderFilterChanged } from "../../redux/preferences";
@@ -46,7 +46,7 @@ function EditorPanel(props: EditorPanelProps) {
     function selectedTemplateChanged(value: any) {
         console.log("selectedTemplateChanged", value)
         if (props.project) {
-            props.dispatch(uiEditorSelectedTemplateChanged({ template: value }))
+            props.dispatch(uiEditorSelectedCardTypeChanged({ cardType: value }))
         }
     }
 

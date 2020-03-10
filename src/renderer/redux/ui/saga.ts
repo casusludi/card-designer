@@ -1,5 +1,5 @@
 import { all, takeEvery,select, put } from "redux-saga/effects";
-import { uiEditorSelectedSourceTypeChanged, uiEditorSelectedDataChanged, uiEditorSelectedTemplateChanged, uiEditorSelectionChanged } from ".";
+import { uiEditorSelectedSourceTypeChanged, uiEditorSelectedDataChanged, uiEditorSelectedCardTypeChanged, uiEditorSelectionChanged } from ".";
 import { ApplicationState } from "../..";
 import { Project } from "../../services/Project";
 
@@ -68,7 +68,7 @@ export default function* uiSaga() {
     yield all([
         yield takeEvery([
             uiEditorSelectedSourceTypeChanged.type,
-            uiEditorSelectedTemplateChanged.type,
+            uiEditorSelectedCardTypeChanged.type,
             projectDataChanged.type
         ],saga_updateProjectSelectedData),
         yield takeEvery([

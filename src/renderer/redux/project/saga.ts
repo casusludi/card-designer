@@ -1,10 +1,10 @@
 import { call, put, takeLatest, all, takeEvery, select, delay, throttle } from 'redux-saga/effects';
-import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath, createNewProjectFromTemplate, saveProjectAs } from '../../services/Project';
+import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderSelectionAsHtml, ProjectSelection, RenderFilter, loadProjectFromConfig, ProjectExportStatus, exportProjectStrip, loadProjectFromPath, createNewProjectFromTemplate, saveProjectAs, loadCardTypeFromRawConfig, loadLayoutFromRawConfig, ProjectCardTypeLoadResult, ProjectLayoutLoadResult} from '../../services/Project';
 
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectRawConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs, projectConfigChanged } from '.';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectRawConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs, projectConfigChanged, projectCardTypeChanged, projectCardTypeChangeFailed, projectLayoutChangeFailed, projectLayoutChanged, projectCardTypeRawConfigChanged, projectLayoutRawConfigChanged, projectFilesUpdated } from '.';
 import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged, uiEditorSelectedPagesChanged } from '../ui';
 import { convertHtmlToPdf, serveHtml } from '../../utils';
 import { ApplicationState } from '../..';
@@ -82,6 +82,62 @@ function* saga_reloadProjectWhenConfigChanged(action:any){
         
     } catch (e) {
         yield projectReloadFailed(e,action);
+    }
+}
+
+
+function* saga_reloadCardTypeWhenConfigChanged(action:PayloadAction<{id:string,rawConfig:string}>){
+    try {
+        const project: Project = yield select(selectProject);
+        const oldCardType = project.cardTypes[action.payload.id];
+        console.log('saga_reloadCardTypeWhenConfigChanged',oldCardType)
+        if(!oldCardType){
+            yield put(projectCardTypeChangeFailed(new Error(`Card Type '${action.payload.id}' not found`)))
+            return;
+        } 
+
+        const result:ProjectCardTypeLoadResult = yield call(loadCardTypeFromRawConfig,project.path, action.payload.rawConfig,oldCardType.configPath,oldCardType.id);
+
+        if (result) {
+            const newFiles = _.reduce(result.files,(ret:any,o,k:string) => {
+                if(!project.files[k]){
+                    ret[k] = o;
+                }
+                return ret;
+            },{})
+            yield put(projectFilesUpdated({ files: newFiles }))
+            yield put(projectCardTypeChanged({ cardType: result.cardType }))
+        } else {
+           yield put(projectCardTypeChangeFailed(new Error(`Card Type reloaded'${action.payload.id}' not found`)))
+        }
+        
+    } catch (e) {
+        yield projectCardTypeChangeFailed(e,action);
+    }
+}
+
+function* saga_reloadLayoutWhenConfigChanged(action:PayloadAction<{id:string,rawConfig:string}>){
+    try {
+        const project: Project = yield select(selectProject);
+        const oldLayout = project.layouts[action.payload.id];
+        if(!oldLayout) return;
+
+        const result:ProjectLayoutLoadResult = yield call(loadLayoutFromRawConfig,project.path, action.payload.rawConfig,oldLayout.configPath,oldLayout.id);
+        if (result) {
+            const newFiles = _.reduce(result.files,(ret:any,o,k:string) => {
+                if(!project.files[k]){
+                    ret[k] = o;
+                }
+                return ret;
+            },{})
+            yield put(projectFilesUpdated({ files: newFiles }))
+            yield put(projectLayoutChanged({ layout: result.layout }))
+        } else {
+           yield put(projectLayoutChangeFailed(new Error(`Layout '${action.payload.id}' not found`)))
+        }
+        
+    } catch (e) {
+        yield projectLayoutChangeFailed(e,action);
     }
 }
 
@@ -265,6 +321,12 @@ export default function* projectSaga() {
             projectRawConfigChanged.type,
             projectConfigChanged.type,
         ], saga_reloadProjectWhenConfigChanged),
+        yield takeLatest([
+            projectCardTypeRawConfigChanged.type,
+        ], saga_reloadCardTypeWhenConfigChanged),
+        yield takeLatest([
+            projectLayoutRawConfigChanged.type,
+        ], saga_reloadLayoutWhenConfigChanged),
         yield takeLatest(projectExport.type, saga_exportProject)
     ])
 }

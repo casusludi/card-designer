@@ -4,16 +4,20 @@ import TabNav, { TabNavItem, TabNavHeaderPosition } from '../../Misc/TabNav/TabN
 import CodeEditor from '../CodeEditor/CodeEditor';
 
 import './LayoutEditor.scss';
+import { projectLayoutRawConfigChanged } from '../../../redux/project';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 
 export type LayoutEditorProps = {
     // currently ProjectTemplate and ProjectLayout are identic. This change later
     layout: ProjectLayout | null | undefined,
     files: ProjectFiles
     width: number,
+    dispatch: Dispatch,
     onFileChanged: (fileId: string, conte: string) => void
 }
 
-export default function LayoutEditor(props: LayoutEditorProps) {
+export function LayoutEditor(props: LayoutEditorProps) {
     /*if(props.template){
     console.log("LayoutEditor::render => ",props.template,props.files[props.template.hbs].content)
     }*/
@@ -23,6 +27,9 @@ export default function LayoutEditor(props: LayoutEditorProps) {
     function onConfigChange(rawConfig: string) {
 
         //props.dispatch(projectRawConfigChanged({ rawConfig }));
+        if (props.layout) {
+            props.dispatch(projectLayoutRawConfigChanged({ id: props.layout.id, rawConfig }));
+        }
     }
 
     return (
@@ -43,4 +50,6 @@ export default function LayoutEditor(props: LayoutEditorProps) {
         </React.Fragment>
     )
 }
+
+export default connect()(LayoutEditor)
 

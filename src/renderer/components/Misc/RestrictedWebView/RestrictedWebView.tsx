@@ -36,7 +36,7 @@ const webviewCSS = `
 `;
 
 
-export class RestrictedWebView extends React.Component<RestrictedWebViewProps>{
+export default class RestrictedWebView extends React.Component<RestrictedWebViewProps>{
 
     private webviewRef: HTMLWebViewElement | null = null;
 

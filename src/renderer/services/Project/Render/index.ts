@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import nunjucks from 'nunjucks';
-import { ProjectSelection, Project, CardTypeBox } from '..';
+import { ProjectSelection, Project, CardTypeBox, getDataBySourceTypeAndCardType } from '..';
 //@ts-ignore
 import CardTypeCanvasBoxes from './CardTypeCanvasBoxes.njk';
 //@ts-ignore
@@ -65,23 +65,32 @@ function getBoxStyleFromType(box:CardTypeBox):any{
 
 export async function renderSelectionToHtml(project: Project, selection: ProjectSelection): Promise<string | null> {
     if (!project) return null;
-    if (!selection.data) return null;
-    if (!selection.layout) return null;
-    if (!selection.cardType) return null;
-    if (!selection.cardType.template) return null;
-    if (!selection.layout.template) return null;
+    if (!selection.sourceType) return null;
+    if (!selection.layoutId) return null;
+    if (!selection.cardTypeId) return null;
+    //if (!selection.cardType.template) return null;
+    //if (!selection.layout.template) return null;
 
-    const template = selection.cardType.config.advanced?project.files[selection.cardType.template].content:CardTypeCanvasTemplate;
-    const layout = project.files[selection.layout.template].content;
+    const cardType = project.cardTypes[selection.cardTypeId];
+    const layout = project.layouts[selection.layoutId];
+    const data = getDataBySourceTypeAndCardType(project,selection.sourceType,selection.cardTypeId);
 
-    if (!template) return null;
-    if (!layout) return null;
+    if(!cardType) return null;
+    if(!layout) return null;
+    if(!data) return null;
+    if(!layout.template) return null;
+
+    const cardTypeTemplate = cardType.config.advanced?(cardType.template?project.files[cardType.template].content:null):CardTypeCanvasTemplate;
+    const layoutTemplate = project.files[layout.template].content;
+
+    if (!cardTypeTemplate) return null;
+    if (!layoutTemplate) return null;
 
 
-    let cards = applyMetaVariableEffects(metaVariables, selection.data.cards);
+    let cards = applyMetaVariableEffects(metaVariables, data.cards);
 
     if (selection.pages.length > 0) {
-        const cardsPerPage = selection.layout.cardsPerPage;
+        const cardsPerPage = layout.cardsPerPage;
         cards = _.reduce(selection.pages, (selectedCards: any[], o) => {
             const i = o - 1;
             const start = i * cardsPerPage;
@@ -93,9 +102,9 @@ export async function renderSelectionToHtml(project: Project, selection: Project
 
     const filters = {
         'boxes': (env:nunjucks.Environment) => (card:any,isRecto: boolean | string = true) => {
-            if(selection.cardType){
+            if(cardType){
                 const face =  typeof (isRecto) === 'boolean' ? "recto" : isRecto; 
-                const boxes = _.chain(selection.cardType.canvas.boxes)
+                const boxes = _.chain(cardType.canvas.boxes)
                     .filter(['face',face])
                     .map( o => {
                         const style = {
@@ -125,16 +134,16 @@ export async function renderSelectionToHtml(project: Project, selection: Project
     }
 
     return renderNJKToHtml(
-        template,
-        layout,
+        cardTypeTemplate,
+        layoutTemplate,
         cards,
         {
-            base: selection.cardType?.base || ''
+            base: cardType.base || ''
         },
         {
-            base: selection.layout.base,
-            layoutCSSPath: selection.layout.styles || '',
-            templateCSSPath: selection.cardType.styles || ''
+            base: layout.base,
+            layoutCSSPath: layout.styles || '',
+            templateCSSPath: cardType.styles || ''
         },
         filters
     )

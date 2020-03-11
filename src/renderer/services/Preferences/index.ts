@@ -1,4 +1,4 @@
-import { RenderFilter, Project, ProjectPageSelection } from "../Project"
+import { RenderFilter, Project,  ProjectSelection } from "../Project"
 import { ProjectSourceType } from "../Project/Sources"
 import { firstKeyOfObject } from "../../utils";
 import path from 'path';
@@ -21,23 +21,24 @@ export type AllExportPreferences = {
     [projectPath:string]:ProjectExportPreferences
 }
 
+/*
 export type ProjectSelectionPreference = {
-    cardType:string|undefined|null
-    layout:string|undefined|null
-    source:ProjectSourceType
+    cardTypeId:string|undefined|null
+    layoutId:string|undefined|null
+    sourceType:ProjectSourceType
     pages:ProjectPageSelection
-}
+}*/
 
 export type EditorPreferences = {
     autoRenderFilter:RenderFilter
 }
 
 export type EditorProjectPreferences = {
-    selection:ProjectSelectionPreference
+    selection:ProjectSelection
 }
 
 export type ProjectPreferences = {
-    selection:ProjectSelectionPreference
+    selection:ProjectSelection
     export:ProjectExportPreferences
 }
 

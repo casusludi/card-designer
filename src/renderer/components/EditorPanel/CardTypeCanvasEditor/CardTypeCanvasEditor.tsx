@@ -10,7 +10,7 @@ import _ from "lodash";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { cardTypeCanvasChanged } from "../../../redux/project";
-import { RestrictedWebView } from "../../Misc/RestrictedWebView/RestrictedWebView";
+import RestrictedWebView from "../../Misc/RestrictedWebView";
 import { renderNJKToHtml } from "../../../services/Project/Render";
 import { serveHtml } from "../../../utils";
 
@@ -57,24 +57,32 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
     }
 
     componentDidMount() {
-        this.renderAdvancedContent();
+        this.throttledRenderAdvancedContent();
     }
 
     componentDidUpdate(prevProps: CardTypeCanvasEditorProps, prevState: CardTypeCanvasEditorState) {
 
         if (!_.isEqual(prevState.cardTypeCanvas, this.state.cardTypeCanvas)) {
-            console.log("canvas changed")
 
             this.props.dispatch(cardTypeCanvasChanged({ id: this.props.cardTypeCanvasId, canvas: this.state.cardTypeCanvas }));
         }
 
         if (!_.isEqual(prevProps.cardType, this.props.cardType)) {
-            if (this.props.cardType.template) {
-                this.renderAdvancedContent();
-            }
 
+            this.throttledRenderAdvancedContent();
+            
 
             this.setState({ cardTypeCanvas: this.props.cardType.canvas })
+        }
+
+        const oldTemplate = prevProps.cardType.template?prevProps.project.files[prevProps.cardType.template]:null;
+        const oldStyle = prevProps.cardType.styles?prevProps.project.files[prevProps.cardType.styles]:null;
+
+        const currTemplate = this.props.cardType.template?this.props.project.files[this.props.cardType.template]:null;
+        const currStyle = this.props.cardType.styles?this.props.project.files[this.props.cardType.styles]:null;
+        
+        if(oldTemplate != currTemplate || oldStyle != currStyle){
+            this.throttledRenderAdvancedContent();
         }
     }
 
@@ -86,6 +94,8 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
             })
         }
     }
+
+    private throttledRenderAdvancedContent = _.throttle(this.renderAdvancedContent,1000);
 
     async renderCardByFace(face:string):Promise<string|null>{
         if (this.props.cardType.template) {

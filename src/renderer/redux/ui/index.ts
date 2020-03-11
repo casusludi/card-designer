@@ -1,73 +1,58 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
-import { ProjectDataItem, Project, ProjectExportStatus, ProjectExportState, ProjectPageSelection, ProjectLayout, ProjectSelection, ProjectCardType } from '../../services/Project';
+import {  Project, ProjectExportStatus, ProjectExportState, ProjectPageSelection,  ProjectSelection } from '../../services/Project';
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
 import { AppUI, AppUIOthers } from '../../components/App/App';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
-import { projectOpenSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered, projectClosing, cardTypeChanged } from '../project';
+import { projectOpenSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered, projectClosing} from '../project';
 
 import _ from 'lodash';
 import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
 import { AppUIPreview } from '../../components/PreviewPanel/PreviewPanel';
 import { AppUIExport } from '../../components/EditorPanel/ExportEditor/ExportEditor';
 
-export const uiEditorSelectedCardTypeChanged = createAction<{ cardType: ProjectCardType }>("uiEditor/selectedTemplateChanged");
-export const uiEditorSelectedLayoutChanged = createAction<{ layout: ProjectLayout }>("uiEditor/selectedLayoutChanged");
+export const uiEditorSelectedCardTypeChanged = createAction<{ cardTypeId: string }>("uiEditor/selectedTemplateChanged");
+export const uiEditorSelectedLayoutChanged = createAction<{ layoutId: string }>("uiEditor/selectedLayoutChanged");
 export const uiEditorSelectedSourceTypeChanged = createAction<{ sourceType: ProjectSourceType }>("uiEditor/selectedSourceTypeChanged");
-export const uiEditorSelectedDataChanged = createAction<{ data: ProjectDataItem | undefined | null }>("uiEditor/selectedDataChanged");
 export const uiEditorSelectedPagesChanged = createAction<{ pages:ProjectPageSelection }>("uiEditor/selectedPagesChanged");
-export const uiEditorSelectionChanged = createAction<{ selection:ProjectSelection, selectedSourceType:ProjectSourceType }>("uiEditor/selectionChanged");
+export const uiEditorSelectionChanged = createAction<{ selection:ProjectSelection }>("uiEditor/selectionChanged");
 export const uiPreviewPdfChanged = createAction<{ pdf: PDFSource, renderTime?: number }>("uiPreview/pdfChanged");
 export const uiPreviewHtmlUrlChanged = createAction<{ htmlUrl: string | null }>("uiPreview/htmlUrlChanged");
 
 export const uiEditorReducer = createReducer<AppUIEditor>({
-    selectedSourceType: ProjectSourceType.NONE,
     selection: null,
     lastError: null,
 }, {
     [projectClosing.type]: (state, action: PayloadAction<{ project: Project }>) => {
         return {
             ...state,
-            selectedSourceType: ProjectSourceType.NONE,
             selection: {
-                cardType: null,
-                layout: null,
-                data: null,
+                cardTypeId: null,
+                layoutId: null,
+                sourceType: ProjectSourceType.NONE,
                 pages:[]
             }
         }
     },
-    [uiEditorSelectedCardTypeChanged.type]: (state, action: PayloadAction<{ cardType: ProjectCardType }>) => {
+    [uiEditorSelectedCardTypeChanged.type]: (state, action: PayloadAction<{ cardTypeId: string }>) => {
         return {
             ...state,
             selection: {
-                layout: state.selection?.layout,
-                data: state.selection?.data,
-                cardType: action.payload.cardType,
+                layoutId: state.selection?.layoutId,
+                sourceType: state.selection?.sourceType,
+                cardTypeId: action.payload.cardTypeId,
                 pages:state.selection?.pages || []
             }
 
         }
     },
-    [uiEditorSelectedLayoutChanged.type]: (state, action: PayloadAction<{ layout: ProjectLayout }>) => {
+    [uiEditorSelectedLayoutChanged.type]: (state, action: PayloadAction<{ layoutId: string }>) => {
 
         return {
             ...state,
             selection: {
-                layout: action.payload.layout,
-                data: state.selection?.data,
-                cardType: state.selection?.cardType,
-                pages:state.selection?.pages || []
-            }
-
-        }
-    },
-    [uiEditorSelectedDataChanged.type]: (state, action: PayloadAction<{ data: ProjectDataItem }>) => {
-        return {
-            ...state,
-            selection: {
-                layout: state.selection?.layout,
-                data: action.payload.data,
-                cardType: state.selection?.cardType,
+                layoutId: action.payload.layoutId,
+                sourceType: state.selection?.sourceType,
+                cardTypeId: state.selection?.cardTypeId,
                 pages:state.selection?.pages || []
             }
 
@@ -77,25 +62,29 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
         return {
             ...state,
             selection: {
-                layout: state.selection?.layout,
-                data: state.selection?.data,
-                cardType: state.selection?.cardType,
+                layoutId: state.selection?.layoutId,
+                sourceType: state.selection?.sourceType,
+                cardTypeId: state.selection?.cardTypeId,
                 pages:action.payload.pages
             }
 
         }
     },
-    [uiEditorSelectionChanged.type]: (state, action: PayloadAction<{ selection:ProjectSelection, selectedSourceType:ProjectSourceType }>) => {
+    [uiEditorSelectionChanged.type]: (state, action: PayloadAction<{ selection:ProjectSelection }>) => {
         return {
             ...state,
-            selectedSourceType: action.payload.selectedSourceType,
             selection: action.payload.selection
         }
     },
     [uiEditorSelectedSourceTypeChanged.type]: (state, action: PayloadAction<{ sourceType: ProjectSourceType }>) => {
         return {
             ...state,
-            selectedSourceType: action.payload.sourceType
+            selection: {
+                layoutId: state.selection?.layoutId,
+                sourceType: action.payload.sourceType,
+                cardTypeId: state.selection?.cardTypeId,
+                pages:state.selection?.pages || []
+            }
         }
     },
     [projectRenderFailed.type]: (state, action: PayloadAction<Error>) => {
@@ -108,20 +97,6 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
         return {
             ...state,
             lastError: null
-        }
-    },
-    [cardTypeChanged.type]: (state, action: PayloadAction<{ cardType:ProjectCardType }>) => {
-        if(state.selection && state.selection.cardType  && state.selection.cardType.id != action.payload.cardType.id) return state;
-        console.log("action.payload.cardType:",action.payload.cardType)
-        return {
-            ...state,
-            selection: {
-                layout: state.selection?.layout,
-                data: state.selection?.data,
-                cardType: action.payload.cardType,
-                pages:state.selection?.pages || []
-            }
-
         }
     }
 })

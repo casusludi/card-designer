@@ -2,7 +2,7 @@
 import React from "react";
 import './HTMLViewer.scss';
 import { remote, BrowserWindow } from 'electron';
-import { RestrictedWebView } from "../../Misc/RestrictedWebView/RestrictedWebView";
+import RestrictedWebView  from "../../Misc/RestrictedWebView";
 
 export type HTMLViewerProps = {
     url: string | null | undefined

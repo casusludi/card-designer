@@ -2,6 +2,7 @@ import { ipcRenderer, remote, OpenDialogOptions, SaveDialogOptions } from 'elect
 
 import fse from 'fs-extra';
 import path from 'path';
+import { file } from 'googleapis/build/src/apis/file';
 
 export type ServeOverrides = {[key:string]:string}
 
@@ -58,4 +59,9 @@ export function replacer(text:string, data:{[key:string]:string}) {
         text = text.replace(key, data[key])
     }
     return text;
+}
+
+export function pathToURL(filePath:string):string {
+    if (filePath[0] != '/') filePath = '/' + filePath;
+    return filePath.replace(/\\\\/g,'/').replace(/\\/g,'/')
 }

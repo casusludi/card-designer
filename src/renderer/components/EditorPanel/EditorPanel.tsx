@@ -1,7 +1,7 @@
 import React from "react";
 import TabNav, { TabNavItem } from "../Misc/TabNav/TabNav";
 import "./EditorPanel.scss";
-import { Project, RenderFilter, ProjectSelection, ProjectPageSelection } from "../../services/Project";
+import { Project, RenderFilter, ProjectSelection, ProjectPageSelection, getDataBySourceTypeAndCardType } from "../../services/Project";
 import ConfigEditor from "./ConfigEditor/ConfigEditor";
 import { connect } from "react-redux";
 import { ApplicationState } from "../..";
@@ -30,7 +30,6 @@ export type EditorPanelProps = {
 
 
 export type AppUIEditor = {
-    selectedSourceType: ProjectSourceType
     selection: ProjectSelection | undefined | null
     lastError: Error | null | undefined
 }
@@ -46,13 +45,13 @@ function EditorPanel(props: EditorPanelProps) {
     function selectedTemplateChanged(value: any) {
         console.log("selectedTemplateChanged", value)
         if (props.project) {
-            props.dispatch(uiEditorSelectedCardTypeChanged({ cardType: value }))
+            props.dispatch(uiEditorSelectedCardTypeChanged({ cardTypeId: value }))
         }
     }
 
     function selectedLayoutChanged(value: any) {
         if (props.project) {
-            props.dispatch(uiEditorSelectedLayoutChanged({ layout: value }))
+            props.dispatch(uiEditorSelectedLayoutChanged({ layoutId: value }))
         }
     }
 
@@ -84,12 +83,23 @@ function EditorPanel(props: EditorPanelProps) {
 
     function getTotalPages(selection:ProjectSelection|null|undefined){
         if(!selection) return 0;
-        if(!selection.layout) return 0;
-        if(!selection.data) return 0;
-        const cardPerPages = selection.layout.cardsPerPage;
-        const cardLength = countCards(selection.data);
-        return Math.ceil(cardLength/cardPerPages);
+        if(!selection.layoutId) return 0;
+        if(!selection.cardTypeId) return 0;
+        if(!selection.sourceType) return 0;
+        const {project} = props;
+        if(project){
+            const layout = project.layouts[selection.layoutId];
+            const data = getDataBySourceTypeAndCardType(project,selection.sourceType,selection.cardTypeId);
+            if(layout && data){
+                const cardPerPages = layout.cardsPerPage;
+                const cardLength = countCards(data);
+                return Math.ceil(cardLength/cardPerPages);
+            }
+        }
+        return 0
     }
+
+    const data = props.project && props.ui.selection?.sourceType && props.ui.selection.cardTypeId?getDataBySourceTypeAndCardType(props.project,props.ui.selection.sourceType,props.ui.selection.cardTypeId):null;
 
     return (
         <div className="EditorPanel full-space">
@@ -100,10 +110,10 @@ function EditorPanel(props: EditorPanelProps) {
                             <ConfigEditor width={props.width} config={props.project.config} rawConfig={props.project.rawConfig} onValidChange={onConfigValidChange} instanceId={props.project.path} />
                         </TabNavItem>
                         <TabNavItem label="Card Type">
-                            <CardTypeEditor width={props.width} cardType={props.ui.selection?.cardType} files={props.project.files} onFileChanged={onFileChanged} project={props.project} />
+                            <CardTypeEditor width={props.width} cardType={props.ui.selection?.cardTypeId?props.project.cardTypes[props.ui.selection?.cardTypeId]:null} files={props.project.files} onFileChanged={onFileChanged} project={props.project} />
                         </TabNavItem>
                         <TabNavItem label="Layout">
-                            <LayoutEditor width={props.width} layout={props.ui.selection?.layout} files={props.project.files} onFileChanged={onFileChanged} />
+                            <LayoutEditor width={props.width} layout={props.ui.selection?.layoutId?props.project.layouts[props.ui.selection?.layoutId]:null} files={props.project.files} onFileChanged={onFileChanged} />
                         </TabNavItem>
                         <TabNavItem label="Export">
                             <ExportEditor />
@@ -115,14 +125,14 @@ function EditorPanel(props: EditorPanelProps) {
                             <div className="MessagerAlert__error">
                                 {props.ui.lastError.message}
                             </div>}
-                        {props.ui.selection && !props.ui.selection.data &&
+                        {props.ui.selection && _.isEmpty(data) &&
                             <div className="MessagerAlert__error">
-                                No data found in source <b>{props.ui.selectedSourceType}</b> for template <b>{props.ui.selection.cardType?.id}</b>
+                                No data found in source <b>{props.ui.selection.sourceType}</b> for Card Type <b>{props.ui.selection.cardTypeId}</b>
                             </div>}
                         {props.ui.selection && <div className="ContentWithLine__Line">
-                            <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} value={props.ui.selection?.cardType} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes, (o, k) => ({ label: k, value: o }))} />
-                            <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.ui.selection?.layout} onChange={selectedLayoutChanged} options={_.map(props.project.layouts, (o, k) => ({ label: k, value: o }))} />
-                            <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} value={props.ui.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
+                            <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} value={props.ui.selection?.cardTypeId} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes, (o, k) => ({ label: k, value: k }))} />
+                            <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.ui.selection?.layoutId} onChange={selectedLayoutChanged} options={_.map(props.project.layouts, (o, k) => ({ label: k, value: k }))} />
+                            <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} value={props.ui.selection?.sourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
                             <div className="ActionBar__RenderingBox button-bar">
                                 <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>
                                 <Checkbox id="EditorPanelAutoRenderCheckBox" buttonStyle={true} label="Auto" defaultChecked={props.editorPreferences.autoRenderFilter == RenderFilter.ALL} onChange={onAutoRenderChanged} />

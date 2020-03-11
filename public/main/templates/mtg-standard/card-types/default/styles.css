@@ -15,6 +15,7 @@
     background-color: dimgray;
     width: 63mm;
     height: 87.5mm;
+    
 }
 
 .card-bg {
@@ -54,7 +55,3 @@
     font-weight: bold;
 } 
 
-.card-verso {
-    text-align: center;
-    background-color: DimGray;
-}

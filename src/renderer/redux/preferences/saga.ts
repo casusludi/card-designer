@@ -26,12 +26,7 @@ function* saga_projectSelectionChanged(){
     if(projectPath){
         yield put(prefProjectSelectionChanged({
             projectPath,
-            selection:{
-                cardType: selection?.cardType?.id,
-                layout: selection?.layout?.id,
-                source: app.ui.editor.selectedSourceType,
-                pages: selection?.pages || []
-            }
+            selection
         }))
     }
 }

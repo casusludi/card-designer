@@ -138,9 +138,13 @@ export type Project = {
 export type ProjectPageSelection = Array<number>;
 
 export type ProjectSelection = {
-    cardType: ProjectCardType | undefined | null,
+    /*cardType: ProjectCardType | undefined | null,
     layout: ProjectLayout | undefined | null,
-    data: ProjectDataItem | undefined | null
+    data: ProjectDataItem | undefined | null*/
+
+    cardTypeId: string | undefined | null,
+    layoutId: string | undefined | null,
+    sourceType: ProjectSourceType | undefined | null
     
     pages: ProjectPageSelection
 
@@ -463,24 +467,24 @@ export async function saveProjectAs(project: Project): Promise<Project> {
     return project
 }
 
-export async function exportProjectStrip(project: Project, templateName: string, layoutId: string, sourceType: ProjectSourceType, exportFolderPath: string) {
+export async function exportProjectStrip(project: Project, cardTypeId: string, layoutId: string, sourceType: ProjectSourceType, exportFolderPath: string) {
     const rawData = project.data[sourceType]
     if (!rawData) throw new Error(`No data found from source '${sourceType}'`)
-    const data = _.find(rawData.data, o => o.id == templateName);
-    if (!data) throw new Error(`No data found for '${templateName}' from source '${sourceType}'`)
+    const data = _.find(rawData.data, o => o.id == cardTypeId);
+    if (!data) throw new Error(`No data found for '${cardTypeId}' from source '${sourceType}'`)
 
     const selection: ProjectSelection = {
-        cardType: project.cardTypes[templateName],
-        layout: project.layouts[layoutId],
-        data: data,
+        cardTypeId: cardTypeId,
+        layoutId: layoutId,
+        sourceType: sourceType,
         pages: []
     }
     const html = await renderSelectionAsHtml(project, selection);
     if (!html) {
-        throw new Error(`Build failed for template '${templateName}' with layout '${layoutId}'`)
+        throw new Error(`Build failed for template '${cardTypeId}' with layout '${layoutId}'`)
     }
     const pdf = await convertHtmlToPdf(html, project.path);
-    await writeFile(path.join(exportFolderPath, layoutId, `${templateName}.pdf`), pdf);
+    await writeFile(path.join(exportFolderPath, layoutId, `${cardTypeId}.pdf`), pdf);
     return true
 }
 
@@ -491,3 +495,7 @@ export async function createNewProjectFromTemplate(templatePath: string) {
 }
 
 export const renderSelectionAsHtml = renderSelectionToHtml
+
+export function getDataBySourceTypeAndCardType(project:Project,sourceType:ProjectSourceType,cardTypeId:string) {
+    return  _.chain(project.data[sourceType]?.data).find( o => o.id == cardTypeId).value();
+}

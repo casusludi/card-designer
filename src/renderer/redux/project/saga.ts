@@ -4,15 +4,16 @@ import { openProjectFromDialog, ProjectSourceData, saveProject, Project, renderS
 import { fetchData, getSourceAuthType, ProjectSourceType } from '../../services/Project/Sources';
 import AppGlobal from '../../AppGlobal';
 import { authUserChanged } from '../auth';
-import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectRawConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs, projectConfigChanged, cardTypeChanged, cardTypeChangeFailed, projectLayoutChangeFailed, projectLayoutChanged, cardTypeRawConfigChanged, projectLayoutRawConfigChanged, projectFilesUpdated } from '.';
-import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedDataChanged, uiEditorSelectedPagesChanged } from '../ui';
-import { convertHtmlToPdf, serveHtml } from '../../utils';
+import { projectOpenSucceeded, projectOpenCancelled, projectOpenFailed, projectOpenFromDialog, projectDataChanged, projectFetchDataFailed, projectFetchData, projectSavingFailed, projectSaving, projectSaved, projectRender, projectFileChanged, projectRawConfigChanged, projectReloadSucceeded, projectReloadFailed, projectExport, projectExportStateChanged, projectExportFailed, projectFetchDataSucceeded, projectOpenFromPath, projectCreateFromTemplateFailed, projectCreateFromTemplate, projectRenderFailed, projectRendered, projectClosing, projectReady, projectSavingAs, projectConfigChanged, cardTypeChanged, cardTypeChangeFailed, projectLayoutChangeFailed, projectLayoutChanged, cardTypeRawConfigChanged, projectLayoutRawConfigChanged, projectFilesUpdated, cardTypeCanvasChanged } from '.';
+import { uiPreviewHtmlUrlChanged, uiPreviewPdfChanged, uiEditorSelectedLayoutChanged, uiEditorSelectedPagesChanged, uiEditorSelectedSourceTypeChanged } from '../ui';
+import { convertHtmlToPdf, serveHtml, pathToURL } from '../../utils';
 import { ApplicationState } from '../..';
 import { ServeOverrides } from '../../../main/serve';
 import { AnyAction } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { EditorPreferences } from '../../services/Preferences';
+import url from 'url';
 
 const selectProject = (state: ApplicationState) => state.project;
 const selectEditorPreferences = (state: ApplicationState) => state.preferences.editor;
@@ -197,15 +198,20 @@ function* saga_renderProjectSelection(action: any) {
         const filter:RenderFilter = action.payload.filter;
         if (filter != RenderFilter.NONE) {
             const html = yield call(renderSelectionAsHtml,project, action.payload.selection)
-            if (html && project && selection.cardType && selection.layout) {
-                if(selection.cardType.styles && selection.layout.styles){
-                    let templateStylesPath = selection.cardType.styles;
-                    let layoutStylesPath = selection.layout.styles;
-                    if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;
-                    if (layoutStylesPath[0] != '/') layoutStylesPath = '/' + layoutStylesPath;
+            if (html && project && selection.cardTypeId && selection.layoutId) {
+                const cardType = project.cardTypes[selection.cardTypeId];
+                const layout = project.layouts[selection.layoutId];
+
+                if(cardType && cardType.styles && layout && layout.styles){
+                    let templateStylesPath = pathToURL(cardType.styles);
+                    let layoutStylesPath = pathToURL(layout.styles);
+                    //if (templateStylesPath[0] != '/') templateStylesPath = '/' + templateStylesPath;
+                    //if (layoutStylesPath[0] != '/') layoutStylesPath = '/' + layoutStylesPath;
+
+                    console.log(templateStylesPath)
                     const overrides: ServeOverrides = {
-                        [templateStylesPath]: project.files[selection.cardType.styles].content,
-                        [layoutStylesPath]: project.files[selection.layout.styles].content
+                        [templateStylesPath]: project.files[cardType.styles].content,
+                        [layoutStylesPath]: project.files[layout.styles].content
                     }
                     const htmlUrl = yield call(serveHtml, "html-preview", html, project.path, overrides)
                     if(filter == RenderFilter.ALL || filter == RenderFilter.HTML){
@@ -312,8 +318,10 @@ export default function* projectSaga() {
         yield throttle(1000,[
             projectFileChanged.type,
             projectDataChanged.type,
+            cardTypeCanvasChanged.type,
+            cardTypeChanged.type,
             uiEditorSelectedLayoutChanged.type,
-            uiEditorSelectedDataChanged.type,
+            uiEditorSelectedSourceTypeChanged.type,
             uiEditorSelectedPagesChanged.type,
         ], saga_autoRenderProjectSelectionFromEditor),
         yield takeLatest([

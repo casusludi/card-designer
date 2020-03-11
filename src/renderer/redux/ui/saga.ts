@@ -1,28 +1,17 @@
 import { all, takeEvery,select, put } from "redux-saga/effects";
-import { uiEditorSelectedSourceTypeChanged, uiEditorSelectedDataChanged, uiEditorSelectedCardTypeChanged, uiEditorSelectionChanged } from ".";
+import {  uiEditorSelectionChanged } from ".";
 import { ApplicationState } from "../..";
-import { Project } from "../../services/Project";
+
 
 import _ from "lodash";
-import { projectDataChanged, projectOpenSucceeded, projectReloadSucceeded, projectReady } from "../project";
-import { AppUIEditor } from "../../components/EditorPanel/EditorPanel";
+import {  projectOpenSucceeded, projectReloadSucceeded, projectReady } from "../project";
 import { firstKeyOfObject } from "../../utils";
 import { ProjectSourceType } from "../../services/Project/Sources";
 
-const selectApp = (state: ApplicationState) => state;
-const projectSelect = (state:ApplicationState) => state.project;
-const uiEditorSelect = (state:ApplicationState) => state.ui.editor;
 
-function* saga_updateProjectSelectedData(action:any){
-    const project:Project = yield select(projectSelect);
-    const editor:AppUIEditor = yield select(uiEditorSelect);
-    const templateId = editor.selection?.cardType?.id;
-    const dataSet = project.data[editor.selectedSourceType]?.data;
-    const data = templateId?_.find(dataSet, o => o.id == editor.selection?.cardType?.id):null;
-    yield put(uiEditorSelectedDataChanged({
-        data
-    }))
-}
+const selectApp = (state: ApplicationState) => state;
+
+
 
 function* saga_initSelectionFromPreference(action:any){
     const app:ApplicationState = yield select(selectApp);
@@ -32,29 +21,27 @@ function* saga_initSelectionFromPreference(action:any){
         const projectPreference = preferences.projects[project?.path];
         const previousSelection = projectPreference?.selection;
 
-        let cardType = previousSelection?_.find(project.cardTypes, o => o.id ==  previousSelection.cardType):null;
+        let cardType = previousSelection?_.find(project.cardTypes, o => o.id ==  previousSelection.cardTypeId):null;
         if(!cardType){
             cardType = project?.cardTypes[firstKeyOfObject(project?.cardTypes)]
         }
-        let layout =  previousSelection?_.find(project.layouts, o => o.id ==  previousSelection.layout):null
+        let layout =  previousSelection?_.find(project.layouts, o => o.id ==  previousSelection.layoutId):null
         if(!layout){
             layout = project?.layouts[firstKeyOfObject(project?.layouts)]
         }
-        let selectedSourceType = previousSelection?.source;
-        if(!selectedSourceType){
-            selectedSourceType = project?.availablesSources[1] || ProjectSourceType.NONE;
+        let sourceType = previousSelection?.sourceType;
+        if(!sourceType){
+            sourceType = project?.availablesSources[1] || ProjectSourceType.NONE;
         }
 
-        const data = (cardType && cardType.id) ? _.find(project?.data[selectedSourceType]?.data, o => o.id == cardType?.id) : null
-
+      
         let pages = previousSelection?.pages || []
 
         yield put(uiEditorSelectionChanged({
-            selectedSourceType,
             selection:{
-                cardType,
-                layout,
-                data,
+                cardTypeId:cardType.id,
+                layoutId:layout.id,
+                sourceType,
                 pages
             }
         }))
@@ -63,14 +50,8 @@ function* saga_initSelectionFromPreference(action:any){
     }
 }
 
-
 export default function* uiSaga() {
     yield all([
-        yield takeEvery([
-            uiEditorSelectedSourceTypeChanged.type,
-            uiEditorSelectedCardTypeChanged.type,
-            projectDataChanged.type
-        ],saga_updateProjectSelectedData),
         yield takeEvery([
             projectOpenSucceeded.type,
             projectReloadSucceeded.type

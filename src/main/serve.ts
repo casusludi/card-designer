@@ -68,7 +68,7 @@ export default async function makeServe(port: number): Promise<Serve> {
                     contentType = 'image/svg+xml';
                     break;
             }
-
+            console.log(id,"have override?",req.url,overrides[req.url])
             if (overrides[req.url]) {
                 res.writeHead(200, { 'Content-Type': contentType });
                 res.end(overrides[req.url], encoding);
@@ -98,7 +98,7 @@ export default async function makeServe(port: number): Promise<Serve> {
 
     return {
         serve(id: string, html: string, base: string, overrides?: ServeOverrides) {
-            console.log("serve");
+            console.log("serve",id,overrides);
             mapping[id] = {
                 html,
                 base,

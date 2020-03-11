@@ -1,0 +1,9 @@
+{% if card.isRecto %}
+<div class="card">
+    {{card | boxes("recto") | safe}}
+</div>
+{% else %}
+<div class="card-verso" >
+     {{card | boxes("verso") | safe}}
+</div>
+{% endif %}

@@ -30,6 +30,11 @@ export function showSaveDialog(options:SaveDialogOptions){
     return ipcRenderer.invoke("show-save-dialog",options)
 }
 
+export function cssDimensionValue(value: number | undefined | null | string): string {
+    if (value === undefined || value === null || value === "auto") return "auto";
+    return `${value}mm`;
+}
+
 //export const fsreadFile = promisify(fs.readFile);
 //export const fsaccess = promisify(fs.access);
 

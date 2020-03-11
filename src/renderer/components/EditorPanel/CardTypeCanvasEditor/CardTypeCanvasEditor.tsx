@@ -11,9 +11,11 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { cardTypeCanvasChanged } from "../../../redux/project";
 import { RestrictedWebView } from "../../Misc/RestrictedWebView/RestrictedWebView";
-import { renderNJKToHtml } from "../../../services/Project/render";
+import { renderNJKToHtml } from "../../../services/Project/Render";
 import { serveHtml } from "../../../utils";
-import internalOneCardLayout from './InternalOneCardLayout';
+
+//@ts-ignore
+import CardTypeCanvasLayout from './CardTypeCanvasLayout.njk';
 
 type CSSDimensionView = {
     name: string,
@@ -37,8 +39,7 @@ export type CardTypeCanvasEditorProps = {
 export type CardTypeCanvasEditorState = {
     cardTypeCanvas: CardTypeCanvas
     selectedBox: CardTypeBox | null
-    selectedBoxRectoIndex: number
-    selectedBoxVersoIndex: number
+    selectedBoxIndex: number
     currentTab: number
     advancedRectoUrl: string | null
     advancedVersoUrl: string | null
@@ -48,8 +49,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
 
     state = {
         selectedBox: null,
-        selectedBoxRectoIndex: -1,
-        selectedBoxVersoIndex: -1,
+        selectedBoxIndex: -1,
         currentTab: 0,
         cardTypeCanvas: this.props.cardType.canvas,
         advancedRectoUrl: null,
@@ -91,9 +91,14 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         if (this.props.cardType.template) {
             const templateFile = this.props.project.files[this.props.cardType.template];
             if (templateFile) {
+                const filters = {
+                    'boxes': (env:any) => function name(card:any) {
+                        return '';
+                    }
+                }
                 const html = renderNJKToHtml(
                     templateFile.content,
-                    internalOneCardLayout,
+                    CardTypeCanvasLayout,
                     [{}],
                     {
                         base: this.props.cardType.base,
@@ -101,7 +106,8 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     {
                         face,
                         templateCSSPath: this.props.cardType.styles
-                    }
+                    },
+                    filters
                 )
                 if (html) {
                     const override: any = {}
@@ -123,8 +129,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         this.setState({
             currentTab: 1,
             selectedBox: box,
-            selectedBoxRectoIndex: isRecto ? index : -1,
-            selectedBoxVersoIndex: !isRecto ? index : -1
+            selectedBoxIndex: index,
         })
     }
 
@@ -141,25 +146,14 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
             // => Trigger TS errors later
             // It's not the good way to solve it. But it's currently the only I found
             const selectedBox = { ...this.state.selectedBox, [name]: value };
-            if (this.state.selectedBoxRectoIndex >= 0) {
-                const rectoBoxes = [...this.state.cardTypeCanvas.rectoBoxes];
-                rectoBoxes[this.state.selectedBoxRectoIndex] = selectedBox;
+            if (this.state.selectedBoxIndex >= 0) {
+                const boxes = [...this.state.cardTypeCanvas.boxes];
+                boxes[this.state.selectedBoxIndex] = selectedBox;
                 this.setState({
                     selectedBox,
                     cardTypeCanvas: {
                         ...this.state.cardTypeCanvas,
-                        rectoBoxes
-                    }
-                })
-            }
-            if (this.state.selectedBoxVersoIndex >= 0) {
-                const versoBoxes = [...this.state.cardTypeCanvas.versoBoxes];
-                versoBoxes[this.state.selectedBoxVersoIndex] = selectedBox;
-                this.setState({
-                    selectedBox,
-                    cardTypeCanvas: {
-                        ...this.state.cardTypeCanvas,
-                        versoBoxes
+                        boxes
                     }
                 })
             }
@@ -173,7 +167,9 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         // => Trigger TS errors later
         // It's not the good way to solve it. But it's currently the only I found
         const selectedBox: CardTypeBox = this.state.selectedBox;
-        const selectedBoxKey = `${this.state.selectedBoxRectoIndex};${this.state.selectedBoxVersoIndex}`;
+        const selectedBoxKey = this.state.selectedBoxIndex;
+        const rectoBoxes = _.filter(this.state.cardTypeCanvas.boxes,['face','recto'])
+        const versoBoxes = _.filter(this.state.cardTypeCanvas.boxes,['face','verso'])
         return (
             <div className="CardTypeCanvasEditor full-space">
                 <div className="CardTypeCanvasEditor__Canvas">
@@ -185,7 +181,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                             height: `${this.state.cardTypeCanvas.height}mm`
                         }}>
                             {this.props.cardType.config.advanced && <RestrictedWebView url={this.state.advancedRectoUrl} className="CardTypeCanvasEditor__AdvancedContent full-space" />}
-                            {this.state.cardTypeCanvas.rectoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == this.state.selectedBox} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox, true)} />)}
+                            {rectoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == this.state.selectedBox} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox, true)} />)}
                         </div>
                         <div className="CardTypeCanvasEditor__CardBoxLabel">Recto</div>
                     </div>
@@ -196,7 +192,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                                 height: `${this.state.cardTypeCanvas.height}mm`
                             }}>
                                 {this.props.cardType.config.advanced && <RestrictedWebView url={this.state.advancedVersoUrl} className="CardTypeCanvasEditor__AdvancedContent full-space" />}
-                                {this.state.cardTypeCanvas.versoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == this.state.selectedBox} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox, false)} />)}
+                                {versoBoxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == this.state.selectedBox} onChange={(newBox) => this.onBoxChange(i, newBox)} onSelect={(selectedBox) => this.onBoxSelect(i, selectedBox, false)} />)}
                             </div>
                             <div className="CardTypeCanvasEditor__CardBoxLabel">Verso</div>
                         </div>

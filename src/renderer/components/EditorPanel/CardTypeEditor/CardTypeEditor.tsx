@@ -30,7 +30,7 @@ function CardTypeEditor(props: CardTypeEditorProps) {
             props.dispatch(cardTypeRawConfigChanged({ id: props.cardType.id, rawConfig }));
         }
     }
-    console.log("props.cardType.config : ",props.cardType?.config);
+
     return (
         <React.Fragment>
             {props.cardType ?

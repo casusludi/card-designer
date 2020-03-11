@@ -20,6 +20,10 @@ module.exports = {
                     'file-loader',
                 ],
             },
+            {
+                test: /\.njk$/i,
+                use: 'raw-loader',
+            },
         ]
     },
     plugins: [

@@ -6,7 +6,7 @@ import projectSchema from './schemas/project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
 import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
-import { renderSelectionToHtml } from './render';
+import { renderSelectionToHtml } from './Render';
 import fse from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -141,6 +141,7 @@ export type ProjectSelection = {
     cardType: ProjectCardType | undefined | null,
     layout: ProjectLayout | undefined | null,
     data: ProjectDataItem | undefined | null
+    
     pages: ProjectPageSelection
 
 }
@@ -200,6 +201,7 @@ export type Dimension = number | "auto" ;
 
 export type CardTypeBox = {
     ref: string // variable name
+    face: string
     type: CardTypeBoxType
     top: Dimension
     left: Dimension
@@ -214,8 +216,7 @@ export type CardTypeCanvas = {
     width: number
     height: number
     haveVerso: boolean
-    rectoBoxes: Array<CardTypeBox>
-    versoBoxes: Array<CardTypeBox>
+    boxes: Array<CardTypeBox>
 }
 
 export async function loadCardTypeCanvas(canvasPath:string):Promise<CardTypeCanvas>{

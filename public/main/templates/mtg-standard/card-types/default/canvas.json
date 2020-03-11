@@ -2,15 +2,16 @@
     "width": 63,
     "height": 87.5,
     "haveVerso": true,
-    "rectoBoxes": [
+    "boxes": [
         {
-            "ref": "title",
+            "ref": "name",
+            "face":"recto",
             "type": "text",
-            "top": 30,
-            "left": 40,
-            "width": 20,
-            "height": 10,
-            "right":"auto" ,
+            "top": 5,
+            "left": 5,
+            "width": "auto",
+            "height": "auto",
+            "right":5 ,
             "bottom":"auto" ,
             "data": {
                 "color": "red",
@@ -22,13 +23,14 @@
         },
         {
             "ref": "desc",
+            "face":"recto",
             "type": "text",
-            "top": "auto",
-            "left": "auto",
-            "width": 20,
-            "height": 10,
-            "right":10 ,
-            "bottom":20 ,
+            "top": 20,
+            "left": 5,
+            "width": "auto",
+            "height": "auto",
+            "right":5 ,
+            "bottom":"auto" ,
             "data": {
                 "color": "red",
                 "size": 12,
@@ -36,11 +38,10 @@
                 "style": "normal",
                 "align": "center" 
             }
-        }
-    ],
-    "versoBoxes": [
+        },
         {
             "ref": "verso_title",
+            "face":"verso",
             "type": "text",
             "top": 30,
             "left": 40,

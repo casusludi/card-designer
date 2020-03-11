@@ -112,6 +112,7 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
     },
     [cardTypeChanged.type]: (state, action: PayloadAction<{ cardType:ProjectCardType }>) => {
         if(state.selection && state.selection.cardType  && state.selection.cardType.id != action.payload.cardType.id) return state;
+        console.log("action.payload.cardType:",action.payload.cardType)
         return {
             ...state,
             selection: {
@@ -122,7 +123,7 @@ export const uiEditorReducer = createReducer<AppUIEditor>({
             }
 
         }
-    },
+    }
 })
 
 

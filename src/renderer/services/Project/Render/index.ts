@@ -1,6 +1,11 @@
 import _ from 'lodash';
 import nunjucks from 'nunjucks';
-import { ProjectSelection, Project } from '.';
+import { ProjectSelection, Project, CardTypeBox } from '..';
+//@ts-ignore
+import CardTypeCanvasBoxes from './CardTypeCanvasBoxes.njk';
+//@ts-ignore
+import CardTypeCanvasTemplate from './CardTypeCanvasTemplate.njk';
+import { cssDimensionValue } from '../../../utils';
 
 type MetaVariables = {
     [key: string]: (value: string, card: any, cards: Array<any>) => void
@@ -18,8 +23,6 @@ function applyMetaVariableEffects(metaVariables: MetaVariables, cards: Array<any
                     if (action) action(value, card, result);
                 })
                 .value()
-
-
             return result;
         },
         Array<any>()
@@ -45,6 +48,21 @@ const metaVariables: MetaVariables = {
     }
 }
 
+function getBoxStyleFromType(box:CardTypeBox):any{
+    switch(box.type){
+        case "text":
+            return {
+                color: box.data.color,
+                "font-size": `${box.data.size}pt`,
+                "font-weight": box.data.weight,
+                "font-style": box.data.style,
+                "text-align": box.data.align,
+            }
+    }
+
+    return {}
+}
+
 export async function renderSelectionToHtml(project: Project, selection: ProjectSelection): Promise<string | null> {
     if (!project) return null;
     if (!selection.data) return null;
@@ -53,7 +71,7 @@ export async function renderSelectionToHtml(project: Project, selection: Project
     if (!selection.cardType.template) return null;
     if (!selection.layout.template) return null;
 
-    const template = project.files[selection.cardType.template].content;
+    const template = selection.cardType.config.advanced?project.files[selection.cardType.template].content:CardTypeCanvasTemplate;
     const layout = project.files[selection.layout.template].content;
 
     if (!template) return null;
@@ -73,6 +91,39 @@ export async function renderSelectionToHtml(project: Project, selection: Project
         }, [])
     }
 
+    const filters = {
+        'boxes': (env:nunjucks.Environment) => (card:any,isRecto: boolean | string = true) => {
+            if(selection.cardType){
+                const face =  typeof (isRecto) === 'boolean' ? "recto" : isRecto; 
+                const boxes = _.chain(selection.cardType.canvas.boxes)
+                    .filter(['face',face])
+                    .map( o => {
+                        const style = {
+                            position: 'absolute',
+                            top:cssDimensionValue(o.top),
+                            left:cssDimensionValue(o.left),
+                            right:cssDimensionValue(o.right),
+                            bottom:cssDimensionValue(o.bottom),
+                            width:cssDimensionValue(o.width),
+                            height:cssDimensionValue(o.height),
+                            ...getBoxStyleFromType(o)
+                        }
+                        return {
+                            ...o,
+                            style:_.reduce(style,(str,o,k) => {
+                                str += `${k}:${o};`;
+                                return str
+                            },"")
+                        };
+                    })
+                    .value();
+
+                return env.renderString(CardTypeCanvasBoxes, { card, boxes });
+            }
+            return '';
+        }
+    }
+
     return renderNJKToHtml(
         template,
         layout,
@@ -84,7 +135,8 @@ export async function renderSelectionToHtml(project: Project, selection: Project
             base: selection.layout.base,
             layoutCSSPath: selection.layout.styles || '',
             templateCSSPath: selection.cardType.styles || ''
-        }
+        },
+        filters
     )
 
 }
@@ -95,9 +147,16 @@ export function renderNJKToHtml(
     cards: any[],
     templateGlobalVars?: any,
     layoutGlobalVars?: any,
+    filters?:{
+        [key:string]:(env:nunjucks.Environment) => (...args: any[]) => any
+    }
 ): string | null {
 
     const env = new nunjucks.Environment();
+
+    for(var key in filters){
+        env.addFilter(key,filters[key](env));
+    }
 
     env.addFilter('template', function (card, isRecto: boolean | string = true) {
         const aCard = { ...card, isRecto: typeof (isRecto) === 'boolean' ? isRecto : isRecto == "recto" }

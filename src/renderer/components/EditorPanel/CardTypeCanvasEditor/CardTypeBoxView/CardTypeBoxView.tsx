@@ -1,6 +1,7 @@
 import './CardTypeBoxView.scss';
 import React from 'react';
 import { CardTypeBox, CardTypeBoxType } from '../../../../services/Project';
+import { cssDimensionValue } from '../../../../utils';
 
 
 
@@ -12,10 +13,6 @@ type CardTypeBoxViewProps = {
     onChange: (box: CardTypeBox) => void
 }
 
-function cssAbsPos(value: number | undefined | null | string): string {
-    if (value === undefined || value === null || value === "auto") return "auto";
-    return `${value}mm`;
-}
 
 
 
@@ -23,12 +20,12 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
 
     createBoxViewCSS() {
         return {
-            top: cssAbsPos(this.props.data.top),
-            bottom: cssAbsPos(this.props.data.bottom),
-            left: cssAbsPos(this.props.data.left),
-            right: cssAbsPos(this.props.data.right),
-            width: cssAbsPos(this.props.data.width),
-            height: cssAbsPos(this.props.data.height),
+            top: cssDimensionValue(this.props.data.top),
+            bottom: cssDimensionValue(this.props.data.bottom),
+            left: cssDimensionValue(this.props.data.left),
+            right: cssDimensionValue(this.props.data.right),
+            width: cssDimensionValue(this.props.data.width),
+            height: cssDimensionValue(this.props.data.height),
 
         }
 

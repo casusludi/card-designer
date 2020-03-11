@@ -12,7 +12,7 @@ import { Dispatch } from "redux";
 import { cardTypeCanvasChanged } from "../../../redux/project";
 import RestrictedWebView from "../../Misc/RestrictedWebView";
 import { renderNJKToHtml } from "../../../services/Project/Render";
-import { serveHtml } from "../../../utils";
+import { serveHtml, pathToURL } from "../../../utils";
 
 //@ts-ignore
 import CardTypeCanvasLayout from './CardTypeCanvasLayout.njk';
@@ -122,7 +122,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                 if (html) {
                     const override: any = {}
                     if (this.props.cardType.styles) {
-                        override[this.props.cardType.styles] = this.props.project.files[this.props.cardType.styles].content;
+                        override[pathToURL(this.props.cardType.styles)] = this.props.project.files[this.props.cardType.styles].content;
                     }
                     return await serveHtml("cardtype-canvas-"+face, html, this.props.project.path, override)
                 }

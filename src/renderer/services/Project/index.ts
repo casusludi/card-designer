@@ -6,7 +6,7 @@ import projectSchema from './schemas/project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
 import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
-import { renderNJKToHtml } from './render';
+import { renderSelectionToHtml } from './render';
 import fse from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -489,4 +489,4 @@ export async function createNewProjectFromTemplate(templatePath: string) {
     return project;
 }
 
-export const renderSelectionAsHtml = renderNJKToHtml
+export const renderSelectionAsHtml = renderSelectionToHtml

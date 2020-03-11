@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProjectFiles, ProjectCardType } from '../../../services/Project';
+import { ProjectFiles, ProjectCardType, Project } from '../../../services/Project';
 import TabNav, { TabNavItem, TabNavHeaderPosition } from '../../Misc/TabNav/TabNav';
 import CodeEditor from '../CodeEditor/CodeEditor';
 
@@ -15,6 +15,7 @@ export type CardTypeEditorProps = {
     cardType: ProjectCardType | null | undefined,
     files: ProjectFiles
     width: number,
+    project:Project
     dispatch: Dispatch,
     onFileChanged: (fileId: string, conte: string) => void
 }
@@ -41,7 +42,7 @@ function CardTypeEditor(props: CardTypeEditorProps) {
                         </TabNavItem>
                         {props.cardType.config.advanced && templateFile && <TabNavItem label="Template"><CodeEditor width={props.width} className="full-space" mode="html" onChange={(code) => props.cardType && props.cardType.template && props.onFileChanged(props.cardType.template, code)} code={templateFile.content} instanceId={templateFile.instanceId} path={props.cardType.template || ''} /></TabNavItem>}
                         {props.cardType.config.advanced && styleFile && <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.cardType && props.cardType.styles && props.onFileChanged(props.cardType.styles, code)} code={styleFile.content} instanceId={styleFile.instanceId} path={props.cardType.styles || ''} /></TabNavItem>}
-                        <TabNavItem label="Canvas"><CardTypeCanvasEditor cardTypeCanvasId={props.cardType.id} cardTypeCanvas={props.cardType.canvas} /></TabNavItem>
+                        <TabNavItem label="Canvas"><CardTypeCanvasEditor cardTypeCanvasId={props.cardType.id} cardType={props.cardType} project={props.project}/></TabNavItem>
                     </TabNav>
                 </div> :
                 <div>No Template</div>

@@ -100,7 +100,7 @@ function EditorPanel(props: EditorPanelProps) {
                             <ConfigEditor width={props.width} config={props.project.config} rawConfig={props.project.rawConfig} onValidChange={onConfigValidChange} instanceId={props.project.path} />
                         </TabNavItem>
                         <TabNavItem label="Card Type">
-                            <CardTypeEditor width={props.width} cardType={props.ui.selection?.cardType} files={props.project.files} onFileChanged={onFileChanged} />
+                            <CardTypeEditor width={props.width} cardType={props.ui.selection?.cardType} files={props.project.files} onFileChanged={onFileChanged} project={props.project} />
                         </TabNavItem>
                         <TabNavItem label="Layout">
                             <LayoutEditor width={props.width} layout={props.ui.selection?.layout} files={props.project.files} onFileChanged={onFileChanged} />

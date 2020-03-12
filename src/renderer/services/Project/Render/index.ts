@@ -161,7 +161,7 @@ export function renderNJKToHtml(
     }
 ): string | null {
 
-    const env = new nunjucks.Environment();
+    const env = new nunjucks.Environment(null,{ autoescape: false });
 
     for(var key in filters){
         env.addFilter(key,filters[key](env));

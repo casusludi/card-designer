@@ -25,7 +25,7 @@
 <body class="basic">
     <div class="card-list">
         {% for  card in cards %}
-            <div class="card-box">{{ card | template(face) | safe }}</div>
+            <div class="card-box">{{ card | template(face) }}</div>
         {% endfor %}
     </div>
 </body>

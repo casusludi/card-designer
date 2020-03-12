@@ -16,7 +16,7 @@
             {% if loop.first %}
             <div class="card-group">
             {% endif %}
-                 <div class="card-box">{{ card | template("recto") | safe }}</div>
+                 <div class="card-box">{{ card | template("recto") }}</div>
             {% if not loop.last %}
                 {% if (loop.index0 % 9) == 8 %}
             </div>

@@ -14,10 +14,10 @@
     <div class="card-list">
           {% for  card in cards %}
             <div class="card-group">
-                {{ card | template("recto") | safe }}
+                {{ card | template("recto") }}
             </div>
             <div class="card-group">
-                {{ card | template("verso") | safe }}
+                {{ card | template("verso") }}
             </div>
         {% endfor %}
     </div>

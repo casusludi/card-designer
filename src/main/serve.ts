@@ -33,9 +33,10 @@ export default async function makeServe(port: number): Promise<Serve> {
         let id = req.url.substring(1).split('?')[0];
         const encoding = 'utf-8';
         let contentType = 'text/html';
+        
         if (mapping[id]) {
             cookies.set(COOKIE_NAME, id)
-            res.writeHead(200, { 'Content-Type': contentType });
+            res.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
 
             res.end(mapping[id].html, encoding);
             return;
@@ -68,26 +69,26 @@ export default async function makeServe(port: number): Promise<Serve> {
                     contentType = 'image/svg+xml';
                     break;
             }
-            console.log(id,"have override?",req.url,overrides[req.url])
+            //console.log(id,"have override?",req.url,overrides[req.url])
             if (overrides[req.url]) {
-                res.writeHead(200, { 'Content-Type': contentType });
+                res.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
                 res.end(overrides[req.url], encoding);
             } else if (fs.existsSync(filePath)) {
                 fs.readFile(filePath, function (err, data) {
                     if (err) {
-                        res.writeHead(404, { 'Content-Type': contentType });
+                        res.writeHead(404, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
                         res.end('File not found');
                         return;
                     }
-                    res.writeHead(200, { 'Content-Type': contentType });
+                    res.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
                     res.end(data, encoding);
                 });
             } else {
-                res.writeHead(404, { 'Content-Type': contentType });
+                res.writeHead(404, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
                 res.end('File not found');
             }
         } else {
-            res.writeHead(404, { 'Content-Type': contentType });
+            res.writeHead(404, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
             res.end('File not found');
         }
     }
@@ -98,7 +99,7 @@ export default async function makeServe(port: number): Promise<Serve> {
 
     return {
         serve(id: string, html: string, base: string, overrides?: ServeOverrides) {
-            console.log("serve",id,overrides);
+            //console.log("serve",id,overrides);
             mapping[id] = {
                 html,
                 base,

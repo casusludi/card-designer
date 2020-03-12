@@ -1,6 +1,6 @@
 import { createAction, createReducer, combineReducers, PayloadAction } from "@reduxjs/toolkit";
-import { RenderFilter } from "../../services/Project";
-import { Preferences, ProjectExportPreferences, LayoutPreferences, EditorPreferences, AllProjectPreferences, ProjectSelectionPreference } from "../../services/Preferences";
+import { RenderFilter, ProjectSelection } from "../../services/Project";
+import { Preferences, ProjectExportPreferences, LayoutPreferences, EditorPreferences, AllProjectPreferences } from "../../services/Preferences";
 
 
 export const prefAutoRenderFilterChanged = createAction<{ autoRenderFilter: RenderFilter }>('pref/AutoRenderFilterChanged');
@@ -8,7 +8,7 @@ export const prefEditorWidthChanged = createAction<{ editorWidth: number }>('pre
 export const prefLoadFromLocalStorage = createAction('pref/loadFromLocalStorage');
 export const prefLoaded = createAction<{ preferences: Preferences }>('pref/loaded');
 export const prefProjectExportChanged= createAction<{ projectPath:string,preferences: ProjectExportPreferences }>('pref/projectExportChanged');
-export const prefProjectSelectionChanged= createAction<{ projectPath:string,selection : ProjectSelectionPreference }>('pref/projectSelectionChanged');
+export const prefProjectSelectionChanged= createAction<{ projectPath:string,selection : ProjectSelection }>('pref/projectSelectionChanged');
 
 const layoutPrefReducer = createReducer<LayoutPreferences>({
     editorWidth: 600
@@ -39,7 +39,7 @@ const projectPrefReducer = createReducer<AllProjectPreferences>({}, {
             export:action.payload.preferences
         }
     }),
-    [prefProjectSelectionChanged.type] : (state,action:PayloadAction<{ projectPath:string,selection : ProjectSelectionPreference }>) => ({
+    [prefProjectSelectionChanged.type] : (state,action:PayloadAction<{ projectPath:string,selection : ProjectSelection }>) => ({
         ...state,
         [action.payload.projectPath]:{
             ...state[action.payload.projectPath],

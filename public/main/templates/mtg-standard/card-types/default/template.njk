@@ -1,7 +1,7 @@
 {% if card.isRecto %}
 <div class="card">
     <img class="card-bg" src="{{base}}/assets/card-bg.svg" />
-     {{card | boxes("recto") | safe}}
+     {{card | boxes("recto") }}
     <div class="card-title">{{card.name}}</div>
     {% if card.desc %}<div class="card-desc">{{card.desc}}</div>{% endif %}
     {% if card.desc %}<div class="card-value">{{card.value}}</div>{% endif %}
@@ -9,6 +9,6 @@
 {% else %}
 <div class="card-verso" >
     Verso
-     {{card | boxes("verso") | safe}}
+     {{card | boxes("verso") }}
 </div>
 {% endif %}

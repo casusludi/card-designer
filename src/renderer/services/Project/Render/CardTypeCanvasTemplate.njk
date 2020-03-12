@@ -1,9 +1,9 @@
 {% if card.isRecto %}
 <div class="card">
-    {{card | boxes("recto") | safe}}
+    {{card | boxes("recto") }}
 </div>
 {% else %}
 <div class="card-verso" >
-     {{card | boxes("verso") | safe}}
+     {{card | boxes("verso") }}
 </div>
 {% endif %}

@@ -1,6 +1,8 @@
 {% for box in boxes %}
 <div class="card-box" style="{{box.style}}">
+    {% if box.type == "text" %}
     {{card[box.ref]}}
+    {% endif %}
 </div>
 {% endfor %}
 

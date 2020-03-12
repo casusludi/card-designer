@@ -40,9 +40,10 @@ function CardTypeEditor(props: CardTypeEditorProps) {
                         <TabNavItem label="Config">
                             <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onConfigChange} code={props.cardType.rawConfig} instanceId={props.cardType.configPath} path={props.cardType.configPath} />
                         </TabNavItem>
+                        <TabNavItem label="Canvas"><CardTypeCanvasEditor cardTypeCanvasId={props.cardType.id} cardType={props.cardType} project={props.project}/></TabNavItem>
                         {props.cardType.config.advanced && templateFile && <TabNavItem label="Template"><CodeEditor width={props.width} className="full-space" mode="html" onChange={(code) => props.cardType && props.cardType.template && props.onFileChanged(props.cardType.template, code)} code={templateFile.content} instanceId={templateFile.instanceId} path={props.cardType.template || ''} /></TabNavItem>}
                         {props.cardType.config.advanced && styleFile && <TabNavItem label="Styles"><CodeEditor width={props.width} className="full-space" mode="css" onChange={(code) => props.cardType && props.cardType.styles && props.onFileChanged(props.cardType.styles, code)} code={styleFile.content} instanceId={styleFile.instanceId} path={props.cardType.styles || ''} /></TabNavItem>}
-                        <TabNavItem label="Canvas"><CardTypeCanvasEditor cardTypeCanvasId={props.cardType.id} cardType={props.cardType} project={props.project}/></TabNavItem>
+                       
                     </TabNav>
                 </div> :
                 <div>No Template</div>

@@ -50,34 +50,37 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
     }
 
     render() {
+        const box = this.props.data;
         return (
             <div className={"CardTypeBoxView" + (this.props.selected ? ' CardTypeBoxView_selected' : '')} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
-                <div className="CardTypeBoxView__Ref" style={this.createBoxViewRefCSS()}>[{this.props.data.ref}]</div>
-                {this.props.data.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
+                <div className="CardTypeBoxView__Ref" style={this.createBoxViewRefCSS()}>
+                    {box.type == CardTypeBoxType.Text && `[${box.ref}]`}    
+                </div>
+                {box.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
                     style={{
-                        top:`-${this.props.data.top}mm`,
-                        height:`${this.props.data.top}mm`
+                        top:`-${box.top}mm`,
+                        height:`${box.top}mm`
                     }}
-                ><span className="CardTypeBoxView__LineLabel">{this.props.data.top}mm</span></div>}
-                {this.props.data.left != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_left"
+                ><span className="CardTypeBoxView__LineLabel">{box.top}mm</span></div>}
+                {box.left != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_left"
                     style={{
-                        left:`-${this.props.data.left}mm`,
-                        width:`${this.props.data.left}mm`
+                        left:`-${box.left}mm`,
+                        width:`${box.left}mm`
                     }}
-                ><span className="CardTypeBoxView__LineLabel">{this.props.data.left}mm</span></div>}
-                {this.props.data.bottom != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_bottom"
+                ><span className="CardTypeBoxView__LineLabel">{box.left}mm</span></div>}
+                {box.bottom != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_bottom"
                     style={{
-                        bottom:`-${this.props.data.bottom}mm`,
-                        height:`${this.props.data.bottom}mm`
+                        bottom:`-${box.bottom}mm`,
+                        height:`${box.bottom}mm`
                     }}
                 
-                ><span className="CardTypeBoxView__LineLabel">{this.props.data.bottom}mm</span></div>}
-                {this.props.data.right != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_right"
+                ><span className="CardTypeBoxView__LineLabel">{box.bottom}mm</span></div>}
+                {box.right != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_right"
                     style={{
-                        right:`-${this.props.data.right}mm`,
-                        width:`${this.props.data.right}mm`
+                        right:`-${box.right}mm`,
+                        width:`${box.right}mm`
                     }}
-                ><span className="CardTypeBoxView__LineLabel">{this.props.data.right}mm</span></div>}
+                ><span className="CardTypeBoxView__LineLabel">{box.right}mm</span></div>}
             </div>
         )
     }

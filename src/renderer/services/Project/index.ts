@@ -148,7 +148,7 @@ export type ProjectSelection = {
     
     pages: ProjectPageSelection
 
-}
+} | null | undefined
 
 const schemaValidator = new Validator();
 
@@ -204,7 +204,7 @@ export type CardTypeBoxText = {
 export type Dimension = number | "auto" ;
 
 export type CardTypeBox = {
-    ref: string // variable name
+    ref: string | string[] // variable name
     face: string
     type: CardTypeBoxType
     top: Dimension

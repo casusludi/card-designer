@@ -5,8 +5,8 @@ import { remote } from "electron";
 
 export default function WindowControls(){
 
-    //const currentWindow = remote.getCurrentWindow();
-    const currentWindow = remote.BrowserWindow.getFocusedWindow();
+    const currentWindow = remote.getCurrentWindow();
+    //const currentWindow = remote.BrowserWindow.getFocusedWindow();
     const [state,setState] = useState({isMaximized:currentWindow?.isMaximized()});
 
     const handleWindowMaximizedEvent = useCallback( () => {

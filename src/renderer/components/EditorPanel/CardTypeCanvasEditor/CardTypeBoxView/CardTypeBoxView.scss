@@ -24,6 +24,7 @@
 .CardTypeBoxView__Line {
     display: none;
     position: absolute;
+    pointer-events: none;
 }
 
 .CardTypeBoxView__LineLabel {

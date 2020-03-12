@@ -65,6 +65,7 @@ function getBoxStyleFromType(box:CardTypeBox):any{
 
 export async function renderSelectionToHtml(project: Project, selection: ProjectSelection): Promise<string | null> {
     if (!project) return null;
+    if (!selection) return null;
     if (!selection.sourceType) return null;
     if (!selection.layoutId) return null;
     if (!selection.cardTypeId) return null;

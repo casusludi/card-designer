@@ -9,10 +9,17 @@
 .CardTypeCanvasEditor__Canvas {
     overflow: auto;
     height: 60%;
+    position: relative;
+
+}
+
+.CardTypeCanvasEditor__CanvasContent {
     display: flex;
     align-items: center;
     justify-content: center;
-
+    padding: 10px;
+    min-height: 100%;
+    box-sizing: border-box;
 }
 
 .CardTypeCanvasEditor__Card {
@@ -28,9 +35,36 @@
 }
 
 .CardTypeCanvasEditor__Tabs {
-    height: 40%;
+    height: calc(40% - 10px);
+    margin: 0 10px 10px 10px;
+    box-sizing: border-box;
+    
+    box-shadow: 3px 3px 8px 0px rgba(0,0,0,1);
+
+    .TabNav__contents {
+        border: 1px solid $medium-grey;
+        border-top: none;
+    }
 }
 
 .CardTypeCanvasEditor__TabContent {
     padding: 5px;
+}
+
+
+.CardTypeCanvasEditor__BoxesActionBar {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    height: 30px;
+    padding: 5px;
+    border-bottom: 1px solid $medium-grey;
+}
+
+.CardTypeCanvasEditor__CardTypeBoxEditor.CardTypeBoxEditor{
+    position: absolute;
+    top: 40px;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }

@@ -14,7 +14,7 @@
             "right":5 ,
             "bottom":"auto" ,
             "data": {
-                "color": "red",
+                "color": "#ff0000",
                 "size": 12,
                 "weight": "bold",
                 "style": "normal",
@@ -32,7 +32,7 @@
             "right":5 ,
             "bottom":"auto" ,
             "data": {
-                "color": "red",
+                "color": "#ff0000",
                 "size": 12,
                 "weight": "bold",
                 "style": "normal",
@@ -50,7 +50,7 @@
             "right":"auto" ,
             "bottom":"auto" ,
             "data": {
-                "color": "red",
+                "color": "#ff0000",
                 "size": 12,
                 "weight": "bold",
                 "style": "normal",

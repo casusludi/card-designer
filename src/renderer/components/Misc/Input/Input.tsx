@@ -49,7 +49,7 @@ export default class Input extends React.Component<InputProps>{
 
     render(){
         return (
-            <div className={"Input"+(this.props.className?' '+this.props.className:'')+(this.props.disabled?' Input__disabled':'')+(this.props.labelOnTop?" Input_labeltop":"")}>
+            <div className={"Input"+(this.props.className?' '+this.props.className:'')+(this.props.disabled?' Input__disabled':'')+(this.props.labelOnTop?" Input_labeltop":"")+(this.props.units?" Input_WithUnits":"")}>
                 {this.props.label && <label className="Input__label" htmlFor={this.state.id}>{this.props.label}</label>}
                 <div className="Input__wrapper">
                     <input 

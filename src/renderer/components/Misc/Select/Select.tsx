@@ -1,42 +1,54 @@
 import './Select.scss'
 import React from 'react'
 import _ from 'lodash'
+import uuid from 'uuid/v4'
 
 export type SelectOptionsArrayItem = { label: string, value: any }
 export type SelectOptionsArray = Array<SelectOptionsArrayItem>
 
 export type SelectProps = {
-    id: string
+    id?: string
     label?: string
-    labelOnTop?:boolean
+    labelOnTop?: boolean
     value?: any
     options: SelectOptionsArray
-    disabled?:boolean
-    emptyOption?:SelectOptionsArrayItem
+    disabled?: boolean
+    emptyOption?: SelectOptionsArrayItem
     onChange?: (value: any) => void
 }
 
-export default function Select(props: SelectProps) {
-    return (
-        <div className={"Select "+(props.labelOnTop?" Select_labeltop":"")+(props.disabled?" Select_disabled":"")}>
-            {props.label && <label className="Select__label" htmlFor={props.id}>{props.label} : </label>}
-            <div className="Select__wrapper" >
-                <select id={props.id} disabled={props.disabled} value={_.findKey(props.options, (o: SelectOptionsArrayItem) => o.value == props.value) || props.emptyOption?.value}
-                    onChange={e => {
-                        if (props.onChange) {
-                            const key: number = parseInt(e.target.value);
-                            const value: SelectOptionsArrayItem = props.options[key];
-                            props.onChange(value.value);
-                        }
-                    }}
-                >
-                    {props.emptyOption && <option disabled value={props.emptyOption.value}>{props.emptyOption.label}</option>}
-                    {_.map(props.options, (o: SelectOptionsArrayItem, k) => {
+export type SelectState = {
+    id: string
+}
 
-                        return <option value={k} key={k}>{o.label}</option>
-                    })}
-                </select>
+export default class Select extends React.Component<SelectProps,SelectState> {
+
+    state = {
+        id:this.props.id?this.props.id:uuid()
+    }
+
+    render() {
+        return (
+            <div className={"Select " + (this.props.labelOnTop ? " Select_labeltop" : "") + (this.props.disabled ? " Select_disabled" : "")}>
+                {this.props.label && <label className="Select__label" htmlFor={this.state.id}>{this.props.label} : </label>}
+                <div className="Select__wrapper" >
+                    <select id={this.state.id} disabled={this.props.disabled} value={_.findKey(this.props.options, (o: SelectOptionsArrayItem) => o.value == this.props.value) || this.props.emptyOption?.value}
+                        onChange={e => {
+                            if (this.props.onChange) {
+                                const key: number = parseInt(e.target.value);
+                                const value: SelectOptionsArrayItem = this.props.options[key];
+                                this.props.onChange(value.value);
+                            }
+                        }}
+                    >
+                        {this.props.emptyOption && <option disabled value={this.props.emptyOption.value}>{this.props.emptyOption.label}</option>}
+                        {_.map(this.props.options, (o: SelectOptionsArrayItem, k) => {
+
+                            return <option value={k} key={k}>{o.label}</option>
+                        })}
+                    </select>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 }

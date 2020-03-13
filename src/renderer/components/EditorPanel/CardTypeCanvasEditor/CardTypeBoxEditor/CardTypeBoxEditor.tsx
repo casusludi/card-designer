@@ -6,6 +6,7 @@ import Input from "../../../Misc/Input";
 import Checkbox from "../../../Misc/Checkbox";
 import _ from "lodash";
 import Select from "../../../Misc/Select";
+import { InputSize } from "../../../Misc/Input/Input";
 
 type CSSDimensionViewProps = {
     name: string
@@ -47,18 +48,18 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                     <div className="ContentWithLine">
                         <div className="ContentWithLine__Line">
                             <Input label="Ref" labelOnTop={true} type="text" defaultValue={box.ref} />
-                            <Select label="Type" labelOnTop={true} value={box.type} options={_.map(CardTypeBoxType, (o, k) => ({ label: o, value: o }))} />
+                            <Select size={InputSize.Small} label="Type" labelOnTop={true} value={box.type} options={_.map(CardTypeBoxType, (o, k) => ({ label: o, value: o }))} />
                             <Checkbox label="On Verso" defaultChecked={box.face == "verso"} />
                         </div>
                         {box.type == CardTypeBoxType.Text && <React.Fragment>
                             <div className="ContentWithLine__Line">
-                                <Input label="Color" labelOnTop={true} type="color" defaultValue={box.data.color} />
+                                <Input size={InputSize.Small} label="Color" labelOnTop={true} type="color" defaultValue={box.data.color} />
+                                <Select size={InputSize.Small} label="Style" labelOnTop={true} value={box.data.style} options={_.map(FontStyle, (o, k) => ({ label: o, value: o }))} />
+                                <Select size={InputSize.Small} label="Weight" labelOnTop={true} value={box.data.weight} options={_.map(FontWeight, (o, k) => ({ label: o, value: o }))} />
+                                <Select size={InputSize.Small} label="Align" labelOnTop={true} value={box.data.align} options={_.map(TextAlign, (o, k) => ({ label: o, value: o }))} />
                             </div>
                             <div className="ContentWithLine__Line">
-                                <Select label="Font Style" labelOnTop={true} value={box.data.style} options={_.map(FontStyle, (o, k) => ({ label: o, value: o }))} />
-                                <Select label="Font Weight" labelOnTop={true} value={box.data.weight} options={_.map(FontWeight, (o, k) => ({ label: o, value: o }))} />
-                                <Select label="Align" labelOnTop={true} value={box.data.align} options={_.map(TextAlign, (o, k) => ({ label: o, value: o }))} />
-                            </div>
+                                                      </div>
                         </React.Fragment>}
 
                     </div>

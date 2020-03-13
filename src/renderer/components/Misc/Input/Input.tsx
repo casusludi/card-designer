@@ -2,12 +2,17 @@ import React from "react";
 import './Input.scss';
 import uuid from "uuid";
 
-
+export enum InputSize {
+    Normal = "normal",
+    Small = "small",
+    Large = "large"
+}
 
 export type InputProps = {
     type:string
     id?:string
     className?:string
+    size?:InputSize
     disabled?:boolean
     name?:string
     label?:string
@@ -49,7 +54,7 @@ export default class Input extends React.Component<InputProps>{
 
     render(){
         return (
-            <div className={"Input"+(this.props.className?' '+this.props.className:'')+(this.props.disabled?' Input__disabled':'')+(this.props.labelOnTop?" Input_labeltop":"")+(this.props.units?" Input_WithUnits":"")}>
+            <div className={"Input"+(this.props.className?' '+this.props.className:'')+(this.props.disabled?' Input__disabled':'')+(this.props.labelOnTop?" Input_labeltop":"")+(this.props.units?" Input_WithUnits":"")+ (this.props.size ? " Input_size_"+this.props.size : "")}>
                 {this.props.label && <label className="Input__label" htmlFor={this.state.id}>{this.props.label}</label>}
                 <div className="Input__wrapper">
                     <input 

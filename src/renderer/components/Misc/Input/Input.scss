@@ -40,6 +40,12 @@
     }
 }
 
+.Input_size_small {
+    .Input__wrapper {
+        width: 6em;
+    }
+}
+
 .Input_WithUnits {
     .Input__input{
         text-align: right;

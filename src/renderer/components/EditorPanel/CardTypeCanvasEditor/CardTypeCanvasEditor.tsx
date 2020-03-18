@@ -17,7 +17,6 @@ import { serveHtml, pathToURL } from "../../../utils";
 import CardTypeCanvasLayout from './CardTypeCanvasLayout.njk';
 import CardTypeBoxEditor from "./CardTypeBoxEditor";
 import Select from "../../Misc/Select";
-import Popover from "../../Misc/Popover";
 import PopoverPicker from "../../Misc/PopoverPicker/PopoverPicker";
 import { SelectOptionsArray, SelectOptionsArrayItem } from "../../Misc/Select/Select";
 
@@ -60,7 +59,7 @@ export type CardTypeCanvasEditorProps = {
 export type CardTypeCanvasEditorState = {
     cardTypeCanvas: CardTypeCanvas
     selectedBox: CardTypeBox | null
-    selectedBoxIndex: number
+    selectedBoxIndexInVariant: number
     selectedVariant: string
     selectedBoxVariantIndex: number
     currentTab: number
@@ -72,9 +71,9 @@ const DEFAULT_VARIANT = 'default';
 
 export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorProps, CardTypeCanvasEditorState>{
 
-    state = {
+    state:CardTypeCanvasEditorState = {
         selectedBox: null,
-        selectedBoxIndex: -1,
+        selectedBoxIndexInVariant: -1,
         selectedVariant: DEFAULT_VARIANT,
         selectedBoxVariantIndex: -1,
         currentTab: 0,
@@ -163,17 +162,19 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
     }
 
     onBoxSelect(box: CardTypeBox, index: number, ) {
+        const boxes = this.getBoxesByVariant(this.state.cardTypeCanvas.boxes,this.state.selectedVariant);
+        const selectedBoxIndex =  _.findIndex(boxes, box);
         this.setState({
             currentTab: 1,
             selectedBox: box,
-            selectedBoxIndex: _.findIndex(this.state.cardTypeCanvas.boxes, box),
+            selectedBoxIndexInVariant: selectedBoxIndex,
         })
     }
 
     onFaceBGClick() {
         this.setState({
             selectedBox: null,
-            selectedBoxIndex: -1,
+            selectedBoxIndexInVariant: -1,
         })
     }
 
@@ -185,46 +186,59 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
 
     onCSSDimensionChange(name: string, value: Dimension) {
         if (this.state.selectedBox) {
-            // @ts-ignore
-            // if we use selectedBox:CardTypeBox|null, TS define this.state.selectedBox only on null never in CardTypeBox
-            // => Trigger TS errors later
-            // It's not the good way to solve it. But it's currently the only I found
-            const selectedBox = { ...this.state.selectedBox, [name]: value };
-            if (this.state.selectedBoxIndex >= 0) {
-                const boxes = [...this.state.cardTypeCanvas.boxes];
-                boxes[this.state.selectedBoxIndex] = selectedBox;
-                this.setState({
-                    selectedBox,
-                    cardTypeCanvas: {
-                        ...this.state.cardTypeCanvas,
-                        boxes
-                    }
-                })
-            }
-
+            const newSelectedBox = { ...this.state.selectedBox, [name]: value };
+            const boxes = [...this.state.cardTypeCanvas.boxes];
+            const selectedBoxIndex =  _.findIndex(boxes, this.state.selectedBox);
+            boxes[selectedBoxIndex] = newSelectedBox;
+            this.setState({
+                selectedBox: newSelectedBox,
+                cardTypeCanvas: {
+                    ...this.state.cardTypeCanvas,
+                    boxes
+                }
+            })
         }
     }
+
+    onVariantsChange( variants: string[]) {
+        if (this.state.selectedBox) {
+            const newSelectedBox = { ...this.state.selectedBox, variants: _.sortBy(variants) };
+            const boxes = [...this.state.cardTypeCanvas.boxes];
+            const selectedBoxIndex =  _.findIndex(boxes, this.state.selectedBox);
+            boxes[selectedBoxIndex] = newSelectedBox;
+            const boxesByVariant = this.getBoxesByVariant(boxes,this.state.selectedVariant);
+            this.setState({
+                selectedBox: newSelectedBox,
+                selectedBoxIndexInVariant: _.findIndex(boxesByVariant, newSelectedBox),
+                cardTypeCanvas: {
+                    ...this.state.cardTypeCanvas,
+                    boxes
+                }
+            })
+        }
+    }
+
 
     onSelectBoxChange(index: number) {
         const box = this.state.cardTypeCanvas.boxes[index];
         this.setState({
             selectedBox: box,
-            selectedBoxIndex: index,
+            selectedBoxIndexInVariant: index,
         })
     }
 
     onSelectBoxVariantChange(index: number) {
         const variant = index >= 0 ? this.state.cardTypeCanvas.variants[index] : DEFAULT_VARIANT;
         this.setState({
-            selectedBoxIndex: -1,
+            selectedBoxIndexInVariant: -1,
             selectedBox: null,
             selectedVariant: variant,
             selectedBoxVariantIndex: index,
         })
     }
 
-    getAvailableBoxes(variant: string) {
-        return _.filter(this.state.cardTypeCanvas.boxes, o => o.variants.length == 0 || o.variants.indexOf(variant) >= 0)
+    getBoxesByVariant(boxes:CardTypeBox[],variant: string) {
+        return _.filter(boxes, o => o.variants.length == 0 || o.variants.indexOf(variant) >= 0)
     }
 
     render() {
@@ -233,18 +247,17 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         // => Trigger TS errors later
         // It's not the good way to solve it. But it's currently the only I found
         const selectedBox: CardTypeBox = this.state.selectedBox;
-        const selectedBoxKey = this.state.selectedBoxIndex;
+        const selectedBoxKey = this.state.selectedBoxIndexInVariant;
         // If the variants list is empty, it be displayed
         // If the variants list containt the selected variant, it be displayed
-        const boxes = this.getAvailableBoxes(this.state.selectedVariant);
-        const rectoBoxes = _.filter(boxes, ['face', 'recto'])
-        const versoBoxes = _.filter(boxes, ['face', 'verso'])
-        const boxSelectOptions = _.map(boxes, (o, k) => ({ label: o.ref.toString(), value: k }))
+        const boxesByVariant = this.getBoxesByVariant(this.state.cardTypeCanvas.boxes,this.state.selectedVariant);
+        const rectoBoxes = _.filter(boxesByVariant, ['face', 'recto'])
+        const versoBoxes = _.filter(boxesByVariant, ['face', 'verso'])
+        const boxSelectOptions = _.map(boxesByVariant, (o, k) => ({ label: o.ref.toString(), value: k }))
         const boxEmptyOption = { label: 'None', value: -1, disabled: true }
         const boxVariantSelectOptions:SelectOptionsArray = _.map(this.state.cardTypeCanvas.variants, (o, k) => ({ label: o.toString(), value: k }))
         const boxVariantEmptyOption:SelectOptionsArrayItem = { label: DEFAULT_VARIANT, value: -1, disabled: false }
         const boxVariantList = _.map([DEFAULT_VARIANT,...this.state.cardTypeCanvas.variants], (o, k) => ({ label: o.toString(), value: o }))
-        console.log(boxVariantList)
         return (
             <div className="CardTypeCanvasEditor full-space">
                 <div className="CardTypeCanvasEditor__Header">
@@ -294,10 +307,10 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     <TabNavItem label="Boxes">
                         <div className="full-space">
                             <div className="CardTypeCanvasEditor__BoxesActionBar">
-                                <Select id="CardTypeCanvasEditor__BoxesActionBar_selectRef" label="Box" labelOnTop={false} value={this.state.selectedBoxIndex} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
+                                <Select className="CardTypeCanvasEditor__BoxesActionBar_selectRef" id="CardTypeCanvasEditor__BoxesActionBar_selectRef" label="Box" labelOnTop={false} value={this.state.selectedBoxIndexInVariant} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
                                 {selectedBox && <div className="CardTypeCanvasEditor__VariantPicker">
-                                    <div className="CardTypeCanvasEditor__VariantValues">{selectedBox.variants.length == 0?'All':selectedBox.variants.join(',')}</div>
-                                    <PopoverPicker options={boxVariantList} values={selectedBox.variants}/>
+                                    <div className="CardTypeCanvasEditor__VariantValues">Variants : {selectedBox.variants.length == 0?'All':selectedBox.variants.join(',')}</div>
+                                    <PopoverPicker options={boxVariantList} values={selectedBox.variants} onChange={ (values:Array<string|number>) =>this.onVariantsChange(values as string[])}/>
                                 </div>}
                                 <button type="button" className="button"><i className="icon fas fa-plus"></i><span>Add a box</span></button>
                             </div>
@@ -313,22 +326,3 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
 
 export default connect()(CardTypeCanvasEditor)
 
-/*
-
-<Select id="CardTypeCanvasEditor__BoxesActionBar_select" label="Box" labelOnTop={false} value={this.state.selectedBoxIndex} onChange={} options={_.map(this.props.cardType.canvas.boxes, (o, k) => ({ label: k, value: k }))} />
-
-{selectedBox ? <div className="ContentWithColumn">
-                            <div className="ContentWithColumn__Col">
-                                <CSSDimensionView name="top" value={selectedBox.top} key={"top:" + selectedBoxKey} onChange={this.onCSSDimensionChange.bind(this)} />
-                                <CSSDimensionView name="left" value={selectedBox.left} key={"left:" + selectedBoxKey} onChange={this.onCSSDimensionChange.bind(this)} />
-                                <CSSDimensionView name="bottom" value={selectedBox.bottom} key={"bottom:" + selectedBoxKey} onChange={this.onCSSDimensionChange.bind(this)} />
-                                <CSSDimensionView name="right" value={selectedBox.right} key={"right:" + selectedBoxKey} onChange={this.onCSSDimensionChange.bind(this)} />
-
-                            </div>
-                            <div className="ContentWithColumn__Col">
-                                <CSSDimensionView name="width" value={selectedBox.width} key={"width:" + selectedBoxKey} onChange={this.onCSSDimensionChange.bind(this)} />
-                                <CSSDimensionView name="height" value={selectedBox.height} key={"height:" + selectedBoxKey} onChange={this.onCSSDimensionChange.bind(this)} />
-                            </div>
-                        </div> : <div className="CardTypeBoxEditor__NoBox">No Box Selected</div>}
-
-                        */

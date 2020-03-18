@@ -107,6 +107,10 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                 const face =  typeof (isRecto) === 'boolean' ? "recto" : isRecto; 
                 const boxes = _.chain(cardType.canvas.boxes)
                     .filter(['face',face])
+                    .filter( o => {
+                        if(o.variants.length == 0) return true;
+                        return o.variants.indexOf(card["_VARIANT"] || 'default') >= 0;
+                    })
                     .map( o => {
                         const style = {
                             position: 'absolute',

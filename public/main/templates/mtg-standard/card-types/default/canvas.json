@@ -2,7 +2,7 @@
     "width": 63,
     "height": 87.5,
     "haveVerso": true,
-    "variants":["alt2"],
+    "variants":["variant-01"],
     "boxes": [
         {
             "ref": "name",
@@ -33,7 +33,7 @@
             "height": "auto",
             "right":5 ,
             "bottom":5 ,
-            "variants":["alt2"],
+            "variants":["variant-01"],
             "data": {
                 "color": "#ff0000",
                 "size": 12,

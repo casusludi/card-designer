@@ -4,7 +4,7 @@ import _ from 'lodash'
 import uuid from 'uuid/v4'
 import { InputSize } from '../Input/Input'
 
-export type SelectOptionsArrayItem = { label: string, value: string | number, disabled?:boolean }
+export type SelectOptionsArrayItem = { label: string, value: any, disabled?:boolean }
 export type SelectOptionsArray = Array<SelectOptionsArrayItem>
 
 export type SelectProps = {

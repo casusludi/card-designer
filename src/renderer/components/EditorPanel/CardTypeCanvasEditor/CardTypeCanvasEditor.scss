@@ -65,6 +65,8 @@
     height: 30px;
     padding: 5px;
     border-bottom: 1px solid $medium-grey;
+
+ 
 }
 
 .CardTypeCanvasEditor__CardTypeBoxEditor.CardTypeBoxEditor{
@@ -76,7 +78,17 @@
     overflow: auto;
 }
 
+
+
 .CardTypeCanvasEditor__VariantPicker {
     display: flex;
     align-items: center;
+    max-width: 50%;
+}
+
+.CardTypeCanvasEditor__VariantValues {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80%;
 }

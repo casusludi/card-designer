@@ -4,7 +4,7 @@ import _ from 'lodash'
 import uuid from 'uuid/v4'
 import { InputSize } from '../Input/Input'
 
-export type SelectOptionsArrayItem = { label: string, value: any }
+export type SelectOptionsArrayItem = { label: string, value: string | number, disabled?:boolean }
 export type SelectOptionsArray = Array<SelectOptionsArrayItem>
 
 export type SelectProps = {
@@ -40,14 +40,15 @@ export default class Select extends React.Component<SelectProps,SelectState> {
                             if (this.props.onChange) {
                                 const key: number = parseInt(e.target.value);
                                 const value: SelectOptionsArrayItem = this.props.options[key];
-                                this.props.onChange(value.value);
+                                this.props.onChange(value?value.value:this.props.emptyOption?.value);
+                                
                             }
                         }}
                     >
-                        {this.props.emptyOption && <option disabled value={this.props.emptyOption.value}>{this.props.emptyOption.label}</option>}
+                        {this.props.emptyOption && <option disabled={this.props.emptyOption.disabled} value={this.props.emptyOption.value}>{this.props.emptyOption.label}</option>}
                         {_.map(this.props.options, (o: SelectOptionsArrayItem, k) => {
 
-                            return <option value={k} key={k}>{o.label}</option>
+                            return <option disabled={o.disabled} value={k} key={k}>{o.label}</option>
                         })}
                     </select>
                 </div>

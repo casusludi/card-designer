@@ -2,6 +2,7 @@
     "width": 63,
     "height": 87.5,
     "haveVerso": true,
+    "variants":["alt2"],
     "boxes": [
         {
             "ref": "name",
@@ -13,6 +14,26 @@
             "height": "auto",
             "right":5 ,
             "bottom":"auto" ,
+            "variants":["default"],
+            "data": {
+                "color": "#ff0000",
+                "size": 12,
+                "weight": "bold",
+                "style": "normal",
+                "align": "center" 
+            }
+        },
+        {
+            "ref": "name",
+            "face":"recto",
+            "type": "text",
+            "top": "auto",
+            "left": 5,
+            "width": "auto",
+            "height": "auto",
+            "right":5 ,
+            "bottom":5 ,
+            "variants":["alt2"],
             "data": {
                 "color": "#ff0000",
                 "size": 12,
@@ -31,6 +52,7 @@
             "height": "auto",
             "right":5 ,
             "bottom":"auto" ,
+            "variants":[],
             "data": {
                 "color": "#ff0000",
                 "size": 12,
@@ -49,6 +71,7 @@
             "height": 10,
             "right":"auto" ,
             "bottom":"auto" ,
+            "variants":[],
             "data": {
                 "color": "#ff0000",
                 "size": 12,

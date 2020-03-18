@@ -111,6 +111,8 @@ export const projectReducer = createReducer<Project | null>(null, {
         const cardType = state.cardTypes[action.payload.id];
         if(!cardType) return state;
         if(_.isEqual(action.payload.canvas,cardType.canvas)) return state;
+        const canvas = action.payload.canvas;
+        //canvas.variants = _.chain(canvas.boxes).map( o => o.variant).reject(_.isEmpty).value() as string[];
         return {
             ...state,
             modified: true,
@@ -118,7 +120,7 @@ export const projectReducer = createReducer<Project | null>(null, {
                 ...state.cardTypes,
                 [action.payload.id]:{
                     ...cardType,
-                    canvas: action.payload.canvas
+                    canvas
                 }
             }
         }

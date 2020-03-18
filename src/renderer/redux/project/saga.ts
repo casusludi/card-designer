@@ -13,7 +13,6 @@ import { AnyAction } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { EditorPreferences } from '../../services/Preferences';
-import url from 'url';
 
 const selectProject = (state: ApplicationState) => state.project;
 const selectEditorPreferences = (state: ApplicationState) => state.preferences.editor;
@@ -198,7 +197,7 @@ function* saga_renderProjectSelection(action: any) {
         const filter:RenderFilter = action.payload.filter;
         if (filter != RenderFilter.NONE) {
             const html = yield call(renderSelectionAsHtml,project, action.payload.selection)
-            if (html && project && selection.cardTypeId && selection.layoutId) {
+            if (html && project && selection && selection.cardTypeId && selection.layoutId) {
                 const cardType = project.cardTypes[selection.cardTypeId];
                 const layout = project.layouts[selection.layoutId];
 

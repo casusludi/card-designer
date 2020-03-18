@@ -6,9 +6,15 @@
     position: relative;
 }
 
+.CardTypeCanvasEditor__Header {
+    height: 30px;
+    padding: 5px;
+    border-bottom: 1px solid $medium-grey;
+}
+
 .CardTypeCanvasEditor__Canvas {
     overflow: auto;
-    height: 60%;
+    height: calc( 60% - 40px);
     position: relative;
 
 }
@@ -67,4 +73,10 @@
     bottom: 0;
     left: 0;
     right: 0;
+    overflow: auto;
+}
+
+.CardTypeCanvasEditor__VariantPicker {
+    display: flex;
+    align-items: center;
 }

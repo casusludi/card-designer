@@ -17,6 +17,9 @@ import { serveHtml, pathToURL } from "../../../utils";
 import CardTypeCanvasLayout from './CardTypeCanvasLayout.njk';
 import CardTypeBoxEditor from "./CardTypeBoxEditor";
 import Select from "../../Misc/Select";
+import Popover from "../../Misc/Popover";
+import PopoverPicker from "../../Misc/PopoverPicker/PopoverPicker";
+import { SelectOptionsArray, SelectOptionsArrayItem } from "../../Misc/Select/Select";
 
 type CardFaceCanvasProps = {
     label: string
@@ -58,16 +61,22 @@ export type CardTypeCanvasEditorState = {
     cardTypeCanvas: CardTypeCanvas
     selectedBox: CardTypeBox | null
     selectedBoxIndex: number
+    selectedVariant: string
+    selectedBoxVariantIndex: number
     currentTab: number
     advancedRectoUrl: string | null
     advancedVersoUrl: string | null
 }
+
+const DEFAULT_VARIANT = 'default';
 
 export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorProps, CardTypeCanvasEditorState>{
 
     state = {
         selectedBox: null,
         selectedBoxIndex: -1,
+        selectedVariant: DEFAULT_VARIANT,
+        selectedBoxVariantIndex: -1,
         currentTab: 0,
         cardTypeCanvas: this.props.cardType.canvas,
         advancedRectoUrl: null,
@@ -157,7 +166,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         this.setState({
             currentTab: 1,
             selectedBox: box,
-            selectedBoxIndex: _.findIndex(this.state.cardTypeCanvas.boxes,box),
+            selectedBoxIndex: _.findIndex(this.state.cardTypeCanvas.boxes, box),
         })
     }
 
@@ -196,12 +205,26 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         }
     }
 
-    onSelectBoxChange(index:number){
+    onSelectBoxChange(index: number) {
         const box = this.state.cardTypeCanvas.boxes[index];
         this.setState({
             selectedBox: box,
             selectedBoxIndex: index,
         })
+    }
+
+    onSelectBoxVariantChange(index: number) {
+        const variant = index >= 0 ? this.state.cardTypeCanvas.variants[index] : DEFAULT_VARIANT;
+        this.setState({
+            selectedBoxIndex: -1,
+            selectedBox: null,
+            selectedVariant: variant,
+            selectedBoxVariantIndex: index,
+        })
+    }
+
+    getAvailableBoxes(variant: string) {
+        return _.filter(this.state.cardTypeCanvas.boxes, o => o.variants.length == 0 || o.variants.indexOf(variant) >= 0)
     }
 
     render() {
@@ -211,12 +234,22 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         // It's not the good way to solve it. But it's currently the only I found
         const selectedBox: CardTypeBox = this.state.selectedBox;
         const selectedBoxKey = this.state.selectedBoxIndex;
-        const rectoBoxes = _.filter(this.state.cardTypeCanvas.boxes, ['face', 'recto'])
-        const versoBoxes = _.filter(this.state.cardTypeCanvas.boxes, ['face', 'verso'])
-        const boxSelectOptions = _.map(this.state.cardTypeCanvas.boxes, (o, k) => ({ label: o.ref.toString(), value: k }))
-        const boxEmptyOption = {label:'None',value:-1}
+        // If the variants list is empty, it be displayed
+        // If the variants list containt the selected variant, it be displayed
+        const boxes = this.getAvailableBoxes(this.state.selectedVariant);
+        const rectoBoxes = _.filter(boxes, ['face', 'recto'])
+        const versoBoxes = _.filter(boxes, ['face', 'verso'])
+        const boxSelectOptions = _.map(boxes, (o, k) => ({ label: o.ref.toString(), value: k }))
+        const boxEmptyOption = { label: 'None', value: -1, disabled: true }
+        const boxVariantSelectOptions:SelectOptionsArray = _.map(this.state.cardTypeCanvas.variants, (o, k) => ({ label: o.toString(), value: k }))
+        const boxVariantEmptyOption:SelectOptionsArrayItem = { label: DEFAULT_VARIANT, value: -1, disabled: false }
+        const boxVariantList = _.map([DEFAULT_VARIANT,...this.state.cardTypeCanvas.variants], (o, k) => ({ label: o.toString(), value: o }))
+        console.log(boxVariantList)
         return (
             <div className="CardTypeCanvasEditor full-space">
+                <div className="CardTypeCanvasEditor__Header">
+                    <Select id="CardTypeCanvasEditor__BoxesActionBar_selectVariant" disabled={boxVariantSelectOptions.length == 0} label="Variant" labelOnTop={false} value={this.state.selectedBoxVariantIndex} onChange={this.onSelectBoxVariantChange.bind(this)} emptyOption={boxVariantEmptyOption} options={boxVariantSelectOptions} />
+                </div>
                 <div className="CardTypeCanvasEditor__Canvas">
                     <div className="CardTypeCanvasEditor__CanvasContent">
                         <CardFaceCanvas
@@ -260,11 +293,15 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     </TabNavItem>
                     <TabNavItem label="Boxes">
                         <div className="full-space">
-                        <div className="CardTypeCanvasEditor__BoxesActionBar">
-                            <Select id="CardTypeCanvasEditor__BoxesActionBar_select" label="Box" labelOnTop={false} value={this.state.selectedBoxIndex} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
-                            <button type="button" className="button"><i className="icon fas fa-plus"></i><span>Add a box</span></button>
-                        </div>
-                        <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onDimensionChange={this.onCSSDimensionChange.bind(this)} />
+                            <div className="CardTypeCanvasEditor__BoxesActionBar">
+                                <Select id="CardTypeCanvasEditor__BoxesActionBar_selectRef" label="Box" labelOnTop={false} value={this.state.selectedBoxIndex} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
+                                {selectedBox && <div className="CardTypeCanvasEditor__VariantPicker">
+                                    <div className="CardTypeCanvasEditor__VariantValues">{selectedBox.variants.length == 0?'All':selectedBox.variants.join(',')}</div>
+                                    <PopoverPicker options={boxVariantList} values={selectedBox.variants}/>
+                                </div>}
+                                <button type="button" className="button"><i className="icon fas fa-plus"></i><span>Add a box</span></button>
+                            </div>
+                            <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onDimensionChange={this.onCSSDimensionChange.bind(this)} />
                         </div>
                     </TabNavItem>
                 </TabNav>

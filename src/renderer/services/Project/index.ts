@@ -207,6 +207,7 @@ export type CardTypeBox = {
     ref: string // | string[] // variable name
     face: string
     type: CardTypeBoxType
+    variants: Array<string>
     top: Dimension
     left: Dimension
     bottom: Dimension
@@ -221,6 +222,7 @@ export type CardTypeCanvas = {
     height: number
     haveVerso: boolean
     boxes: Array<CardTypeBox>
+    variants: Array<string>
 }
 
 export async function loadCardTypeCanvas(canvasPath:string):Promise<CardTypeCanvas>{

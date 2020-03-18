@@ -2,7 +2,6 @@ import { ipcRenderer, remote, OpenDialogOptions, SaveDialogOptions } from 'elect
 
 import fse from 'fs-extra';
 import path from 'path';
-import { file } from 'googleapis/build/src/apis/file';
 
 export type ServeOverrides = {[key:string]:string}
 

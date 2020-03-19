@@ -1,5 +1,6 @@
 {
     "version": "1.0",
+    "fonts":["Arial","\"Times New Roman\"","\"Comic Sans MS\""],
     "cardTypes": {
         "default": "card-types/default/index.json"
     },

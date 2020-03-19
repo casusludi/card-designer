@@ -45,8 +45,7 @@ export type ProjectDataItem = {
 
 export type ProjectConfig = {
     version: string,
-    //cardTypes: { [key: string]: ProjectConfigCardType }
-    //layouts: { [key: string]: ProjectConfigLayout }
+    fonts:string[],
     cardTypes: { [key: string]: string }
     layouts: { [key: string]: string }
     sources: {
@@ -201,6 +200,7 @@ export enum Overflow {
 
 export type CardTypeBoxText = {
     color: string
+    font:string,
     weight: FontWeight | number
     style: FontStyle
     align: TextAlign

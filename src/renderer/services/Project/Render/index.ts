@@ -54,6 +54,7 @@ function getBoxStyleFromType(box:CardTypeBox):any{
             return {
                 color: box.data.color,
                 "font-size": box.data.size?`${box.data.size}pt`:'inherit',
+                "font-family": box.data.font?box.data.font.replace("\"",""):"inherit",
                 "font-weight": box.data.weight,
                 "font-style": box.data.style,
                 "text-align": box.data.align,
@@ -106,7 +107,6 @@ export async function renderSelectionToHtml(project: Project, selection: Project
         'boxes': (env:nunjucks.Environment) => (card:any,isRecto: boolean | string = true) => {
             if(cardType){
                 const face =  typeof (isRecto) === 'boolean' ? (isRecto?"recto":"verso") : isRecto; 
-                console.log("face",face)
                 const boxes = _.chain(cardType.canvas.boxes)
                     .filter(['face',face])
                     .filter( o => {
@@ -114,7 +114,6 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                         return o.variants.indexOf(card["_VARIANT"] || 'default') >= 0;
                     })
                     .map( o => {
-                        console.log(face,o.ref)
                         const style = {
                             position: 'absolute',
                             top:cssDimensionValue(o.top),
@@ -134,7 +133,6 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                         };
                     })
                     .value();
-                    console.log(face,boxes)
                 return env.renderString(CardTypeCanvasBoxes, { card, boxes });
             }
             return '';

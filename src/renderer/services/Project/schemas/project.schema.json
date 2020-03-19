@@ -33,6 +33,14 @@
         "type": "string"
       }
     },
+    "fonts": {
+      "$id": "#/properties/fonts",
+      "type": "array",
+      "title": "The Fonts Schema",
+      "items": {
+        "type": "string"
+      }
+    },
     "sources": {
       "$id": "#/properties/sources",
       "type": "object",

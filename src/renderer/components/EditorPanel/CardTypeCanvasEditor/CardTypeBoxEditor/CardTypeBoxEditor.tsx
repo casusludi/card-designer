@@ -22,6 +22,7 @@ function CSSDimensionView(props: CSSDimensionViewProps) {
 
 export type CardTypeBoxEditorProps = {
     box: CardTypeBox
+    fonts:string[]
     className?: string
     onChange?:(box:CardTypeBox,prevBox:CardTypeBox) => void
 }
@@ -45,6 +46,8 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
 
         }
      }
+
+     console.log(props.fonts);
 
     return (
         <div className={"CardTypeBoxEditor" + (props.className ? " " + props.className : "")}>
@@ -72,6 +75,7 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                             <div className="ContentWithLine__Line">
                                 <Input size={InputSize.Small} label="Color" labelOnTop={true} type="color" defaultValue={box.data.color} onChange={ value => onDataValueChange("color",value)}  />
                                 <Input size={InputSize.Small} label="Size"  labelOnTop={true} type="text" pattern="/[.0-9]*/" defaultValue={box.data.size} onChange={ value => onDataValueChange("size",value)}  />
+                                <Select size={InputSize.Normal} label="Font" labelOnTop={true} value={box.data.font} options={_.map(props.fonts, (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("font",value)} />
 
                             </div>
                             <div className="ContentWithLine__Line">

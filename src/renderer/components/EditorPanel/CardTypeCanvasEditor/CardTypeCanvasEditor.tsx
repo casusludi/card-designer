@@ -309,7 +309,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                                 </div>}
                                 <button type="button" className="button"><i className="icon fas fa-plus"></i><span>Add a box</span></button>
                             </div>
-                            <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onChange={this.onBoxChange.bind(this)} />
+                            <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onChange={this.onBoxChange.bind(this)} fonts={this.props.project.config.fonts} />
                         </div>
                     </TabNavItem>
                 </TabNav>

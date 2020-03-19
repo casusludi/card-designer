@@ -81,7 +81,7 @@
     "chokidar": "^3.3.1",
     "cookies": "^0.8.0",
     "ejs": "^3.0.1",
-    "font-manager": "^0.3.1",
+    "font-list": "^1.2.6",
     "fs-extra": "^8.1.0",
     "get-port": "^5.1.1",
     "googleapis": "^47.0.0",

@@ -3824,12 +3824,10 @@ follow-redirects@^1.0.0:
   dependencies:
     debug "^3.0.0"
 
-font-manager@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/font-manager/-/font-manager-0.3.1.tgz#f6724b368a61cdc088c4011613fb88626c301eb8"
-  integrity sha512-7dLRyPp0W3OA6d31nHfjE0rdWZcf+iktVim1FuYw7jn+zjqiWylzhXbdv7eLx5B76s/kTUQqKwkVaVdbfXg4Tw==
-  dependencies:
-    nan ">=2.10.0"
+font-list@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/font-list/-/font-list-1.2.6.tgz#2b226cda4544f9f999af4c2e5b8cd68dd67b1d2e"
+  integrity sha512-Ej2xkVjyVLyQRs9Qz8gNTJkA8GP1jSz76s6Zu46OGh1x0WdISPsuTsbIfghEVy78adakpZage0Qva+fFeAfzVw==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -5709,7 +5707,7 @@ multicast-dns@^6.0.1:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
 
-nan@>=2.10.0, nan@^2.12.1, nan@^2.13.2:
+nan@^2.12.1, nan@^2.13.2:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==

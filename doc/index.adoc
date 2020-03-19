@@ -14,12 +14,14 @@ link:templating.adoc[Templating]
 
 link:export.adoc[Export to PDF]
 
-link:contributing.adoc[Contributing]
+link:cookbook.adoc[Cookbook]
 
 link:roadmap.adoc[Roadmap]
 
 link:faq.adoc[FAQ]
 
 link:credits.adoc[Credits]
+
+link:contributing.adoc[Contributing]
 
 link:license.adoc[License]

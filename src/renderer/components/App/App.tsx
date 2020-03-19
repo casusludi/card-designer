@@ -124,7 +124,7 @@ class App extends Component<AppProps> {
 			this.props.layoutPreferences.editorWidth,
 			evt.clientX,
 			(val, diff) => {
-				this.props.dispatch(prefEditorWidthChanged({ editorWidth: Math.max(val - diff, 584) }))
+				this.props.dispatch(prefEditorWidthChanged({ editorWidth: Math.max(val - diff, 670) }))
 			}
 		)
 	}

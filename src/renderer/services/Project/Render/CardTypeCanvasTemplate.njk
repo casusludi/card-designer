@@ -1,9 +1,9 @@
 {% if card.isRecto %}
-<div class="card">
+<div class="card" style="width: {{cardTypeWidth}}mm;  height: {{cardTypeHeight}}mm; position: relative;">
     {{card | boxes("recto") }}
 </div>
 {% else %}
-<div class="card-verso" >
+<div class="card verso" style="width: {{cardTypeWidth}}mm;  height: {{cardTypeHeight}}mm; position: relative;">
      {{card | boxes("verso") }}
 </div>
 {% endif %}

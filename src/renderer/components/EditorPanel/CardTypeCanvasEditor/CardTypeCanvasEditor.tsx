@@ -4,7 +4,7 @@ import TabNav, { TabNavItem } from "../../Misc/TabNav/TabNav";
 import Input from "../../Misc/Input";
 import Checkbox from "../../Misc/Checkbox/Checkbox";
 import CardTypeBoxView from "./CardTypeBoxView";
-import { Dimension, CardTypeCanvas, CardTypeBox, ProjectCardType, Project } from "../../../services/Project";
+import { CardTypeCanvas, CardTypeBox, ProjectCardType, Project } from "../../../services/Project";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -28,7 +28,7 @@ type CardFaceCanvasProps = {
     advancedUrl: string | null
     boxes: Array<CardTypeBox>
     selectedBox: CardTypeBox | null
-    onBoxChange: (box: CardTypeBox, i: number) => void
+    onBoxChange: (box: CardTypeBox, prevBox:CardTypeBox) => void
     onBoxSelect: (box: CardTypeBox, i: number) => void
     onBGClick: () => void
 }
@@ -42,7 +42,7 @@ function CardFaceCanvas(props: CardFaceCanvasProps) {
             }}>
                 {props.advanced && <RestrictedWebView url={props.advancedUrl} className="CardTypeCanvasEditor__AdvancedContent full-space" />}
                 <div className="full-space" onClick={() => props.onBGClick()}></div>
-                {props.boxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == props.selectedBox} onChange={(newBox) => props.onBoxChange(newBox, i)} onSelect={(selectedBox) => props.onBoxSelect(selectedBox, i)} />)}
+                {props.boxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == props.selectedBox} onChange={(newBox) => props.onBoxChange(newBox, box)} onSelect={(selectedBox) => props.onBoxSelect(selectedBox, i)} />)}
             </div>
             <div className="CardTypeCanvasEditor__CardBoxLabel">{props.label}</div>
         </div>
@@ -157,11 +157,8 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         return null
     }
 
-    onBoxChange(box: CardTypeBox, index: number) {
-        // currently no change comme from box in the canvas
-    }
 
-    onBoxSelect(box: CardTypeBox, index: number, ) {
+    onBoxSelect(box: CardTypeBox, index: number) {
         const boxes = this.getBoxesByVariant(this.state.cardTypeCanvas.boxes,this.state.selectedVariant);
         const selectedBoxIndex =  _.findIndex(boxes, box);
         this.setState({
@@ -184,20 +181,18 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         })
     }
 
-    onCSSDimensionChange(name: string, value: Dimension) {
-        if (this.state.selectedBox) {
-            const newSelectedBox = { ...this.state.selectedBox, [name]: value };
-            const boxes = [...this.state.cardTypeCanvas.boxes];
-            const selectedBoxIndex =  _.findIndex(boxes, this.state.selectedBox);
-            boxes[selectedBoxIndex] = newSelectedBox;
-            this.setState({
-                selectedBox: newSelectedBox,
-                cardTypeCanvas: {
-                    ...this.state.cardTypeCanvas,
-                    boxes
-                }
-            })
-        }
+    onBoxChange(box:CardTypeBox,prevBox:CardTypeBox) {
+        const boxes = [...this.state.cardTypeCanvas.boxes];
+        const selectedBoxIndex =  _.findIndex(boxes, prevBox);
+        boxes[selectedBoxIndex] = box;
+        this.setState({
+            selectedBox: this.state.selectedBox == prevBox?box:this.state.selectedBox,
+            cardTypeCanvas: {
+                ...this.state.cardTypeCanvas,
+                boxes
+            }
+        })
+        
     }
 
     onVariantsChange( variants: string[]) {
@@ -314,7 +309,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                                 </div>}
                                 <button type="button" className="button"><i className="icon fas fa-plus"></i><span>Add a box</span></button>
                             </div>
-                            <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onDimensionChange={this.onCSSDimensionChange.bind(this)} />
+                            <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onChange={this.onBoxChange.bind(this)} />
                         </div>
                     </TabNavItem>
                 </TabNav>

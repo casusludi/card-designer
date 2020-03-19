@@ -1,0 +1,29 @@
+= Cookbook
+
+
+== List of predefined images
+
+with card.<attr> : 
+- empty or 0 : not displayed
+- 1 or highter : displayed and sorted. Low value displayed first
+
+[source,html]
+----
+{% set needs = [
+    {name:"contact"       ,sort:card.contact},
+    {name:"contenus"      ,sort:card.contenus},
+    {name:"identification",sort:card.identification},
+    {name:"ps"            ,sort:card.ps},
+    {name:"scores"        ,sort:card.scores},
+    {name:"bancaires"     ,sort:card.bancaires},
+    {name:"localisation"  ,sort:card.localisation},
+    {name:"sante"         ,sort:card.sante},
+    {name:"usages"        ,sort:card.usages},
+    {name:"vieperso"    ,sort:card.vieperso}
+] %}
+<div class="image-list">
+    {% for img in images | sort(false,false,"sort") %}
+    {% if img.sort %} <div class="img-wrapper"><img class="icon" src="../assets/icon-{{img.name}}.svg" /></div>{% endif %}
+    {% endfor %}
+</div>
+----

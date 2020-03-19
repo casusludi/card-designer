@@ -191,6 +191,12 @@ export enum TextAlign {
     Center = "center",
     Left = "left",
     Right = "right",
+    Justify = "justify",
+}
+
+export enum Overflow {
+    Visible = "visible",
+    Hidden = "hidden",
 }
 
 export type CardTypeBoxText = {
@@ -199,6 +205,7 @@ export type CardTypeBoxText = {
     style: FontStyle
     align: TextAlign
     size: number
+    overflow:Overflow
 }
 
 export type Dimension = number | "auto" ;

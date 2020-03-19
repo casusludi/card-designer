@@ -54,7 +54,7 @@ function getBoxStyleFromType(box:CardTypeBox):any{
             return {
                 color: box.data.color,
                 "font-size": box.data.size?`${box.data.size}pt`:'inherit',
-                "font-family": box.data.font?box.data.font.replace("\"",""):"inherit",
+                "font-family": box.data.font?box.data.font.replace(/\"/g,""):"inherit",
                 "font-weight": box.data.weight,
                 "font-style": box.data.style,
                 "text-align": box.data.align,

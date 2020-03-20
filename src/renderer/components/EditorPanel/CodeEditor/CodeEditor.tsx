@@ -19,10 +19,10 @@ import { projectSaving } from "../../../redux/project";
 import { createClassName } from "../../../utils";
 
 export type CodeEditorProps = {
-    instanceId: string
-    path:string
+    instanceId: any
+    path?:string
     code: string
-    mode: string
+    mode?: string
     className?: string
     onValidChange?: (code: string) => void
     onChange?: (code: string) => void
@@ -85,7 +85,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
 
     componentDidUpdate(prevProps: CodeEditorProps) {
 
-        if (prevProps.instanceId != this.props.instanceId) {
+        if (!_.isEqual(prevProps.instanceId,this.props.instanceId)) {
             this.setState({ code: this.props.code })
             setTimeout(() => {
                 if (this.editor) {
@@ -141,7 +141,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
         return (
             <div className={createClassName("CodeEditor",{},[this.props.className])}>
                 <div className="CodeEditor__background full-space" onClick={this.backGroundOnClick.bind(this)} ></div>
-                <div className="CodeEditor__path">{this.props.path}</div>
+                {this.props.path && <div className="CodeEditor__path">{this.props.path}</div>}
                 <AceEditor
                     onLoad={this.editorOnLoad.bind(this)}
                     mode={this.props.mode}

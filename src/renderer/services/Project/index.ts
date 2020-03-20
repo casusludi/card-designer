@@ -210,7 +210,9 @@ export type CardTypeBoxText = {
     style: FontStyle
     align: TextAlign
     size: number
-    overflow:Overflow
+    lineHeight: number
+    overflow:Overflow,
+    custom:string
 }
 
 export type Dimension = number | "auto" ;

@@ -2,7 +2,18 @@
 
 .CardTypeBoxEditor{
     position: relative;
+    overflow: hidden;
 }
+
+.CardTypeBoxEditor__Content {
+    height: 100%;
+    box-sizing: border-box;
+}
+.CardTypeBoxEditor__DataBox{
+    overflow-y: auto;
+    flex: 1;
+}
+
 .CardTypeBoxEditor__NoBox {
     position: absolute;
     top:0;
@@ -20,4 +31,8 @@
 
 .CardTypeBoxEditor .ActivableInput__wrapper .Input__wrapper {
     width: 4.5em;
+}
+
+.CardTypeBoxEditor__CustomEditor {
+    flex: 1
 }

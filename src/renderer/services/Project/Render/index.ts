@@ -51,15 +51,17 @@ const metaVariables: MetaVariables = {
 export function getBoxStyleFromType(box:CardTypeBox):any{
     switch(box.type){
         case "text":
-            return {
-                color: box.data.color,
-                "font-size": box.data.size?`${box.data.size}pt`:'inherit',
-                "font-family": box.data.font?box.data.font.replace(/\"/g,""):"inherit",
-                "font-weight": box.data.weight,
-                "font-style": box.data.style,
-                "text-align": box.data.align,
-                "overflow": box.data.overflow || 'visible'
-            }
+            return `
+                color: ${box.data.color};
+                font-size: ${box.data.size?`${box.data.size}pt`:'inherit'};
+                font-family: ${box.data.font?box.data.font.replace(/\"/g,""):"inherit"};
+                font-weight: ${box.data.weight};
+                font-style: ${box.data.style};
+                text-align: ${box.data.align};
+                line-height: ${box.data.lineHeight || 'normal'};
+                overflow: ${box.data.overflow || 'visible'};
+                ${box.data.custom}
+            `
     }
 
     return {}
@@ -114,7 +116,7 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                         return o.variants.indexOf(card["_VARIANT"] || 'default') >= 0;
                     })
                     .map( o => {
-                        const style = {
+                        /*const style = {
                             position: 'absolute',
                             top:cssDimensionValue(o.top),
                             left:cssDimensionValue(o.left),
@@ -130,6 +132,21 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                                 str += `${k}:${o};`;
                                 return str
                             },"")
+                        };*/
+
+                        const style = `
+                            position: absolute;
+                            top:${cssDimensionValue(o.top)};
+                            left:${cssDimensionValue(o.left)};
+                            right:${cssDimensionValue(o.right)};
+                            bottom:${cssDimensionValue(o.bottom)};
+                            width:${cssDimensionValue(o.width)};
+                            height:${cssDimensionValue(o.height)};
+                            ${getBoxStyleFromType(o)}
+                        `;
+                        return {
+                            ...o,
+                            style:style.replace(/(\r\n|\n|\r| )/gm,"")
                         };
                     })
                     .value();

@@ -1,0 +1,10 @@
+@import "../../../styles/variables.scss";
+
+.Panel {
+    border: 1px solid $medium-grey;
+    box-shadow: 0 1px 2px 0px #000000;
+}
+
+.Panel__Label {
+    padding: 0 5px;
+}

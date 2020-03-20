@@ -5,34 +5,23 @@ import './App.scss';
 
 import { AuthType } from '../../services/Auth';
 import { GoogleBar } from '../Google/GoogleBar';
-import EditorPanel, { AppUIEditor } from '../EditorPanel';
-import PreviewPanel, { AppUIPreview } from '../PreviewPanel';
+import EditorPanel from '../EditorPanel';
+import PreviewPanel from '../PreviewPanel';
 import { Project, PROJECT_DEFAULT_TEMPLATE_PATH } from '../../services/Project';
 import { ApplicationState, Users } from '../..';
 import { projectOpenFromDialog, projectFetchData, projectSaving, projectSavingAs, projectOpenFromPath, projectCreateFromTemplate } from '../../redux/project';
 import { Dispatch } from 'redux';
-import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
+import { ProjectSourceType } from '../../services/Project/Sources';
 import { authSignIn, authSignOut } from '../../redux/auth';
 import { prefEditorWidthChanged } from '../../redux/preferences';
-import { AppUIExport } from '../EditorPanel/ExportEditor/ExportEditor';
+
 import { remote } from 'electron';
 import WindowControls from '../WindowControls';
 import { LayoutPreferences } from '../../services/Preferences';
 import path from 'path';
 import Modal from '../Misc/Modal';
+import { AppUI } from '.';
 
-export type AppUIOthers = {
-	fetchDataStatus:{
-		[type:string]:FetchDataStatus
-	}
-}
-
-export type AppUI = {
-	editor: AppUIEditor
-	preview: AppUIPreview
-	export: AppUIExport
-	others: AppUIOthers
-}
 
 export type AppProps = {
 	project: Project | null

@@ -68,7 +68,8 @@ function* saga_openProjectFromPath(action:PayloadAction<{path:string}>){
     }
 }
 
-function* saga_reloadProjectWhenConfigChanged(action:any){
+function* saga_reloadProjectWhenConfigChanged(action:PayloadAction<{noReload:boolean}>){
+    if(action.payload.noReload) return;
     try {
         const oldProject: Project = yield select(selectProject);
 

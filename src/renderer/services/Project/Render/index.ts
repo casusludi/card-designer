@@ -48,7 +48,7 @@ const metaVariables: MetaVariables = {
     }
 }
 
-function getBoxStyleFromType(box:CardTypeBox):any{
+export function getBoxStyleFromType(box:CardTypeBox):any{
     switch(box.type){
         case "text":
             return {

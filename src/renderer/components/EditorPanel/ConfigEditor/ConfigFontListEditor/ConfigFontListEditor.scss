@@ -2,13 +2,25 @@
 
 .ConfigFontListEditor {
     padding: 5px;
+    display: flex;
+}
+
+.ConfigFontListEditor__projectFontBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.ConfigFontListEditor__projectFontLabel {
+    margin-bottom: 5px;
 }
 
 .ConfigFontListEditor__projectFontList {
+    flex: 1 0 auto;
     border: 1px solid $medium-grey;
-    background-color: $medium-grey;
+    background-color: $dark-grey;
     box-shadow: 0 1px 2px 0px #000000;
     width: 10rem;
+    overflow: auto;
 }
 
 .ConfigFontListEditor_projectFontItem {
@@ -24,7 +36,19 @@
         overflow: hidden;
     }
 
-    &:nth-child(odd) {
-        background-color: $dark-grey;
+    &:nth-child(even) {
+        background-color: $darkest-grey;
+    }
+}
+
+.ConfigFontListEditor__Sources {
+    flex: 1 0 auto;
+}
+
+.ConfigFontListEditor__SourceSystem{
+    display: flex;
+
+    & > *:not(:first-child) {
+        margin-left: 5px;
     }
 }

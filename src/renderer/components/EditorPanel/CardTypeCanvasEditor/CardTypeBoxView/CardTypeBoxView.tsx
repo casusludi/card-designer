@@ -3,18 +3,12 @@ import React from 'react';
 import { CardTypeBox, CardTypeBoxType } from '../../../../services/Project';
 import { cssDimensionValue, createClassName } from '../../../../utils';
 
-
-
-
 type CardTypeBoxViewProps = {
     data: CardTypeBox
     selected: boolean
     onSelect: (box: CardTypeBox) => void
     onChange: (box: CardTypeBox) => void
 }
-
-
-
 
 export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProps> {
 
@@ -39,7 +33,8 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
             case CardTypeBoxType.Text: return {
                 ...styles,
                 color: this.props.data.data.color,
-                fontSize: `${this.props.data.data.size}pt`,
+                fontFamily: this.props.data.data.font?this.props.data.data.font.replace(/\"/g,""):"inherit",
+                fontSize: this.props.data.data.size?`${this.props.data.data.size}pt`:'inherit',
                 fontStyle: this.props.data.data.style,
                 fontWeight: this.props.data.data.weight,
                 textAlign: this.props.data.data.align,

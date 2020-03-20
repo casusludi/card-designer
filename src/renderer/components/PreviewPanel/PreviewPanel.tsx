@@ -3,17 +3,11 @@ import PDFViewer from "./PDFViewer";
 import TabNav, { TabNavItem, TabNavHeaderPosition } from "../Misc/TabNav/TabNav";
 import HTMLViewer from "./HTMLViewer";
 import { Project } from "../../services/Project";
-import { PDFSource } from "./PDFViewer/PDFDocument";
+import { AppUIPreview } from ".";
 
 export type PreviewPanelProps = {
     ui:AppUIPreview
     project:Project|null
-}
-
-export type AppUIPreview = {
-    pdf:PDFSource
-    pdfLastRenderTime: number | null
-    htmlUrl:string|null
 }
 
 

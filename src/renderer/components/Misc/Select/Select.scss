@@ -32,6 +32,12 @@
     }
 }
 
+.Select_size_large {
+    .Select__wrapper {
+        width: 15em;
+    }
+}
+
 .Select__wrapper > select {
     flex: 1;
     padding: 0 .5em;

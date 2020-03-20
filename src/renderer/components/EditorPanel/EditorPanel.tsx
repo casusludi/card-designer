@@ -19,6 +19,7 @@ import Checkbox from "../Misc/Checkbox";
 import { EditorPreferences } from "../../services/Preferences";
 import PageNav from "../Misc/PageNav";
 import LayoutEditor from "./LayoutEditor";
+import { AppUIEditor } from ".";
 
 export type EditorPanelProps = {
     project: Project | null
@@ -27,13 +28,6 @@ export type EditorPanelProps = {
     ui: AppUIEditor,
     editorPreferences: EditorPreferences
 }
-
-
-export type AppUIEditor = {
-    selection: ProjectSelection | undefined | null
-    lastError: Error | null | undefined
-}
-
 
 function EditorPanel(props: EditorPanelProps) {
 

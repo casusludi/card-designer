@@ -29,8 +29,8 @@ export const projectDataChanged = createAction<ProjectDataChangedPayload>('proje
 export const projectFetchData = createAction<ProjectFetchDataPayload>('projectData/fetch');
 export const projectFetchDataSucceeded = createAction<ProjectDataChangedPayload>('projectData/fetchSucceded');
 export const projectFetchDataFailed = createAction('projectData/fetchFailed',asError());
-export const projectConfigChanged = createAction<{config:ProjectConfig}>('projectConfig/changed');
-export const projectRawConfigChanged = createAction<{rawConfig:string}>('projectRawConfig/changed');
+export const projectConfigChanged = createAction<{config:ProjectConfig, noReload?:boolean}>('projectConfig/changed');
+export const projectRawConfigChanged = createAction<{rawConfig:string, noReload?:boolean}>('projectRawConfig/changed');
 
 export const projectSaving = createAction('project/saving');
 export const projectSavingAs = createAction('project/savingAs');

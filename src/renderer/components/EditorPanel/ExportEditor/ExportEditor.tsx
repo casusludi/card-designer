@@ -8,13 +8,13 @@ import { ApplicationState } from "../../..";
 import { ProjectSourceType } from "../../../services/Project/Sources";
 import { prefProjectExportChanged } from "../../../redux/preferences";
 import _ from "lodash";
-import FolderInput from "../../Misc/FolderInput/FolderInput";
+import FolderInput from "../../Misc/FolderInput";
 import { replacer } from "../../../utils";
 import { remote } from "electron";
-import ProgressBar from "../../Misc/ProgressBar/ProgressBar";
+import ProgressBar from "../../Misc/ProgressBar";
 import { projectExport } from "../../../redux/project";
 import { ProjectExportPreferences, createDefaultExportPreferences } from "../../../services/Preferences";
-import Checkbox from "../../Misc/Checkbox/Checkbox";
+import Checkbox from "../../Misc/Checkbox";
 
 export type ExportEditorProps = {
     project: Project | null

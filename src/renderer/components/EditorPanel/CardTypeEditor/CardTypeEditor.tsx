@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProjectFiles, ProjectCardType, Project } from '../../../services/Project';
 import TabNav, { TabNavItem, TabNavHeaderPosition } from '../../Misc/TabNav/TabNav';
-import CodeEditor from '../CodeEditor/CodeEditor';
+import CodeEditor from '../CodeEditor';
 
 import './CardTypeEditor.scss';
 

@@ -8,7 +8,7 @@ export type HTMLViewerProps = {
     url: string | null | undefined
 }
 
-export class HTMLViewer extends React.Component<HTMLViewerProps>{
+export default class HTMLViewer extends React.Component<HTMLViewerProps>{
 
 
     private externalWindow:BrowserWindow | null = null;

@@ -1,6 +1,6 @@
 import './PageNav.scss';
 import React from 'react';
-import Checkbox from '../Checkbox/Checkbox';
+import Checkbox from '../Checkbox';
 import { ProjectPageSelection } from '../../../services/Project';
 import _ from 'lodash';
 

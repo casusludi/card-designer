@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProjectFiles, ProjectLayout } from '../../../services/Project';
 import TabNav, { TabNavItem, TabNavHeaderPosition } from '../../Misc/TabNav/TabNav';
-import CodeEditor from '../CodeEditor/CodeEditor';
+import CodeEditor from '../CodeEditor';
 
 import './LayoutEditor.scss';
 import { projectLayoutRawConfigChanged } from '../../../redux/project';

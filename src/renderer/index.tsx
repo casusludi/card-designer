@@ -21,7 +21,7 @@ import rootSaga from './redux/saga';
 import '../../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import './styles/index.scss';
 import { openLastProject, Project } from './services/Project';
-import App, { AppUI } from './components/App/App';
+import App, { AppUI } from './components/App';
 
 import _ from 'lodash';
 

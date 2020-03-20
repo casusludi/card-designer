@@ -7,6 +7,7 @@ import Checkbox from "../../../Misc/Checkbox";
 import _ from "lodash";
 import Select from "../../../Misc/Select";
 import { InputSize } from "../../../Misc/Input/Input";
+import { createClassName } from "../../../../utils";
 
 type CSSDimensionViewProps = {
     name: string
@@ -50,7 +51,7 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
      console.log(props.fonts);
 
     return (
-        <div className={"CardTypeBoxEditor" + (props.className ? " " + props.className : "")}>
+        <div className={createClassName("CardTypeBoxEditor",{},[props.className])}>
             {box ?
                 <div className="ContentWithColumn">
                     <div className="ContentWithColumn">

@@ -16,7 +16,7 @@ import { serveHtml, pathToURL } from "../../../utils";
 import CardTypeCanvasLayout from './CardTypeCanvasLayout.njk';
 import CardTypeBoxEditor from "./CardTypeBoxEditor";
 import Select from "../../Misc/Select";
-import PopoverPicker from "../../Misc/PopoverPicker/PopoverPicker";
+import PopoverPicker from "../../Misc/PopoverPicker";
 import { SelectOptionsArray, SelectOptionsArrayItem } from "../../Misc/Select/Select";
 
 type CardFaceCanvasProps = {

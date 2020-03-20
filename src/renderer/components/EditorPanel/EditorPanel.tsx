@@ -2,7 +2,7 @@ import React from "react";
 import TabNav, { TabNavItem } from "../Misc/TabNav/TabNav";
 import "./EditorPanel.scss";
 import { Project, RenderFilter, ProjectSelection, ProjectPageSelection, getDataBySourceTypeAndCardType } from "../../services/Project";
-import ConfigEditor from "./ConfigEditor/ConfigEditor";
+import ConfigEditor from "./ConfigEditor";
 import { connect } from "react-redux";
 import { ApplicationState } from "../..";
 import { Dispatch } from "redux";
@@ -14,10 +14,10 @@ import CardTypeEditor from "./CardTypeEditor";
 import { ProjectSourceType, countCards } from "../../services/Project/Sources";
 import { prefAutoRenderFilterChanged } from "../../redux/preferences";
 import Select from "../Misc/Select/Select";
-import ExportEditor from "./ExportEditor/ExportEditor";
-import Checkbox from "../Misc/Checkbox/Checkbox";
+import ExportEditor from "./ExportEditor";
+import Checkbox from "../Misc/Checkbox";
 import { EditorPreferences } from "../../services/Preferences";
-import PageNav from "../Misc/PageNav/PageNav";
+import PageNav from "../Misc/PageNav";
 import LayoutEditor from "./LayoutEditor";
 
 export type EditorPanelProps = {

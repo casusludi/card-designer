@@ -16,6 +16,7 @@ import uuidv1 from "uuid/v1";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { projectSaving } from "../../../redux/project";
+import { createClassName } from "../../../utils";
 
 export type CodeEditorProps = {
     instanceId: string
@@ -138,7 +139,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState>{
 
     render() {
         return (
-            <div className={"CodeEditor" + (this.props.className ? ' ' + this.props.className : '')}>
+            <div className={createClassName("CodeEditor",{},[this.props.className])}>
                 <div className="CodeEditor__background full-space" onClick={this.backGroundOnClick.bind(this)} ></div>
                 <div className="CodeEditor__path">{this.props.path}</div>
                 <AceEditor

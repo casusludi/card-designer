@@ -1,7 +1,7 @@
 import './CardTypeBoxView.scss';
 import React from 'react';
 import { CardTypeBox, CardTypeBoxType } from '../../../../services/Project';
-import { cssDimensionValue } from '../../../../utils';
+import { cssDimensionValue, createClassName } from '../../../../utils';
 
 
 
@@ -52,7 +52,7 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
     render() {
         const box = this.props.data;
         return (
-            <div className={"CardTypeBoxView" + (this.props.selected ? ' CardTypeBoxView_selected' : '')} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
+            <div className={createClassName("CardTypeBoxView",{'CardTypeBoxView_selected':this.props.selected})} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
                 <div className="CardTypeBoxView__Ref" style={this.createBoxViewRefCSS()}>
                     {box.type == CardTypeBoxType.Text && `[${box.ref}]`}    
                 </div>

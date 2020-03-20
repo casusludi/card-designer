@@ -28,7 +28,7 @@ export default function ConfigEditor(props: ConfigEditorProps) {
         <div className="ConfigEditor full-space">
             <TabNav className="ConfigEditor__Tabs full-space" headerPosition={TabNavHeaderPosition.TOP} >
                 <TabNavItem label="Fonts">
-                    <ConfigFontListEditor config={props.config} />
+                    <ConfigFontListEditor className="full-space" config={props.config} />
                 </TabNavItem>
                 <TabNavItem label="Raw">
                     <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onValidChange} code={props.rawConfig} instanceId={props.instanceId} path={CARDMAKER_CONFIG_FILE} />

@@ -1,7 +1,7 @@
 import React from "react";
-import PDFViewer from "./PDFViewer/PDFViewer";
+import PDFViewer from "./PDFViewer";
 import TabNav, { TabNavItem, TabNavHeaderPosition } from "../Misc/TabNav/TabNav";
-import { HTMLViewer } from "./HTMLViewer/HTMLViewer";
+import HTMLViewer from "./HTMLViewer";
 import { Project } from "../../services/Project";
 import { PDFSource } from "./PDFViewer/PDFDocument";
 

@@ -7,12 +7,14 @@ import { ProjectConfig } from '../../../../services/Project';
 import _ from 'lodash';
 import Select from '../../../Misc/Select';
 import { InputSize } from '../../../Misc/Input/Input';
+import { createClassName } from '../../../../utils';
 
 
 
 
 export type ConfigFontListEditorProps = {
     config: ProjectConfig
+    className?:string
 }
 
 export type ConfigFontListEditorStats = {
@@ -51,7 +53,7 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
         const {systemFontList} = this.state;
         //console.log(projectFontList)
         return (
-            <div className="ConfigFontListEditor">
+            <div className={createClassName("ConfigFontListEditor",{},[this.props.className])}>
                 <div className="ConfigFontListEditor__projectFontList">
                 {projectFontList.map(font => 
                     <div key={font} className="ConfigFontListEditor_projectFontItem">

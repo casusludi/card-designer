@@ -2,6 +2,7 @@ import { ipcRenderer, remote, OpenDialogOptions, SaveDialogOptions } from 'elect
 
 import fse from 'fs-extra';
 import path from 'path';
+import _ from 'lodash';
 
 export type ServeOverrides = {[key:string]:string}
 
@@ -63,4 +64,20 @@ export function replacer(text:string, data:{[key:string]:string}) {
 export function pathToURL(filePath:string):string {
     if (filePath[0] != '/') filePath = '/' + filePath;
     return filePath.replace(/\\\\/g,'/').replace(/\\/g,'/')
+}
+
+export function createClassName(staticClasses:string,condClasses:{[key:string]:boolean}={},filteredClasses:Array<string|undefined|null>=[]):string{
+    let ret = staticClasses;
+    if(!_.isEmpty(condClasses)){
+        ret = _.reduce(condClasses,(str,o,k) => {
+            if(o && k){
+                str += " "+k;
+            }
+            return str
+        },ret)
+    }
+    if(!_.isEmpty(filteredClasses)){
+        ret += " "+_.reject(filteredClasses, o => !o).join(" ");
+    }
+    return ret;
 }

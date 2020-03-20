@@ -14,13 +14,13 @@
     <div class="card-list">
           {% for  card in cards %}
             {% if loop.first %}
-            <div class="card-group">
+            <div class="page">
             {% endif %}
-                 <div class="card-box">{{ card | template("recto") }}</div>
+                 <div class="card-wrapper">{{ card | template("recto") }}</div>
             {% if not loop.last %}
                 {% if (loop.index0 % 9) == 8 %}
             </div>
-            <div class="card-group">
+            <div class="page">
                 {% endif %}
             {% endif %}
             {% if loop.last %}

@@ -13,20 +13,15 @@ body
 
 
 @media print {
-    .card-group{ 
+    .page{ 
         break-before: page; 
     }
     
-
     @page {  
         size:63mm 88mm;
         margin: 0mm;
     }  
     
-}
-
-.card-group:not(:first-child){
-    /*margin-top: 3mm;*/
 }
 
 

@@ -1,5 +1,6 @@
 {
     "version":"1.0",
+    "name":"Printing House",
     "cardsPerPage":1,
     "template": "./template.njk",
     "styles": "./styles.css"

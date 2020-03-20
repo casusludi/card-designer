@@ -9,7 +9,7 @@ body
 }
 
 @media print {
-    .card-group{ break-before: page; }
+    .page{ break-before: page; }
     
 
     @page {  
@@ -19,13 +19,13 @@ body
     
 }
 
-.card-group{ 
+.page{ 
     display: flex;
     flex-flow: wrap;
     margin: 0.2mm 0 0 0.2mm;
 }
 
-.card-box {
+.card-wrapper {
     border: 0.2mm dashed  lightgray;
     margin:-0.2mm 0 0 -0.2mm;
 }

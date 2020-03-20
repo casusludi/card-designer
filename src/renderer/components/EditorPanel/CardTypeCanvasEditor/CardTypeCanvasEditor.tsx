@@ -2,7 +2,6 @@ import React from "react";
 import './CardTypeCanvasEditor.scss';
 import TabNav, { TabNavItem } from "../../Misc/TabNav/TabNav";
 import Input from "../../Misc/Input";
-import Checkbox from "../../Misc/Checkbox/Checkbox";
 import CardTypeBoxView from "./CardTypeBoxView";
 import { CardTypeCanvas, CardTypeBox, ProjectCardType, Project } from "../../../services/Project";
 import _ from "lodash";
@@ -96,8 +95,6 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         if (!_.isEqual(prevProps.cardType, this.props.cardType)) {
 
             this.throttledRenderAdvancedContent();
-
-
             this.setState({ cardTypeCanvas: this.props.cardType.canvas })
         }
 
@@ -213,6 +210,16 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         }
     }
 
+    onMainAttrChange(attr:string,value:any) {
+        this.setState({
+            cardTypeCanvas: {
+                ...this.state.cardTypeCanvas,
+                [attr]:value
+            }
+        })
+        
+    }
+
 
     onSelectBoxChange(index: number) {
         const box = this.state.cardTypeCanvas.boxes[index];
@@ -272,7 +279,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                             onBoxSelect={this.onBoxSelect.bind(this)}
                             onBGClick={this.onFaceBGClick.bind(this)}
                         />
-                        {this.state.cardTypeCanvas.haveVerso &&
+                        {this.props.cardType.config.haveVerso &&
                             <CardFaceCanvas
                                 label="Verso"
                                 width={this.state.cardTypeCanvas.width}
@@ -293,9 +300,8 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     <TabNavItem label="Card Settings">
                         <div className="ContentWithLine">
                             <div className="ContentWithLine__Line">
-                                <Input label="width : " labelOnTop={true} type="number" defaultValue={this.state.cardTypeCanvas.width} units="mm" />
-                                <Input label="height : " labelOnTop={true} type="number" defaultValue={this.state.cardTypeCanvas.height} units="mm" />
-                                <Checkbox label="With Verso" defaultChecked={this.state.cardTypeCanvas.haveVerso} />
+                                <Input label="width : " labelOnTop={true} type="number" defaultValue={this.state.cardTypeCanvas.width} units="mm" onChange={ value => this.onMainAttrChange("width",value)} />
+                                <Input label="height : " labelOnTop={true} type="number" defaultValue={this.state.cardTypeCanvas.height} units="mm" onChange={ value => this.onMainAttrChange("height",value)}  />
                             </div>
                         </div>
                     </TabNavItem>

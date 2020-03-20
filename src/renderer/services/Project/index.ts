@@ -24,14 +24,19 @@ export enum RenderFilter {
 }
 
 export type ProjectConfigCardType = {
+    version:string
+    name:string
     template: string
     styles: string
     canvas: string
     advanced:boolean
+    haveVerso: boolean
     base: string
 }
 
 export type ProjectConfigLayout = {
+    version:string
+    name:string
     cardsPerPage: number
     template: string
     styles: string
@@ -227,7 +232,6 @@ export type CardTypeBox = {
 export type CardTypeCanvas = {
     width: number
     height: number
-    haveVerso: boolean
     boxes: Array<CardTypeBox>
     variants: Array<string>
 }

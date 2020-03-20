@@ -1,7 +1,9 @@
 {
     "version":"1.0",
+    "name":"Default",
     "template": "./template.njk",
     "styles": "./styles.css",
     "canvas": "./canvas.json",
-    "advanced":true
+    "advanced":true,
+    "haveVerso":true
 }

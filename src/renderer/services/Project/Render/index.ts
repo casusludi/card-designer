@@ -150,6 +150,7 @@ export async function renderSelectionToHtml(project: Project, selection: Project
         },
         {
             base: layout.base,
+            haveVerso:cardType.config.haveVerso,
             layoutCSSPath: layout.styles || '',
             templateCSSPath: cardType.config.advanced?(cardType.styles || ''):''
         },

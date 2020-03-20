@@ -130,8 +130,8 @@ function EditorPanel(props: EditorPanelProps) {
                                 No data found in source <b>{props.ui.selection.sourceType}</b> for Card Type <b>{props.ui.selection.cardTypeId}</b>
                             </div>}
                         {props.ui.selection && <div className="ContentWithLine__Line">
-                            <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} value={props.ui.selection?.cardTypeId} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes, (o, k) => ({ label: k, value: k }))} />
-                            <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.ui.selection?.layoutId} onChange={selectedLayoutChanged} options={_.map(props.project.layouts, (o, k) => ({ label: k, value: k }))} />
+                            <Select id="ActionBar__TemplateSelect-select" label="Card Type" labelOnTop={true} value={props.ui.selection?.cardTypeId} onChange={selectedTemplateChanged} options={_.map(props.project.cardTypes, (o, k) => ({ label: o.config.name || k, value: k }))} />
+                            <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.ui.selection?.layoutId} onChange={selectedLayoutChanged} options={_.map(props.project.layouts, (o, k) => ({ label: o.config.name || k, value: k }))} />
                             <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} value={props.ui.selection?.sourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
                             <div className="ActionBar__RenderingBox button-bar">
                                 <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>

@@ -29,7 +29,6 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
 
     async loadSystemFontList(){
         const list = await fontList.getFonts();
-        console.log(list);
         this.setState({
             systemFontList:list
         })
@@ -42,7 +41,7 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
     removeFont(font:string){
         const fonts = _.reject(this.props.config.fonts, o => o == font);
 
-        console.log(fonts)
+        //console.log(fonts)
     }
 
 
@@ -50,7 +49,7 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
     render(){
         const projectFontList = _.uniq(this.props.config.fonts) || [];
         const {systemFontList} = this.state;
-        console.log(projectFontList)
+        //console.log(projectFontList)
         return (
             <div className="ConfigFontListEditor">
                 <div className="ConfigFontListEditor__projectFontList">

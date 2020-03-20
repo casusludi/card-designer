@@ -13,12 +13,14 @@
 <body class="basic">
     <div class="card-list">
           {% for  card in cards %}
-            <div class="card-group">
+            <div class="page">
                 {{ card | template("recto") }}
             </div>
-            <div class="card-group">
+            {% if haveVerso %}
+            <div class="page">
                 {{ card | template("verso") }}
             </div>
+            {% endif %}
         {% endfor %}
     </div>
 </body>

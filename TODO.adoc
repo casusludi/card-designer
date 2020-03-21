@@ -9,6 +9,7 @@
 
 == Global Config
     - Convert config raw file in UI
+    - Fix Project Font List Scroll
 
 == Various UI
     - Fix bug : wrong size a the panel width when opening app

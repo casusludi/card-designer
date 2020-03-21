@@ -16,3 +16,7 @@
 
 == Source JSON 
     - Add reload data when external json source file change (with chokidar)
+
+== Doc
+    - Rename app in Card Designer
+    - Complete doc

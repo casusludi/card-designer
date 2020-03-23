@@ -1,7 +1,7 @@
 import './CardTypeBoxView.scss';
 import React from 'react';
 import { CardTypeBox, CardTypeBoxType } from '../../../../services/Project';
-import { cssDimensionValue, createClassName } from '../../../../utils';
+import { cssDimensionValue, createClassName, cssZIndexValue } from '../../../../utils';
 
 type CardTypeBoxViewProps = {
     data: CardTypeBox
@@ -20,7 +20,7 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
             right: cssDimensionValue(this.props.data.right),
             width: cssDimensionValue(this.props.data.width),
             height: cssDimensionValue(this.props.data.height),
-
+            zIndex: cssZIndexValue(this.props.data.zIndex,""),
         }
 
     }

@@ -203,7 +203,7 @@ export enum Overflow {
     Hidden = "hidden",
 }
 
-export type CardTypeBoxText = {
+export type CardTypeBoxTextData = {
     color: string
     font:string,
     weight: FontWeight | number
@@ -215,12 +215,16 @@ export type CardTypeBoxText = {
     custom:string
 }
 
+export type CardTypeBoxImageData = {
+
+    custom:string
+}
+
 export type Dimension = number | "auto" ;
 
-export type CardTypeBox = {
+type CardTypeBoxCore = {
     ref: string // | string[] // variable name
     face: string
-    type: CardTypeBoxType
     variants: Array<string>
     top: Dimension
     left: Dimension
@@ -228,8 +232,21 @@ export type CardTypeBox = {
     right: Dimension
     width: Dimension
     height: Dimension
-    data: CardTypeBoxText
+    zIndex:number
 }
+
+type CardTypeBoxText = CardTypeBoxCore & {
+    type:CardTypeBoxType.Text
+    data:CardTypeBoxTextData
+}
+
+type CardTypeBoxImage = CardTypeBoxCore & {
+    type:CardTypeBoxType.Image
+    data:CardTypeBoxImageData
+}
+
+export type CardTypeBox = CardTypeBoxText | CardTypeBoxImage
+export type CardTypeBoxData = CardTypeBoxTextData | CardTypeBoxImageData
 
 export type CardTypeCanvas = {
     width: number
@@ -513,4 +530,46 @@ export const renderSelectionAsHtml = renderSelectionToHtml
 
 export function getDataBySourceTypeAndCardType(project:Project,sourceType:ProjectSourceType,cardTypeId:string) {
     return  _.chain(project.data[sourceType]?.data).find( o => o.id == cardTypeId).value();
+}
+
+function createDefaultCanvasBoxData(type:CardTypeBoxType):CardTypeBoxData{
+    switch(type){
+        default:
+        case CardTypeBoxType.Text :
+            return {
+                color: "#000000",
+                font:"inherit",
+                weight: FontWeight.Normal,
+                style: FontStyle.Normal,
+                align: TextAlign.Left,
+                size: 12,
+                lineHeight: 1,
+                overflow:Overflow.Visible,
+                custom:""
+            } as CardTypeBoxTextData;
+        case CardTypeBoxType.Image : 
+            return {
+
+            } as CardTypeBoxImageData
+    }
+}   
+
+export function createDefaultCanvasBox(type:CardTypeBoxType,variant:string):CardTypeBox{
+
+    return {
+        ref:"",
+        face:"recto",
+        variants:variant!="default"?[variant]:[],
+        // @todo find a better way ti cast CardTypeBoxType on CardTypeBoxType.Image and CardTypeBoxType.Text
+        type: type as any,
+        top: 5,
+        left: 5,
+        bottom: "auto",
+        right:"auto",
+        width:"auto",
+        height:"auto",
+        zIndex: 10,
+        data: createDefaultCanvasBoxData(type)
+    }
+ 
 }

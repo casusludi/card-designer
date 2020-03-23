@@ -3,7 +3,7 @@ import './CardTypeCanvasEditor.scss';
 import TabNav, { TabNavItem } from "../../Misc/TabNav/TabNav";
 import Input from "../../Misc/Input";
 import CardTypeBoxView from "./CardTypeBoxView";
-import { CardTypeCanvas, CardTypeBox, ProjectCardType, Project } from "../../../services/Project";
+import { CardTypeCanvas, CardTypeBox, ProjectCardType, Project, CardTypeBoxType, createDefaultCanvasBox } from "../../../services/Project";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -18,6 +18,8 @@ import CardTypeBoxEditor from "./CardTypeBoxEditor";
 import Select from "../../Misc/Select";
 import PopoverPicker from "../../Misc/PopoverPicker";
 import { SelectOptionsArray, SelectOptionsArrayItem } from "../../Misc/Select/Select";
+import PopoverMenu from "../../Misc/PopoverMenu";
+import { remote } from "electron";
 
 type CardFaceCanvasProps = {
     label: string
@@ -222,7 +224,10 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
 
 
     onSelectBoxChange(index: number) {
-        const box = this.state.cardTypeCanvas.boxes[index];
+     
+        const boxes = this.state.cardTypeCanvas.boxes;
+        const boxesByVariant = this.getBoxesByVariant(boxes,this.state.selectedVariant);
+        const box = boxesByVariant[index];
         this.setState({
             selectedBox: box,
             selectedBoxIndexInVariant: index,
@@ -236,6 +241,55 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
             selectedBox: null,
             selectedVariant: variant,
             selectedBoxVariantIndex: index,
+        })
+    }
+
+    onAddBoxSelect(type:CardTypeBoxType){
+        const box = createDefaultCanvasBox(type,this.state.selectedVariant);
+        const boxes = [...this.state.cardTypeCanvas.boxes,box];
+        const boxesByVariant = this.getBoxesByVariant(boxes,this.state.selectedVariant);
+        this.setState({
+            selectedBox: box,
+            selectedBoxIndexInVariant: _.findIndex(boxesByVariant, box),
+            cardTypeCanvas: {
+                ...this.state.cardTypeCanvas,
+                boxes
+            }
+        })
+    }
+
+    async onRemoveBoxButtonClick(){
+        if(!this.state.selectedBox) return;
+        const options  = {
+            buttons: ["Yes","No"],
+            message: "Do you really want remove the current box?"
+           }
+        const response = await remote.dialog.showMessageBox(options);
+        if(response.response == 0){
+        const boxes = _.reject(this.state.cardTypeCanvas.boxes,o => o == this.state.selectedBox);
+            this.setState({
+                selectedBox: null,
+                selectedBoxIndexInVariant: -1,
+                cardTypeCanvas: {
+                    ...this.state.cardTypeCanvas,
+                    boxes
+                }
+            })
+        }
+    }
+
+    onDuplicateBoxButtonClick(){
+        if(!this.state.selectedBox) return;
+        const box = _.cloneDeep(this.state.selectedBox);
+        const boxes = [...this.state.cardTypeCanvas.boxes,box];
+        const boxesByVariant = this.getBoxesByVariant(boxes,this.state.selectedVariant);
+        this.setState({
+            selectedBox: box,
+            selectedBoxIndexInVariant: _.findIndex(boxesByVariant, box),
+            cardTypeCanvas: {
+                ...this.state.cardTypeCanvas,
+                boxes
+            }
         })
     }
 
@@ -260,6 +314,8 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         const boxVariantSelectOptions:SelectOptionsArray = _.map(this.state.cardTypeCanvas.variants, (o, k) => ({ label: o.toString(), value: k }))
         const boxVariantEmptyOption:SelectOptionsArrayItem = { label: DEFAULT_VARIANT, value: -1, disabled: false }
         const boxVariantList = _.map([DEFAULT_VARIANT,...this.state.cardTypeCanvas.variants], (o, k) => ({ label: o.toString(), value: o }))
+
+        const BoxTypeOptions = _.map(CardTypeBoxType, (o, k) => ({ label: `Add ${o} box`, value: o }))
         return (
             <div className="CardTypeCanvasEditor full-space">
                 <div className="CardTypeCanvasEditor__Header">
@@ -310,10 +366,15 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                             <div className="CardTypeCanvasEditor__BoxesActionBar">
                                 <Select className="CardTypeCanvasEditor__BoxesActionBar_selectRef" id="CardTypeCanvasEditor__BoxesActionBar_selectRef" label="Box" labelOnTop={false} value={this.state.selectedBoxIndexInVariant} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
                                 {selectedBox && <div className="CardTypeCanvasEditor__VariantPicker">
-                                    <div className="CardTypeCanvasEditor__VariantValues">Variants : {selectedBox.variants.length == 0?'All':selectedBox.variants.join(',')}</div>
+                    <div className="CardTypeCanvasEditor__VariantValues">Type : {selectedBox.type}, Variants : {selectedBox.variants.length == 0?'All':selectedBox.variants.join(',')}</div>
                                     <PopoverPicker options={boxVariantList} values={selectedBox.variants} onChange={ (values:Array<string|number>) =>this.onVariantsChange(values as string[])}/>
                                 </div>}
-                                <button type="button" className="button"><i className="icon fas fa-plus"></i><span>Add a box</span></button>
+                                <div className="button-bar">
+                                    <PopoverMenu opener={(show => <button type="button" className="button" onClick={show}><i className="icon fas fa-plus"></i></button>)} items={BoxTypeOptions}  onSelect={ (values) =>this.onAddBoxSelect(values)}/>
+                                    
+                                    <button type="button" disabled={!selectedBox} className="button" onClick={this.onDuplicateBoxButtonClick.bind(this)}><i className="icon fas fa-clone"></i></button>
+                                    <button type="button" disabled={!selectedBox} className="button" onClick={this.onRemoveBoxButtonClick.bind(this)}><i className="icon fas fa-trash-alt"></i></button>
+                                </div>
                             </div>
                             <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onChange={this.onBoxChange.bind(this)} fonts={this.props.project.config.fonts} />
                         </div>

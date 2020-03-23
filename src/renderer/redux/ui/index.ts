@@ -1,14 +1,14 @@
 import { createAction, createReducer, PayloadAction, combineReducers } from '@reduxjs/toolkit';
 import {  Project, ProjectExportStatus, ProjectExportState, ProjectPageSelection,  ProjectSelection } from '../../services/Project';
 import { PDFSource } from '../../components/PreviewPanel/PDFViewer/PDFDocument';
-import { AppUI, AppUIOthers } from '../../components/App/App';
+import { AppUI, AppUIOthers } from '../../components/App';
 import { ProjectSourceType, FetchDataStatus } from '../../services/Project/Sources';
 import { projectOpenSucceeded, projectExportStateChanged, projectFetchData, projectFetchDataFailed, ProjectFetchDataPayload, projectFetchDataSucceeded, ProjectDataChangedPayload, projectRenderFailed, projectRendered, projectClosing} from '../project';
 
 import _ from 'lodash';
-import { AppUIEditor } from '../../components/EditorPanel/EditorPanel';
-import { AppUIPreview } from '../../components/PreviewPanel/PreviewPanel';
-import { AppUIExport } from '../../components/EditorPanel/ExportEditor/ExportEditor';
+import { AppUIEditor } from '../../components/EditorPanel';
+import { AppUIPreview } from '../../components/PreviewPanel';
+import { AppUIExport } from '../../components/EditorPanel/ExportEditor';
 
 export const uiEditorSelectedCardTypeChanged = createAction<{ cardTypeId: string }>("uiEditor/selectedTemplateChanged");
 export const uiEditorSelectedLayoutChanged = createAction<{ layoutId: string }>("uiEditor/selectedLayoutChanged");

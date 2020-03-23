@@ -6,6 +6,9 @@ import _ from "lodash";
 
 const PREF_KEY = 'preferences';
 
+export const DEFAULT_EDITOR_WITH = 670;
+export const DEFAULT_RENDER_FILTER = RenderFilter.ALL;
+
 export type LayoutPreferences = {
     editorWidth:number
 }

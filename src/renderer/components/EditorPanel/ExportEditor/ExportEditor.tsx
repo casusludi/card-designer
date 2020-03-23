@@ -1,4 +1,4 @@
-import { Project, ProjectExportStatus, ProjectExportState } from "../../../services/Project";
+import { Project, ProjectExportStatus } from "../../../services/Project";
 import React from "react";
 import './ExportEditor.scss';
 import Select from "../../Misc/Select/Select";
@@ -15,16 +15,13 @@ import ProgressBar from "../../Misc/ProgressBar";
 import { projectExport } from "../../../redux/project";
 import { ProjectExportPreferences, createDefaultExportPreferences } from "../../../services/Preferences";
 import Checkbox from "../../Misc/Checkbox";
+import { AppUIExport } from ".";
 
 export type ExportEditorProps = {
     project: Project | null
     preferences: ProjectExportPreferences | null
     dispatch: Dispatch
     ui: AppUIExport
-}
-
-export type AppUIExport = {
-    exportProgress: ProjectExportState
 }
 
 

@@ -31,9 +31,14 @@ export function showSaveDialog(options:SaveDialogOptions){
     return ipcRenderer.invoke("show-save-dialog",options)
 }
 
-export function cssDimensionValue(value: number | undefined | null | string): string {
+export function cssDimensionValue(value: number | undefined | null | string,unit:string='mm'): string {
     if (value === undefined || value === null || value === "auto") return "auto";
-    return `${value}mm`;
+    return `${value}${unit}`;
+}
+
+export function cssZIndexValue(value: number | undefined | null | "auto",unit:string='mm'): number | "auto" {
+    if (value === undefined || value === null || value === "auto") return "auto";
+    return value;
 }
 
 //export const fsreadFile = promisify(fs.readFile);

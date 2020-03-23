@@ -5,7 +5,7 @@ import { ProjectSelection, Project, CardTypeBox, getDataBySourceTypeAndCardType 
 import CardTypeCanvasBoxes from './CardTypeCanvasBoxes.njk';
 //@ts-ignore
 import CardTypeCanvasTemplate from './CardTypeCanvasTemplate.njk';
-import { cssDimensionValue } from '../../../utils';
+import { cssDimensionValue, cssZIndexValue } from '../../../utils';
 
 type MetaVariables = {
     [key: string]: (value: string, card: any, cards: Array<any>) => void
@@ -60,7 +60,7 @@ export function getBoxStyleFromType(box:CardTypeBox):any{
                 text-align: ${box.data.align};
                 line-height: ${box.data.lineHeight || 'normal'};
                 overflow: ${box.data.overflow || 'visible'};
-                ${box.data.custom}
+                ${box.data.custom || ''}
             `
     }
 
@@ -116,23 +116,6 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                         return o.variants.indexOf(card["_VARIANT"] || 'default') >= 0;
                     })
                     .map( o => {
-                        /*const style = {
-                            position: 'absolute',
-                            top:cssDimensionValue(o.top),
-                            left:cssDimensionValue(o.left),
-                            right:cssDimensionValue(o.right),
-                            bottom:cssDimensionValue(o.bottom),
-                            width:cssDimensionValue(o.width),
-                            height:cssDimensionValue(o.height),
-                            ...getBoxStyleFromType(o)
-                        }
-                        return {
-                            ...o,
-                            style:_.reduce(style,(str,o,k) => {
-                                str += `${k}:${o};`;
-                                return str
-                            },"")
-                        };*/
 
                         const style = `
                             position: absolute;
@@ -142,6 +125,7 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                             bottom:${cssDimensionValue(o.bottom)};
                             width:${cssDimensionValue(o.width)};
                             height:${cssDimensionValue(o.height)};
+                            z-index:${cssZIndexValue(o.zIndex)};
                             ${getBoxStyleFromType(o)}
                         `;
                         return {

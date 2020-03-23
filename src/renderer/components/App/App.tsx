@@ -17,7 +17,7 @@ import { prefEditorWidthChanged } from '../../redux/preferences';
 
 import { remote } from 'electron';
 import WindowControls from '../WindowControls';
-import { LayoutPreferences } from '../../services/Preferences';
+import { LayoutPreferences, DEFAULT_EDITOR_WITH } from '../../services/Preferences';
 import path from 'path';
 import Modal from '../Misc/Modal';
 import { AppUI } from '.';
@@ -113,7 +113,7 @@ class App extends Component<AppProps> {
 			this.props.layoutPreferences.editorWidth,
 			evt.clientX,
 			(val, diff) => {
-				this.props.dispatch(prefEditorWidthChanged({ editorWidth: Math.max(val - diff, 670) }))
+				this.props.dispatch(prefEditorWidthChanged({ editorWidth: Math.max(val - diff, DEFAULT_EDITOR_WITH) }))
 			}
 		)
 	}

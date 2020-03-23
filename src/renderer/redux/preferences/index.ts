@@ -1,6 +1,6 @@
 import { createAction, createReducer, combineReducers, PayloadAction } from "@reduxjs/toolkit";
 import { RenderFilter, ProjectSelection } from "../../services/Project";
-import { Preferences, ProjectExportPreferences, LayoutPreferences, EditorPreferences, AllProjectPreferences } from "../../services/Preferences";
+import { Preferences, ProjectExportPreferences, LayoutPreferences, EditorPreferences, AllProjectPreferences, DEFAULT_RENDER_FILTER, DEFAULT_EDITOR_WITH } from "../../services/Preferences";
 
 
 export const prefAutoRenderFilterChanged = createAction<{ autoRenderFilter: RenderFilter }>('pref/AutoRenderFilterChanged');
@@ -11,7 +11,7 @@ export const prefProjectExportChanged= createAction<{ projectPath:string,prefere
 export const prefProjectSelectionChanged= createAction<{ projectPath:string,selection : ProjectSelection }>('pref/projectSelectionChanged');
 
 const layoutPrefReducer = createReducer<LayoutPreferences>({
-    editorWidth: 600
+    editorWidth: DEFAULT_EDITOR_WITH
 }, {
     [prefLoaded.type]: (state,action:PayloadAction<{  preferences: Preferences }>) => action.payload.preferences.layout,
     [prefEditorWidthChanged.type]: (state,action:PayloadAction<{ editorWidth: number }>) => ({
@@ -21,7 +21,7 @@ const layoutPrefReducer = createReducer<LayoutPreferences>({
 })
 
 const editorPrefReducer = createReducer<EditorPreferences>({
-    autoRenderFilter: RenderFilter.ALL
+    autoRenderFilter: DEFAULT_RENDER_FILTER
 }, {
     [prefLoaded.type]: (state,action:PayloadAction<{  preferences: Preferences }>) => action.payload.preferences.editor,
     [prefAutoRenderFilterChanged.type]: (state,action:PayloadAction<{ autoRenderFilter: RenderFilter }>) => ({

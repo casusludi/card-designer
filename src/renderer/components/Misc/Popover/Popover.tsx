@@ -30,7 +30,9 @@ export default class Popover extends React.Component<PopoverProps,PopoverStats>{
         })
     }
 
-
+    close(){
+        this.setState({isOpened:false}) 
+    }
 
     render(){
 
@@ -38,7 +40,7 @@ export default class Popover extends React.Component<PopoverProps,PopoverStats>{
             <React.Fragment>
                 {this.props.opener(this.openPopover.bind(this))}
                 {this.state.isOpened  && <div className={"Popover"}>
-                    <div className="Popover__Background" onClick={()=> this.setState({isOpened:false})}></div>
+                    <div className="Popover__Background" onClick={()=> this.close()}></div>
                     <div className="Popover__Content" style={{
                         top:`${this.state.clientY}px`,
                         left:`${this.state.clientX}px`

@@ -5,6 +5,10 @@
     overflow: hidden;
 }
 
+.CardTypeBoxEditor_FirstCol {
+    border-right: 1px solid $medium-grey;
+}
+
 .CardTypeBoxEditor__Content {
     height: 100%;
     box-sizing: border-box;

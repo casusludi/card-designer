@@ -44,7 +44,7 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
     function onDataValueChange(name: string, value: any) {
         if( props.onChange){
             const data = {...box.data,[name]: value};
-            const updatedBox = { ...box, data };
+            const updatedBox:any = { ...box, data };
             props.onChange(updatedBox,box);
 
         }
@@ -54,11 +54,12 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
         <div className={createClassName("CardTypeBoxEditor",{},[props.className])}>
             {box ?
                 <div className="ContentWithColumn CardTypeBoxEditor__Content">
-                    <div className="ContentWithColumn">
+                    <div className="ContentWithColumn CardTypeBoxEditor_FirstCol">
                         <div className="ContentWithColumn__Col">
                             <CSSDimensionView name="top" value={box.top} onChange={onMainValueChange} />
                             <CSSDimensionView name="left" value={box.left} onChange={onMainValueChange} />
                             <CSSDimensionView name="width" value={box.width} onChange={onMainValueChange} />
+                            <Input size={InputSize.Small} label="Z-Index : " labelOnTop={true} type="text" pattern="/[.0-9]*|auto/"  defaultValue={box.zIndex} onChange={ value => onMainValueChange("zIndex",value)}  />
                         </div>
                         <div className="ContentWithColumn__Col">
                             <CSSDimensionView name="bottom" value={box.bottom} onChange={onMainValueChange} />
@@ -69,14 +70,14 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                     <div className="ContentWithLine CardTypeBoxEditor__DataBox">
                         <div className="ContentWithLine__Line">
                             <Input label="Ref" labelOnTop={true} type="text" defaultValue={box.ref} onChange={ value => onMainValueChange("ref",value)} />
-                            <Select size={InputSize.Small} label="Type" labelOnTop={true} value={box.type} options={_.map(CardTypeBoxType, (o, k) => ({ label: o, value: o }))} onChange={ value => onMainValueChange("type",value)} />
+                            {/*<Select size={InputSize.Small} label="Type" labelOnTop={true} value={box.type} options={_.map(CardTypeBoxType, (o, k) => ({ label: o, value: o }))} onChange={ value => onMainValueChange("type",value)} />*/}
                             <Checkbox label="On Verso" defaultChecked={box.face == "verso"} onChange={ value => onMainValueChange("face",value?"verso":"recto")} />
                         </div>
                         {box.type == CardTypeBoxType.Text && <React.Fragment>
                             <div className="ContentWithLine__Line">
                                 <Input size={InputSize.Small} label="Color : " labelOnTop={true} type="color" defaultValue={box.data.color} onChange={ value => onDataValueChange("color",value)}  />
                                 <Input size={InputSize.Small} label="Size : "  labelOnTop={true} type="text" pattern="/[.0-9]*/" defaultValue={box.data.size} onChange={ value => onDataValueChange("size",value)}  />
-                                <Select size={InputSize.Normal} label="Font" labelOnTop={true} value={box.data.font} options={_.map(props.fonts, (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("font",value)} />
+                                <Select size={InputSize.Normal} label="Font" labelOnTop={true} value={box.data.font} options={_.map(["inherit",...props.fonts], (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("font",value)} />
                                 <Input size={InputSize.Small} label="Line Height : "  labelOnTop={true} type="text" pattern="/[.0-9]*/" defaultValue={box.data.lineHeight} onChange={ value => onDataValueChange("lineHeight",value)}  />
                             </div>
                             <div className="ContentWithLine__Line">
@@ -89,6 +90,11 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                                 <Panel label="Custom CSS" className="CardTypeBoxEditor__CustomEditor">
                                     <CodeEditor instanceId={box.data} code={box.data.custom} onChange={value => onDataValueChange("custom",value)}/>
                                 </Panel>
+                            </div>
+                        </React.Fragment>}
+                        {box.type == CardTypeBoxType.Image && <React.Fragment>
+                            <div className="ContentWithLine__Line">
+                                  @Todo                                      
                             </div>
                         </React.Fragment>}
 

@@ -1,7 +1,7 @@
 import { FetchDataStatus } from '../../services/Project/Sources';
 import { AppUIEditor } from '../EditorPanel';
 import { AppUIPreview } from '../PreviewPanel';
-import { AppUIExport } from '../EditorPanel/ExportEditor/ExportEditor';
+import { AppUIExport } from '../EditorPanel/ExportEditor';
 
 export {default} from './App';
 

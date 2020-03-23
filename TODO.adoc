@@ -1,18 +1,18 @@
 = TODO
 
 == Card Type Canvas
-    - Add / Remove a box
+    - [✔] Add / Remove a box
     - Add / Remove a variant
     - Image type box
     - Convert config raw file in UI
-    - Add z-index attribut to box
+    - [✔] Add z-index attribut to box
 
 == Global Config
     - Convert config raw file in UI
     - Fix Project Font List Scroll
 
 == Various UI
-    - Fix bug : wrong size a the panel width when opening app
+    - [✔] Fix bug : wrong size a the panel width when opening app
     - Add Tooltips
 
 == Source JSON 

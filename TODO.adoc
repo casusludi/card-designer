@@ -6,6 +6,7 @@
     - Image type box
     - Convert config raw file in UI
     - [✔] Add z-index attribut to box
+    - Improve color picker (add hexa)
 
 == Global Config
     - Convert config raw file in UI

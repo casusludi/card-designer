@@ -146,8 +146,8 @@ export async function renderSelectionToHtml(project: Project, selection: Project
         cards,
         {
             base: cardType.base || '',
-            cardTypeWidth:cardType.canvas.width,
-            cardTypeHeight:cardType.canvas.height,
+            cardTypeWidth:cardType.config.width,
+            cardTypeHeight:cardType.config.height,
         },
         {
             base: layout.base,

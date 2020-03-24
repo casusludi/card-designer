@@ -5,5 +5,7 @@
     "styles": "./styles.css",
     "canvas": "./canvas.json",
     "advanced":true,
+    "width": 63,
+    "height": 87.5,
     "haveVerso":true
 }

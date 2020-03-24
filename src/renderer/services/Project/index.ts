@@ -32,6 +32,8 @@ export type ProjectConfigCardType = {
     canvas: string
     advanced:boolean
     haveVerso: boolean
+    width: number
+    height: number
     base: string
 }
 
@@ -250,8 +252,6 @@ export type CardTypeBox = CardTypeBoxText | CardTypeBoxImage
 export type CardTypeBoxData = CardTypeBoxTextData | CardTypeBoxImageData
 
 export type CardTypeCanvas = {
-    width: number
-    height: number
     boxes: Array<CardTypeBox>
     variants: Array<string>
 }

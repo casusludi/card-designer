@@ -101,14 +101,14 @@ function EditorPanel(props: EditorPanelProps) {
             {props.project ?
                 <React.Fragment>
                     <TabNav className="EditorPanel__Tabs" >
-                        <TabNavItem label="Config">
-                            <ConfigEditor width={props.width} config={props.project.config} rawConfig={props.project.rawConfig} onValidChange={onConfigValidChange} instanceId={props.project.path} />
-                        </TabNavItem>
                         <TabNavItem label="Card Type">
                             <CardTypeEditor width={props.width} cardType={props.ui.selection?.cardTypeId?props.project.cardTypes[props.ui.selection?.cardTypeId]:null} files={props.project.files} onFileChanged={onFileChanged} project={props.project} />
                         </TabNavItem>
                         <TabNavItem label="Layout">
                             <LayoutEditor width={props.width} layout={props.ui.selection?.layoutId?props.project.layouts[props.ui.selection?.layoutId]:null} files={props.project.files} onFileChanged={onFileChanged} />
+                        </TabNavItem>
+                        <TabNavItem label="Config">
+                            <ConfigEditor width={props.width} config={props.project.config} rawConfig={props.project.rawConfig} onValidChange={onConfigValidChange} instanceId={props.project.path} />
                         </TabNavItem>
                         <TabNavItem label="Export">
                             <ExportEditor />

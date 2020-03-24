@@ -69,8 +69,11 @@ export default class Popover extends React.Component<PopoverProps,PopoverStats>{
     }
 
     updateRefContent(ref:HTMLElement | null){
-        this.content = ref;
-        this.updateContentPosition()
+        // check needed to skip reposition content when opener position changed
+        if(ref && this.content != ref){
+            this.content = ref;
+            this.updateContentPosition()
+        }
     }
 
     render(){

@@ -17,7 +17,7 @@
 
 .CardTypeCanvasEditor__Canvas {
     overflow: auto;
-    height: calc( 52% - 40px);
+    height: calc( 60% - 40px);
     position: relative;
 
 }
@@ -44,7 +44,8 @@
 }
 
 .CardTypeCanvasEditor__Tabs {
-    height: calc(42% - 10px);
+    position: relative;
+    height: calc(40% - 10px);
     margin: 0 10px 10px 10px;
     box-sizing: border-box;
     
@@ -72,6 +73,13 @@
  
 }
 
+
+.CardTypeCanvasEditor__BoxesActionBar_Fixe {
+    flex: 0 0 auto;
+    display: flex;
+}
+
+
 .CardTypeCanvasEditor__CardTypeBoxEditor.CardTypeBoxEditor{
     position: absolute;
     top: 40px;
@@ -85,19 +93,36 @@
 
 .CardTypeCanvasEditor__VariantPicker {
     display: flex;
+    justify-content: center;
     align-items: center;
-    max-width: 50%;
+    flex: 1;
+    overflow: hidden;
+    padding: 0 5px;
 }
 
 .CardTypeCanvasEditor__VariantValues {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 80%;
 }
 
 .CardTypeCanvasEditor__VariantActionBar {
     margin-left: 10px;
+}
+
+.CardTypeCanvasEditor__TypeShow {
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+
+    & > i {
+        margin-right: 5px;
+    }
+
+
+        font-size: 1.2rem;
+        font-weight: bold;
+    
 }
 
 .CardTypeCanvasEditor__SelectAdd{

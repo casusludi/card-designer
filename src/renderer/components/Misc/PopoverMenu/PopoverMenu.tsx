@@ -3,7 +3,7 @@ import Popover from "../Popover";
 
 import './PopoverMenu.scss'
 
-export type PopoverMenuItem = { label: string, value: any, disabled?:boolean }
+export type PopoverMenuItem = { label: any, value: any, disabled?:boolean }
 export type PopoverMenuItemList = Array<PopoverMenuItem>
 
 export type PopoverMenuProps = {

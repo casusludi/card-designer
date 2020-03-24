@@ -22,6 +22,7 @@ import PopoverMenu from "../../Misc/PopoverMenu";
 import { remote } from "electron";
 import PopoverInput from "../../Misc/PopoverInput";
 import Button from "../../Misc/Button";
+import { APP_NAME } from "../../../utils/constants";
 
 type CardFaceCanvasProps = {
     label: string
@@ -263,6 +264,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
     async onRemoveBoxButtonClick() {
         if (!this.state.selectedBox) return;
         const options = {
+            title:APP_NAME,
             buttons: ["Yes", "No"],
             message: "Do you really want remove the current box?"
         }
@@ -299,27 +301,70 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         if (!this.state.selectedVariant) return;
         if (this.state.selectedVariant == CARD_TYPE_DEFAULT_VARIANT) return;
         const options = {
+            title:APP_NAME,
             buttons: ["Yes", "No"],
-            message: "Do you really want remove the variant?"
+            message: `Do you really want remove the variant "${this.state.selectedVariant}"?`
         }
         const response = await remote.dialog.showMessageBox(options);
+        const variantToDel = this.state.selectedVariant;
         if (response.response == 0) {
-            const variants = _.reject(this.state.cardTypeCanvas.variants, o => o == this.state.selectedVariant)
+            const variants = _.reject(this.state.cardTypeCanvas.variants, o => o == variantToDel)
+            const boxes:CardTypeBox[] = _.reduce(this.state.cardTypeCanvas.boxes, (list,o,k) => {
+                if(o.variants.indexOf(variantToDel) >= 0){
+                    if(o.variants.length == 1){
+                        // Do nothing to remove the box from the list
+                    }else{
+                        list.push({
+                            ...o,
+                            variants: _.reject(o.variants, v => v == variantToDel)
+                        })
+                    }
+                }else{
+                    list.push(o);
+                }
+                return list;
+            }, [] as CardTypeBox[])
             this.setState({
+                selectedBox:null,
+                selectedBoxIndexInVariant:-1,
                 selectedVariant: DEFAULT_VARIANT,
                 selectedBoxVariantIndex: _.findIndex(variants, DEFAULT_VARIANT),
                 cardTypeCanvas: {
                     ...this.state.cardTypeCanvas,
-                    variants
+                    variants,
+                    boxes
                 }
             })
         }
-        // @TODO remove references in boxes
     }
 
-    /*onEditVariantButtonClick() {
-
-    }*/
+    onEditVariantPopoverValidate(value:string|number) {
+        const newVariant = value.toString();
+        const oldVariant = this.state.selectedVariant;
+        if(newVariant != oldVariant && !_.isEmpty(newVariant)){
+            const variants = _.map(this.state.cardTypeCanvas.variants, o => o == oldVariant?newVariant:o);
+            const boxes:CardTypeBox[] = _.reduce(this.state.cardTypeCanvas.boxes, (list,o,k) => {
+                if(o.variants.indexOf(oldVariant) >= 0){
+                    list.push({
+                        ...o,
+                        variants: _.map(o.variants, v => v == oldVariant?newVariant:v)
+                    })
+                }else{
+                    list.push(o);
+                }
+                return list;
+            }, [] as CardTypeBox[])
+            this.setState({
+                selectedVariant: newVariant,
+                selectedBoxVariantIndex: _.findIndex(variants, newVariant),
+                cardTypeCanvas: {
+                    ...this.state.cardTypeCanvas,
+                    variants,
+                    boxes
+                }
+            })
+        }
+    }
 
     onAddVariantPopoverValidate(value:string|number) {
         const variant = value.toString();
@@ -360,10 +405,13 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         return (
             <div className="CardTypeCanvasEditor full-space">
                 <div className="CardTypeCanvasEditor__Header">
-                    <Select id="CardTypeCanvasEditor__BoxesActionBar_selectVariant" disabled={boxVariantSelectOptions.length == 0} label="Variant" labelOnTop={false} value={this.state.selectedBoxVariantIndex} onChange={this.onSelectBoxVariantChange.bind(this)} emptyOption={boxVariantEmptyOption} options={boxVariantSelectOptions} />
-                    <div className="button-bar CardTypeCanvasEditor__VariantActionBar">
+                    <div className="CardTypeCanvasEditor__SelectAdd">
+                        <Select id="CardTypeCanvasEditor__BoxesActionBar_selectVariant" disabled={boxVariantSelectOptions.length == 0} label="Variant" labelOnTop={false} value={this.state.selectedBoxVariantIndex} onChange={this.onSelectBoxVariantChange.bind(this)} emptyOption={boxVariantEmptyOption} options={boxVariantSelectOptions} />
                         <PopoverInput opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} defaultValue={""} type="text" onValidate={this.onAddVariantPopoverValidate.bind(this)} />
-        {/*<Button fontIcon="fas fa-pencil-alt" disabled={this.state.selectedVariant == CARD_TYPE_DEFAULT_VARIANT} onClick={this.onEditVariantButtonClick.bind(this)} />*/}
+                    </div>
+                    <div className="button-bar CardTypeCanvasEditor__VariantActionBar">
+                       
+                        <PopoverInput key={this.state.selectedVariant}  opener={(show => <Button fontIcon="fas fa-pencil-alt" disabled={this.state.selectedVariant == CARD_TYPE_DEFAULT_VARIANT} onClick={show} />)} defaultValue={this.state.selectedVariant} type="text" onValidate={this.onEditVariantPopoverValidate.bind(this)} />
                         <Button fontIcon="fas fa-trash-alt" disabled={this.state.selectedVariant == CARD_TYPE_DEFAULT_VARIANT}  onClick={this.onRemoveVariantButtonClick.bind(this)} />
                     </div>
                 </div>
@@ -410,13 +458,16 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     <TabNavItem label="Boxes">
                         <div className="full-space">
                             <div className="CardTypeCanvasEditor__BoxesActionBar">
-                                <Select className="CardTypeCanvasEditor__BoxesActionBar_selectRef" id="CardTypeCanvasEditor__BoxesActionBar_selectRef" label="Box" labelOnTop={false} value={this.state.selectedBoxIndexInVariant} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
+                                <div className="CardTypeCanvasEditor__SelectAdd">
+                                    <Select className="CardTypeCanvasEditor__BoxesActionBar_selectRef" id="CardTypeCanvasEditor__BoxesActionBar_selectRef" label="Box" labelOnTop={false} value={this.state.selectedBoxIndexInVariant} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
+                                    <PopoverMenu opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} items={BoxTypeOptions} onSelect={(values) => this.onAddBoxSelect(values)} />
+                                </div>
                                 {selectedBox && <div className="CardTypeCanvasEditor__VariantPicker">
                                     <div className="CardTypeCanvasEditor__VariantValues">Type : {selectedBox.type}, Variants : {selectedBox.variants.length == 0 ? 'All' : selectedBox.variants.join(',')}</div>
                                     <PopoverPicker opener={(show) => <Button fontIcon="fas fa-pencil-alt" borderless={true} disabled={!selectedBox} onClick={(e) => show(e)} />} options={boxVariantList} values={selectedBox.variants} onChange={(values: Array<string | number>) => this.onVariantsChange(values as string[])} />
                                 </div>}
                                 <div className="button-bar">
-                                    <PopoverMenu opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} items={BoxTypeOptions} onSelect={(values) => this.onAddBoxSelect(values)} />
+                                
                                     <Button fontIcon="fas fa-clone" disabled={!selectedBox} onClick={this.onDuplicateBoxButtonClick.bind(this)} />
                                     <Button fontIcon="fas fa-trash-alt" disabled={!selectedBox} onClick={this.onRemoveBoxButtonClick.bind(this)} />
                                 </div>

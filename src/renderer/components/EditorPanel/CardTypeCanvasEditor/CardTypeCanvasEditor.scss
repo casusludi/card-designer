@@ -9,6 +9,7 @@
 .CardTypeCanvasEditor__Header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     height: 30px;
     padding: 5px;
     border-bottom: 1px solid $medium-grey;
@@ -97,4 +98,11 @@
 
 .CardTypeCanvasEditor__VariantActionBar {
     margin-left: 10px;
+}
+
+.CardTypeCanvasEditor__SelectAdd{
+    display: flex;
+    & > :first-child {
+        margin-right: 5px;
+    }
 }

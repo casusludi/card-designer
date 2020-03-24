@@ -12,14 +12,6 @@
 == Global Config
     - Convert config raw file in UI
     - Fix Project Font List Scroll
-    - Font System Manager : don't get all fonts in the OS : to fix 
-        to try : 
-            - https://www.npmjs.com/package/util.fontlist 
-            - https://github.com/princjef/get-system-fonts 
-            - https://www.npmjs.com/package/system-font-families
-            - https://www.npmjs.com/package/system-font-families?activeTab=readme
-            - https://www.npmjs.com/package/system-font-stack/v/1.0.2
-            - https://www.npmjs.com/package/font-manager (dont work in the first test)
 
 == Various UI
     - [✔] Fix bug : wrong size a the panel width when opening app

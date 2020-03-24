@@ -36,7 +36,7 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
     }
 
     async loadSystemFontList() {
-        const list:string[] = (await fontList.getFonts()).map((o:string) => o.replace(/"/g,""));
+        const list:string[] = (await fontList.getFonts()).map((o:string) => o.replace(/"/g,"")).sort();
         this.setState({
             systemFontList: list,
             selectedSystemFont: _.isEmpty(this.state.selectedSystemFont)?(list[0] || ""):this.state.selectedSystemFont
@@ -104,6 +104,7 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
                         <div className="ConfigFontListEditor__SourceSystem">
                             <button type="button" className="button" onClick={this.loadSystemFontList.bind(this)} ><i className="fas fa-sync"></i></button>
                             <Select size={InputSize.Large} value={this.state.selectedSystemFont} options={_.map(systemFontList, (o, k) => ({ label: o, value: o }))} onChange={value => this.setState({ selectedSystemFont: value })} />
+                            <div className="ConfigFontListEditor__SourceSystemFounded">({systemFontList.length} found)</div>
                             <button type="button" className="button" onClick={this.addSystemFontToProject.bind(this)} disabled={this.fontIsInProject(this.state.selectedSystemFont)} >Add to project</button>
                         </div>
                     </Panel>

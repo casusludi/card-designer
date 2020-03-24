@@ -47,8 +47,14 @@
 
 .ConfigFontListEditor__SourceSystem{
     display: flex;
+    align-items: center;
 
     & > *:not(:first-child) {
         margin-left: 5px;
     }
+}
+
+.ConfigFontListEditor__SourceSystemFounded {
+    font-style: italic;
+    font-size: 0.7rem;
 }

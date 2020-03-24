@@ -7,6 +7,7 @@ import _ from "lodash";
 
 
 export type PopoverPickerProps = {
+    opener:(open:(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>void) => any
     options:SelectOptionsArray
     values:Array<string|number>
     onChange?:(values:Array<string|number>) => void
@@ -42,7 +43,7 @@ export default class PopoverPicker extends React.Component<PopoverPickerProps,Po
 
     render(){
         return (
-            <Popover opener={(show) => <button type="button" className="button button-about button-frameless" onClick={(e) => show(e)}><i className="fas fa-pencil-alt"></i></button>} >
+            <Popover opener={this.props.opener} >
                 <div className="PopoverPicker">
                     {this.props.options.map( (o:SelectOptionsArrayItem,i) => <Checkbox key={i} label={o.label} checked={this.state.values.indexOf(o.value) >= 0} onChange={(checked) => this.onCheckChange(o,checked)} />)}
                 </div>

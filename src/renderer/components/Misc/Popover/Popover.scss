@@ -21,6 +21,7 @@
 .Popover__Content {
     position: absolute;
     background: $dark-grey;
+    border: 1px solid $medium-grey;
     z-index: 9;
     box-shadow: 0px 2px 4px 1px #000000;
 }

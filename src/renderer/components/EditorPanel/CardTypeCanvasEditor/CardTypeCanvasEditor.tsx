@@ -3,7 +3,7 @@ import './CardTypeCanvasEditor.scss';
 import TabNav, { TabNavItem } from "../../Misc/TabNav/TabNav";
 import Input from "../../Misc/Input";
 import CardTypeBoxView from "./CardTypeBoxView";
-import { CardTypeCanvas, CardTypeBox, ProjectCardType, Project, CardTypeBoxType, createDefaultCanvasBox } from "../../../services/Project";
+import { CardTypeCanvas, CardTypeBox, ProjectCardType, Project, CardTypeBoxType, createDefaultCanvasBox, CARD_TYPE_DEFAULT_VARIANT } from "../../../services/Project";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -296,31 +296,42 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
     }
 
     async onRemoveVariantButtonClick() {
-        /*if (!this.state.selectedBox) return;
+        if (!this.state.selectedVariant) return;
+        if (this.state.selectedVariant == CARD_TYPE_DEFAULT_VARIANT) return;
         const options = {
             buttons: ["Yes", "No"],
-            message: "Do you really want remove the current box?"
+            message: "Do you really want remove the variant?"
         }
         const response = await remote.dialog.showMessageBox(options);
         if (response.response == 0) {
-            const boxes = _.reject(this.state.cardTypeCanvas.boxes, o => o == this.state.selectedBox);
+            const variants = _.reject(this.state.cardTypeCanvas.variants, o => o == this.state.selectedVariant)
             this.setState({
-                selectedBox: null,
-                selectedBoxIndexInVariant: -1,
+                selectedVariant: DEFAULT_VARIANT,
+                selectedBoxVariantIndex: _.findIndex(variants, DEFAULT_VARIANT),
                 cardTypeCanvas: {
                     ...this.state.cardTypeCanvas,
-                    boxes
+                    variants
                 }
             })
-        }*/
+        }
+        // @TODO remove references in boxes
     }
 
-    async onEditVariantButtonClick() {
+    /*onEditVariantButtonClick() {
 
-    }
+    }*/
 
-    async onAddVariantButtonClick() {
-
+    onAddVariantPopoverValidate(value:string|number) {
+        const variant = value.toString();
+        const variants = [...this.state.cardTypeCanvas.variants,variant]
+        this.setState({
+            selectedVariant: variant,
+            selectedBoxVariantIndex: variants.length-1,
+            cardTypeCanvas: {
+                ...this.state.cardTypeCanvas,
+                variants
+            }
+        })
     }
 
     getBoxesByVariant(boxes: CardTypeBox[], variant: string) {
@@ -350,10 +361,10 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
             <div className="CardTypeCanvasEditor full-space">
                 <div className="CardTypeCanvasEditor__Header">
                     <Select id="CardTypeCanvasEditor__BoxesActionBar_selectVariant" disabled={boxVariantSelectOptions.length == 0} label="Variant" labelOnTop={false} value={this.state.selectedBoxVariantIndex} onChange={this.onSelectBoxVariantChange.bind(this)} emptyOption={boxVariantEmptyOption} options={boxVariantSelectOptions} />
-                    <div className="button-bar">
-                        <PopoverInput opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} defaultValue={""} type="text" />
-                        <Button fontIcon="fas fa-pencil-alt" disabled={this.state.selectedVariant == "default"} onClick={this.onEditVariantButtonClick.bind(this)} />
-                        <Button fontIcon="fas fa-trash-alt" disabled={this.state.selectedVariant == "default"}  onClick={this.onRemoveVariantButtonClick.bind(this)} />
+                    <div className="button-bar CardTypeCanvasEditor__VariantActionBar">
+                        <PopoverInput opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} defaultValue={""} type="text" onValidate={this.onAddVariantPopoverValidate.bind(this)} />
+        {/*<Button fontIcon="fas fa-pencil-alt" disabled={this.state.selectedVariant == CARD_TYPE_DEFAULT_VARIANT} onClick={this.onEditVariantButtonClick.bind(this)} />*/}
+                        <Button fontIcon="fas fa-trash-alt" disabled={this.state.selectedVariant == CARD_TYPE_DEFAULT_VARIANT}  onClick={this.onRemoveVariantButtonClick.bind(this)} />
                     </div>
                 </div>
                 <div className="CardTypeCanvasEditor__Canvas">

@@ -4,6 +4,7 @@ import Popover from "../Popover";
 import './PopoverInput.scss'
 import _ from "lodash";
 import Input from "../Input";
+import Button from "../Button";
 
 
 export type PopoverInputProps = {
@@ -24,29 +25,31 @@ export default class PopoverInput extends React.Component<PopoverInputProps,Popo
         value : this.props.defaultValue
     }
 
-    componentDidUpdate(prevProps:PopoverInputProps){
-       /*if(!_.isEqual(this.props.values,prevProps.values)){
-            this.setState({
-                values: this.props.values
-            })
-        }*/
+    private popover:Popover |null = null;
+
+   
+    onValueChange(value:string|number){
+        this.setState({
+            value
+        })
     }
 
-    /*onCheckChange(option:SelectOptionsArrayItem,checked:boolean){
-        const values = (checked?_.uniq([...this.state.values,option.value]):_.reject(this.state.values,o => o == option.value)) as Array<string|number>;
-        this.setState({
-            values  
-        })
-        if(this.props.onChange){
-            this.props.onChange(values);
+    onValidateButtonClick(){
+        if(this.props.onValidate){
+            this.props.onValidate(this.state.value);
+            
         }
-    }*/
+        if(this.popover){
+            this.popover.close();
+        }
+    }
 
     render(){
         return (
-            <Popover opener={this.props.opener} >
+            <Popover opener={this.props.opener} ref={ref => this.popover = ref} >
                 <div className="PopoverInput">
-                    <Input type={this.props.type} pattern={this.props.pattern} defaultValue={this.props.defaultValue}/>
+                    <Input type={this.props.type} pattern={this.props.pattern} defaultValue={this.props.defaultValue} onChange={ this.onValueChange.bind(this) }/>
+                    <Button className="PopoverInput__ValidateButton" fontIcon="fas fa-check" onClick={this.onValidateButtonClick.bind(this)} />
                 </div>
             </Popover>
         )

@@ -15,6 +15,7 @@ const LAST_PROJECT_PATH_STORAGE_KEY = 'project:last:path';
 
 export const PROJECT_CACHE_FOLDER = '.cache';
 export const PROJECT_DEFAULT_TEMPLATE_PATH = 'templates/mtg-standard';
+export const CARD_TYPE_DEFAULT_VARIANT = "default";
 
 export enum RenderFilter {
     NONE,
@@ -559,7 +560,7 @@ export function createDefaultCanvasBox(type:CardTypeBoxType,variant:string):Card
     return {
         ref:"",
         face:"recto",
-        variants:variant!="default"?[variant]:[],
+        variants:variant!=CARD_TYPE_DEFAULT_VARIANT?[variant]:[],
         // @todo find a better way ti cast CardTypeBoxType on CardTypeBoxType.Image and CardTypeBoxType.Text
         type: type as any,
         top: 5,

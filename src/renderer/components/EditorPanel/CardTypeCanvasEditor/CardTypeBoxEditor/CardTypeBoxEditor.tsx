@@ -59,32 +59,34 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                             <CSSDimensionView name="top" value={box.top} onChange={onMainValueChange} />
                             <CSSDimensionView name="left" value={box.left} onChange={onMainValueChange} />
                             <CSSDimensionView name="width" value={box.width} onChange={onMainValueChange} />
-                            <Input size={InputSize.Small} label="Z-Index : " labelOnTop={true} type="text" pattern="/[.0-9]*|auto/"  defaultValue={box.zIndex} onChange={ value => onMainValueChange("zIndex",value)}  />
+                            <Input className="ContentWithColumn__ColItem_bottom" size={InputSize.Small} label="Z-Index : " labelOnTop={true} type="text" pattern="/[.0-9]*|auto/"  defaultValue={box.zIndex} onChange={ value => onMainValueChange("zIndex",value)}  />
                         </div>
                         <div className="ContentWithColumn__Col">
                             <CSSDimensionView name="bottom" value={box.bottom} onChange={onMainValueChange} />
                             <CSSDimensionView name="right" value={box.right} onChange={onMainValueChange} />
                             <CSSDimensionView name="height" value={box.height} onChange={onMainValueChange} />
+                            <Checkbox className="ContentWithColumn__ColItem_bottom" label="On Verso" defaultChecked={box.face == "verso"} onChange={ value => onMainValueChange("face",value?"verso":"recto")} />
                         </div>
                     </div>
                     <div className="ContentWithLine CardTypeBoxEditor__DataBox">
-                        <div className="ContentWithLine__Line">
-                            <Input label="Ref" labelOnTop={true} type="text" defaultValue={box.ref} onChange={ value => onMainValueChange("ref",value)} />
-                            {/*<Select size={InputSize.Small} label="Type" labelOnTop={true} value={box.type} options={_.map(CardTypeBoxType, (o, k) => ({ label: o, value: o }))} onChange={ value => onMainValueChange("type",value)} />*/}
-                            <Checkbox label="On Verso" defaultChecked={box.face == "verso"} onChange={ value => onMainValueChange("face",value?"verso":"recto")} />
-                        </div>
+                        
                         {box.type == CardTypeBoxType.Text && <React.Fragment>
                             <div className="ContentWithLine__Line">
-                                <Input size={InputSize.Small} label="Color : " labelOnTop={true} type="color" defaultValue={box.data.color} onChange={ value => onDataValueChange("color",value)}  />
+                                <Input label="Ref" labelOnTop={true} type="text" defaultValue={box.data.ref} onChange={ value => onDataValueChange("ref",value)} />                           
+                 
                                 <Input size={InputSize.Small} label="Size : "  labelOnTop={true} type="text" pattern="/[.0-9]*/" defaultValue={box.data.size} onChange={ value => onDataValueChange("size",value)}  />
                                 <Select size={InputSize.Normal} label="Font" labelOnTop={true} value={box.data.font} options={_.map(["inherit",...props.fonts], (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("font",value)} />
+                            </div>
+                            <div className="ContentWithLine__Line">
+                                <Input size={InputSize.Small} label="Color : " labelOnTop={true} type="color" defaultValue={box.data.color} onChange={ value => onDataValueChange("color",value)}  />
                                 <Input size={InputSize.Small} label="Line Height : "  labelOnTop={true} type="text" pattern="/[.0-9]*/" defaultValue={box.data.lineHeight} onChange={ value => onDataValueChange("lineHeight",value)}  />
+                                <Select size={InputSize.Small} label="Overflow" labelOnTop={true} value={box.data.overflow} options={_.map(Overflow, (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("overflow",value)} />
                             </div>
                             <div className="ContentWithLine__Line">
                                 <Select size={InputSize.Small} label="Style" labelOnTop={true} value={box.data.style} options={_.map(FontStyle, (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("style",value)} />
                                 <Select size={InputSize.Small} label="Weight" labelOnTop={true} value={box.data.weight} options={_.map(FontWeight, (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("weight",value)} />
                                 <Select size={InputSize.Small} label="Align" labelOnTop={true} value={box.data.align} options={_.map(TextAlign, (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("align",value)} />
-                                <Select size={InputSize.Small} label="Overflow" labelOnTop={true} value={box.data.overflow} options={_.map(Overflow, (o, k) => ({ label: o, value: o }))} onChange={ value => onDataValueChange("overflow",value)} />
+                               
                             </div>
                             <div className="ContentWithLine__Line">
                                 <Panel label="Custom CSS" className="CardTypeBoxEditor__CustomEditor">

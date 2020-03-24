@@ -1,7 +1,7 @@
 {% for box in boxes %}
 <div class="card-canvas-box" style="{{box.style}}">
     {% if box.type == "text" %}
-    {{card[box.ref]}}
+    {{card[box.data.ref]}}
     {% endif %}
 </div>
 {% endfor %}

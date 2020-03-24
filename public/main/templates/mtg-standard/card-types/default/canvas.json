@@ -4,8 +4,7 @@
     "haveVerso": true,
     "variants":["variant-01"],
     "boxes": [
-        {
-            "ref": "name",
+        {  
             "face":"recto",
             "type": "text",
             "top": 5,
@@ -16,6 +15,7 @@
             "bottom":"auto" ,
             "variants":["default"],
             "data": {
+                "ref": "name",
                 "color": "#ff0000",
                 "size": 12,
                 "weight": "bold",
@@ -24,7 +24,6 @@
             }
         },
         {
-            "ref": "name",
             "face":"recto",
             "type": "text",
             "top": "auto",
@@ -35,6 +34,7 @@
             "bottom":5 ,
             "variants":["variant-01"],
             "data": {
+                "ref": "name",
                 "color": "#ff0000",
                 "size": 12,
                 "weight": "bold",
@@ -43,7 +43,6 @@
             }
         },
         {
-            "ref": "desc",
             "face":"recto",
             "type": "text",
             "top": 20,
@@ -54,6 +53,7 @@
             "bottom":"auto" ,
             "variants":[],
             "data": {
+                "ref": "desc",
                 "color": "#ff0000",
                 "size": 12,
                 "weight": "bold",
@@ -62,7 +62,6 @@
             }
         },
         {
-            "ref": "verso_title",
             "face":"verso",
             "type": "text",
             "top": 30,
@@ -73,6 +72,7 @@
             "bottom":"auto" ,
             "variants":[],
             "data": {
+                "ref": "verso_title",
                 "color": "#ff0000",
                 "size": 12,
                 "weight": "bold",

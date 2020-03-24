@@ -383,6 +383,15 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         return _.filter(boxes, o => o.variants.length == 0 || o.variants.indexOf(variant) >= 0)
     }
 
+    createBoxLabel(box:CardTypeBox):string{
+        switch(box.type){
+            case CardTypeBoxType.Text:
+                return box.data.ref
+            case CardTypeBoxType.Image:
+                return "image"
+        }
+    }
+
     render() {
         // @ts-ignore
         // if we use selectedBox:CardTypeBox|null, TS define this.state.selectedBox only on null never in CardTypeBox
@@ -395,7 +404,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         const boxesByVariant = this.getBoxesByVariant(this.state.cardTypeCanvas.boxes, this.state.selectedVariant);
         const rectoBoxes = _.filter(boxesByVariant, ['face', 'recto'])
         const versoBoxes = _.filter(boxesByVariant, ['face', 'verso'])
-        const boxSelectOptions = _.map(boxesByVariant, (o, k) => ({ label: o.ref.toString(), value: k }))
+        const boxSelectOptions = _.map(boxesByVariant, (o, k) => ({ label: this.createBoxLabel(o), value: k }))
         const boxEmptyOption = { label: 'None', value: -1, disabled: true }
         const boxVariantSelectOptions: SelectOptionsArray = _.map(this.state.cardTypeCanvas.variants, (o, k) => ({ label: o.toString(), value: k }))
         const boxVariantEmptyOption: SelectOptionsArrayItem = { label: DEFAULT_VARIANT, value: -1, disabled: false }

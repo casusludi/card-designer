@@ -167,8 +167,12 @@
 }
 
 
-/*
-.ContentWithColumn__Col {
 
+.ContentWithColumn__Col {
+    display: flex;
+    flex-direction: column;
 }
-*/
+
+.ContentWithColumn__ColItem_bottom {
+    margin-top: auto;
+}

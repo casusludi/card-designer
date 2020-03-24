@@ -49,7 +49,7 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
         return (
             <div className={createClassName("CardTypeBoxView",{'CardTypeBoxView_selected':this.props.selected})} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
                 <div className="CardTypeBoxView__Ref" style={this.createBoxViewRefCSS()}>
-                    {box.type == CardTypeBoxType.Text && `[${box.ref}]`}    
+                    {box.type == CardTypeBoxType.Text && `[${box.data.ref || "unknow"}]`}    
                 </div>
                 {box.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
                     style={{

@@ -205,6 +205,7 @@ export enum Overflow {
 }
 
 export type CardTypeBoxTextData = {
+    ref: string // | string[] // variable name
     color: string
     font:string,
     weight: FontWeight | number
@@ -224,7 +225,6 @@ export type CardTypeBoxImageData = {
 export type Dimension = number | "auto" ;
 
 type CardTypeBoxCore = {
-    ref: string // | string[] // variable name
     face: string
     variants: Array<string>
     top: Dimension
@@ -538,6 +538,7 @@ function createDefaultCanvasBoxData(type:CardTypeBoxType):CardTypeBoxData{
         default:
         case CardTypeBoxType.Text :
             return {
+                ref:"",
                 color: "#000000",
                 font:"inherit",
                 weight: FontWeight.Normal,
@@ -558,10 +559,9 @@ function createDefaultCanvasBoxData(type:CardTypeBoxType):CardTypeBoxData{
 export function createDefaultCanvasBox(type:CardTypeBoxType,variant:string):CardTypeBox{
 
     return {
-        ref:"",
         face:"recto",
         variants:variant!=CARD_TYPE_DEFAULT_VARIANT?[variant]:[],
-        // @todo find a better way ti cast CardTypeBoxType on CardTypeBoxType.Image and CardTypeBoxType.Text
+        // @todo find a better way to cast CardTypeBoxType on CardTypeBoxType.Image and CardTypeBoxType.Text
         type: type as any,
         top: 5,
         left: 5,

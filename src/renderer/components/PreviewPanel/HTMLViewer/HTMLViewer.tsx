@@ -3,6 +3,7 @@ import React from "react";
 import './HTMLViewer.scss';
 import { remote, BrowserWindow } from 'electron';
 import RestrictedWebView  from "../../Misc/RestrictedWebView";
+import Button from "../../Misc/Button";
 
 export type HTMLViewerProps = {
     url: string | null | undefined
@@ -42,7 +43,7 @@ export default class HTMLViewer extends React.Component<HTMLViewerProps>{
                 {this.props.url ?
                     <React.Fragment>
                         <div className="HTMLViewer__ActionBar">
-                            <button className="button" onClick={this.openViewInExternalbrowser.bind(this)}><i className="fas fa-external-link-alt"></i></button>
+                        <Button fontIcon="fas fa-external-link-alt" onClick={this.openViewInExternalbrowser.bind(this)} />
                         </div>
                         <RestrictedWebView url={this.props.url} className="HTMLViewer_webview" />
                     </React.Fragment>

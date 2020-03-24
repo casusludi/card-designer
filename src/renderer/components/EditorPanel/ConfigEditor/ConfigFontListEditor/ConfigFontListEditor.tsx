@@ -11,6 +11,7 @@ import { createClassName } from '../../../../utils';
 import Panel from '../../../Misc/Panel';
 import { Dispatch } from 'redux';
 import { projectConfigChanged } from '../../../../redux/project';
+import Button from '../../../Misc/Button';
 
 
 
@@ -94,7 +95,8 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
                     <div className="ConfigFontListEditor__projectFontList">
                         {projectFontList.map(font =>
                             <div key={font} className="ConfigFontListEditor_projectFontItem">
-                                <span>{font}</span> <button className="button button-frameless" onClick={() => this.removeFontFromProject(font)}><i className="fas fa-times"></i></button>
+                                <span>{font}</span> 
+                                <Button fontIcon="fas fa-times" borderless={true} onClick={() => this.removeFontFromProject(font)}/>
                             </div>
                         )}
                     </div>
@@ -102,16 +104,16 @@ export class ConfigFontListEditor extends React.Component<ConfigFontListEditorPr
                 <div className="ConfigFontListEditor__Sources">
                     <Panel label="System Fonts">
                         <div className="ConfigFontListEditor__SourceSystem">
-                            <button type="button" className="button" onClick={this.loadSystemFontList.bind(this)} ><i className="fas fa-sync"></i></button>
+                            <Button fontIcon="fas fa-sync" onClick={this.loadSystemFontList.bind(this)}/>
                             <Select size={InputSize.Large} value={this.state.selectedSystemFont} options={_.map(systemFontList, (o, k) => ({ label: o, value: o }))} onChange={value => this.setState({ selectedSystemFont: value })} />
                             <div className="ConfigFontListEditor__SourceSystemFounded">({systemFontList.length} found)</div>
-                            <button type="button" className="button" onClick={this.addSystemFontToProject.bind(this)} disabled={this.fontIsInProject(this.state.selectedSystemFont)} >Add to project</button>
+                            <Button label="Add to project" onClick={this.addSystemFontToProject.bind(this)} disabled={this.fontIsInProject(this.state.selectedSystemFont)}/>
                         </div>
                     </Panel>
                     <Panel label="Web Fonts (User defined)">
                         <div className="ConfigFontListEditor__SourceSystem">
                             <Input size={InputSize.Large} type="text" value={this.state.selectedWebFont} onChange={value => this.setState({ selectedWebFont: value.toString() })} />
-                            <button type="button" className="button" onClick={this.addWebFontToProject.bind(this)} disabled={this.fontIsInProject(this.state.selectedWebFont)} >Add to project</button>
+                            <Button label="Add to project" onClick={this.addWebFontToProject.bind(this)} disabled={this.fontIsInProject(this.state.selectedWebFont)}/>
                         </div>
                     </Panel>
                 </div>

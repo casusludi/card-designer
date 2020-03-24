@@ -405,7 +405,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                                     <PopoverPicker opener={(show) => <Button fontIcon="fas fa-pencil-alt" borderless={true} disabled={!selectedBox} onClick={(e) => show(e)} />} options={boxVariantList} values={selectedBox.variants} onChange={(values: Array<string | number>) => this.onVariantsChange(values as string[])} />
                                 </div>}
                                 <div className="button-bar">
-                                    <PopoverMenu opener={(show => <button type="button" className="button" onClick={show}><i className="icon fas fa-plus"></i></button>)} items={BoxTypeOptions} onSelect={(values) => this.onAddBoxSelect(values)} />
+                                    <PopoverMenu opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} items={BoxTypeOptions} onSelect={(values) => this.onAddBoxSelect(values)} />
                                     <Button fontIcon="fas fa-clone" disabled={!selectedBox} onClick={this.onDuplicateBoxButtonClick.bind(this)} />
                                     <Button fontIcon="fas fa-trash-alt" disabled={!selectedBox} onClick={this.onRemoveBoxButtonClick.bind(this)} />
                                 </div>

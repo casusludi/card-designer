@@ -20,6 +20,7 @@ import { EditorPreferences } from "../../services/Preferences";
 import PageNav from "../Misc/PageNav";
 import LayoutEditor from "./LayoutEditor";
 import { AppUIEditor } from ".";
+import Button from "../Misc/Button";
 
 export type EditorPanelProps = {
     project: Project | null
@@ -128,7 +129,7 @@ function EditorPanel(props: EditorPanelProps) {
                             <Select id="ActionBar__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.ui.selection?.layoutId} onChange={selectedLayoutChanged} options={_.map(props.project.layouts, (o, k) => ({ label: o.config.name || k, value: k }))} />
                             <Select id="ActionBar__SourceSelect-select" label="Source" labelOnTop={true} value={props.ui.selection?.sourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
                             <div className="ActionBar__RenderingBox button-bar">
-                                <button type="button" className="button" onClick={onProjectRender}><i className="icon far fa-eye"></i><span>Render</span></button>
+                                <Button fontIcon="far fa-eye" onClick={onProjectRender} label={"Render"}/>
                                 <Checkbox id="EditorPanelAutoRenderCheckBox" buttonStyle={true} label="Auto" defaultChecked={props.editorPreferences.autoRenderFilter == RenderFilter.ALL} onChange={onAutoRenderChanged} />
                             </div>
                             

@@ -21,6 +21,7 @@ import { LayoutPreferences, DEFAULT_EDITOR_WITH } from '../../services/Preferenc
 import path from 'path';
 import Modal from '../Misc/Modal';
 import { AppUI } from '.';
+import Button from '../Misc/Button';
 
 
 export type AppProps = {
@@ -125,7 +126,7 @@ class App extends Component<AppProps> {
 				<header className="layout__header">
 					{/*<div className="project-name">{state.project && state.project.name} {state.projectModified && <span className="project-modified-status"> &#9679;</span>}</div>*/}
 					<div className="project-bar right-align">
-						<Modal opener={(show) => <button type="button" className="button button-about" onClick={() => show()}><i className="fas fa-info"></i></button>} >
+						<Modal opener={(show) =><Button className="button-about" fontIcon="fas fa-info" onClick={() => show()}/>} >
 						<div className="AppInfos">
 							<div className="AppInfos__Content">
 							<div className="AppInfos__title"><img className="AppInfos__AppLogo" src="./icon.png" /><div>Card<br />Designer</div></div>
@@ -134,11 +135,11 @@ class App extends Component<AppProps> {
 						</div>
 						</Modal>
 						<div className="button-bar">
-							<button type="button" className="button" onClick={() => this.createNewProject()}><i className="icon far fa-file"></i></button>
-							<button type="button" className="button" onClick={() => this.openProjectFromDialog()} ><i className="icon far fa-folder-open"></i></button>
-							<button type="button" className="button" disabled={!this.props.project?.modified && !this.props.project?.isNew} onClick={() => this.props.dispatch(projectSaving())}><i className="icon far fa-save"></i></button>
-							<button type="button" className="button button-save-as" disabled={!this.props.project} onClick={() => this.props.dispatch(projectSavingAs())}><i className="icon far fa-save"></i><span>as</span></button>
-							<button type="button" className="button" disabled={!this.props.project || this.props.project.isNew} onClick={() => this.openReloadProject()} ><i className="fas fa-sync"></i></button>
+							<Button fontIcon="far fa-file" onClick={() => this.createNewProject()}/>
+							<Button fontIcon="far fa-folder-open" onClick={() => this.openProjectFromDialog()}/>
+							<Button fontIcon="far fa-save" onClick={() => this.props.dispatch(projectSaving())} disabled={!this.props.project?.modified && !this.props.project?.isNew}/>
+							<Button className="button-save-as" label="as" fontIcon="far fa-save" onClick={() => this.props.dispatch(projectSavingAs())} disabled={!this.props.project} />
+							<Button fontIcon="fas fa-sync" onClick={() => this.openReloadProject()} disabled={!this.props.project || this.props.project.isNew} />
 						</div>
 					</div>
 					<div className="layout__header-title">
@@ -146,7 +147,7 @@ class App extends Component<AppProps> {
 						<div className="Header__AppName">Card Designer</div>
 						{this.props.project && <div className="project-bar__name">
 							- {this.props.project.name}
-							<button className="button button-frameless" onClick={() => this.openProjectFolder()} ><i className="icon far fa-folder-open"></i></button>
+							<Button fontIcon="far fa-folder-open" borderless={true} onClick={() => this.openProjectFolder()}/>
 							{(this.props.project.modified || this.props.project.isNew)&& <span className="project-bar__modified">(not saved)<i className="icon fas fa-exclamation-triangle"></i></span>}
 							
 						</div>}

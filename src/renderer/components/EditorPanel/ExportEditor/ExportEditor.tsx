@@ -16,6 +16,7 @@ import { projectExport } from "../../../redux/project";
 import { ProjectExportPreferences, createDefaultExportPreferences } from "../../../services/Preferences";
 import Checkbox from "../../Misc/Checkbox";
 import { AppUIExport } from ".";
+import Button from "../../Misc/Button";
 
 export type ExportEditorProps = {
     project: Project | null
@@ -160,11 +161,11 @@ function ExportEditor(props: ExportEditorProps) {
                        
                     </div>
                     <div className="ExportEditor__line">
-                        <button type="button" className="button" onClick={exportButtonOnClick} disabled={!canExport()}>Export</button>
+                        <Button label="Export" onClick={exportButtonOnClick} disabled={!canExport()}/>
                         <ProgressBar className="ExportEditor__ProgressBar" rate={props.ui.exportProgress.rate} spinner={props.ui.exportProgress.status != ProjectExportStatus.NONE} disabled={props.ui.exportProgress.status == ProjectExportStatus.NONE} />
                     </div>
                     <div className="ExportEditor__line ExportEditor__line_end">
-                        <button type="button" className="button" onClick={openFolderButtonOnclick} disabled={_.isEmpty(props.preferences.exportFolderPath)}><i className="icon far fa-folder-open"></i><span>Open Export Folder In Explorer</span></button>
+                        <Button label="Open Export Folder In Explorer" fontIcon="far fa-folder-open" onClick={openFolderButtonOnclick} disabled={_.isEmpty(props.preferences.exportFolderPath)}/>
                     </div>
                 </React.Fragment>
             }

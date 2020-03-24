@@ -23,7 +23,7 @@ export async function fetchFromGSheet(id:string,tokens:any){
     const {data:infos} = await gsheets.spreadsheets.get({
         spreadsheetId: id
     })
-    //console.log("gsheet infos : ",infos);
+    console.log("gsheet infos : ",infos);
 
 
     const sheetsByRange = _.chain(infos.sheets).map( o => ({
@@ -65,9 +65,10 @@ export async function fetchFromGSheet(id:string,tokens:any){
                     }
                     values.push(obj);
                 }
-
+                
                 const ret:any = {
-                    id: sheetsByRange[o.range].title?.toLowerCase(),
+                    // remove ' from range to correspond to the key of the list of sheets (without ') ex 'CG Test 2'!A1:X1000 and CG Test 2!A1:X1000
+                    id: sheetsByRange[o.range.replace(/'/g,"")].title?.toLowerCase(),
                     cards:values
                 };
                 return ret;

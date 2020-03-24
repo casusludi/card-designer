@@ -3,6 +3,7 @@ import React from 'react';
 import Checkbox from '../Checkbox';
 import { ProjectPageSelection } from '../../../services/Project';
 import _ from 'lodash';
+import Button from '../Button';
 
 export type PageNavProps = {
     selection:ProjectPageSelection
@@ -211,10 +212,11 @@ export default class PageNav extends React.Component<PageNavProps,PageNavState>{
                 <label >
                     Page(s) : 
                 </label>
-                <button type="button" disabled={!this.canNav.bind(this)(false)} className="PageNav__button button button-frameless" onClick={() => this.onNavChange(false)}  ><i className="fas fa-chevron-left"></i></button>
+                <Button fontIcon="fas fa-chevron-left" className="PageNav__button" borderless={true} disabled={!this.canNav.bind(this)(false)}  onClick={() => this.onNavChange(false)} />
+
                 <input type="text" disabled={this.state.allPages}  className="PageNav__input input-field" value={this.state.stringSelection} onBlur={()=>this.onInputBlur()} onChange={e => this.onInputChange(e.target.value)} />
                 <span className={"PageNav__total"+(this.state.allPages?' PageNav__total_disabled':'')}> / {this.props.total}</span>
-                <button type="button" disabled={!this.canNav.bind(this)(true)}  className="PageNav__button button button-frameless" onClick={() => this.onNavChange(true)} ><i className="fas fa-chevron-right"></i></button>
+                <Button fontIcon="fas fa-chevron-right" className="PageNav__button" borderless={true} disabled={!this.canNav.bind(this)(true)}  onClick={() => this.onNavChange(true)} />
                 <Checkbox id="PageNav__allPages" label="All pages" defaultChecked={this.state.allPages} onChange={this.onAllPagesChange.bind(this)} />
             </div>
         )

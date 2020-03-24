@@ -1,6 +1,7 @@
 import React from "react";
 import './FolderInput.scss'
 import { showOpenDialog } from "../../../utils";
+import Button from "../Button";
 
 
 export type FolderInputProps = {
@@ -31,7 +32,7 @@ export default function FolderInput(props:FolderInputProps){
             {props.label && <label className="FolderInput__label" htmlFor={props.id} >{props.label}</label>}
             <div className="FolderInput__content">
             <input className="FolderInput__input" id={props.id} type="string" value={props.path || ""} onChange={(e)=>props.onChange(e.target.value)} />
-            <button type="button" className="button FolderInput__button" onClick={openExplorer}><i className="far fa-folder-open"></i></button>
+            <Button fontIcon="far fa-folder-open" className="FolderInput__button" onClick={openExplorer} />
             </div>
         </div>
     )

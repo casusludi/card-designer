@@ -11,6 +11,7 @@ function* watchErrors(){
     yield takeEvery((action:any) => {
         return action.error
     },(action:any) => {
+        console.error(action.payload.stack);
         remote.dialog.showErrorBox('An error occured', action.payload.message)
     })
 }

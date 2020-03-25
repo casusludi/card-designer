@@ -149,16 +149,10 @@ export type Project = {
 export type ProjectPageSelection = Array<number>;
 
 export type ProjectSelection = {
-    /*cardType: ProjectCardType | undefined | null,
-    layout: ProjectLayout | undefined | null,
-    data: ProjectDataItem | undefined | null*/
-
     cardTypeId: string | undefined | null,
     layoutId: string | undefined | null,
     sourceType: ProjectSourceType | undefined | null
-
     pages: ProjectPageSelection
-
 } | null | undefined
 
 const schemaValidator = new Validator();
@@ -213,11 +207,10 @@ export enum Overflow {
 }
 
 export enum ObjectFit {
-    None = "none",
-    Fill = "fill",
+    Auto = "auto",
     Contain = "contain",
     Cover = "cover",
-    ScaleDown = "scale-downfill"
+
 }
 
 export type CardTypeBoxTextData = {
@@ -234,6 +227,7 @@ export type CardTypeBoxTextData = {
 }
 
 export type CardTypeBoxImageData = {
+    label:string
     path: string
     fit: ObjectFit
     custom: string
@@ -251,6 +245,7 @@ type CardTypeBoxCore = {
     width: Dimension
     height: Dimension
     zIndex: number
+    lockInView:boolean
 }
 
 type CardTypeBoxText = CardTypeBoxCore & {
@@ -565,6 +560,7 @@ export function createDefaultCanvasBox(type: CardTypeBoxType, variant: string): 
         width: "auto",
         height: "auto",
         zIndex: 10,
+        lockInView: true
     }
 
     switch (type) {
@@ -602,8 +598,9 @@ export function createDefaultCanvasBox(type: CardTypeBoxType, variant: string): 
                 height: 12,
                 type,
                 data: {
+                    label: "image",
                     path: "",
-                    fit: ObjectFit.None,
+                    fit: ObjectFit.Auto,
                     custom: ""
                 }
             };

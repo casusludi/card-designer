@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import nunjucks from 'nunjucks';
-import { ProjectSelection, Project, CardTypeBox, getDataBySourceTypeAndCardType } from '..';
+import { ProjectSelection, Project, CardTypeBox, getDataBySourceTypeAndCardType, ProjectCardType } from '..';
 //@ts-ignore
 import CardTypeCanvasBoxes from './CardTypeCanvasBoxes.njk';
 //@ts-ignore
@@ -48,7 +48,7 @@ const metaVariables: MetaVariables = {
     }
 }
 
-export function getBoxStyleFromType(box:CardTypeBox):any{
+export function getBoxStyleFromType(box:CardTypeBox,cardType:ProjectCardType,card:any):any{
     switch(box.type){
         case "text":
             return `
@@ -62,6 +62,16 @@ export function getBoxStyleFromType(box:CardTypeBox):any{
                 overflow: ${box.data.overflow || 'visible'};
                 ${box.data.custom || ''}
             `
+        case "image":
+                const url = _.replace(box.data.path,/{{([\w]+)}}/,(o,k) => {
+                    return card[k]
+                });
+                return `
+                    background-image: url(${cardType.relBase}/${url});
+                    background-repeat: no-repeat;
+                    background-size: ${box.data.fit};
+                    ${box.data.custom || ''}
+                `
     }
 
     return {}
@@ -126,7 +136,7 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                             width:${cssDimensionValue(o.width)};
                             height:${cssDimensionValue(o.height)};
                             z-index:${cssZIndexValue(o.zIndex)};
-                            ${getBoxStyleFromType(o)}
+                            ${getBoxStyleFromType(o,cardType,card)}
                         `;
                         return {
                             ...o,
@@ -134,7 +144,7 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                         };
                     })
                     .value();
-                return env.renderString(CardTypeCanvasBoxes, { card, boxes });
+                return env.renderString(CardTypeCanvasBoxes, { card, boxes, base:cardType.relBase || '' });
             }
             return '';
         }

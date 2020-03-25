@@ -1,7 +1,19 @@
 {% for box in boxes %}
+    {#{% if box.type == "text" %}
+<div class="card-canvas-box" style="{{box.style}}">
+
+    {{card[box.data.ref]}}
+    
+</div>
+{% endif %}
+{% if box.type == "image" %}
+{{base}}
+{{box.data.path}}
+    <img class="card-canvas-box" src="{{base}}/{{box.data.path | path(card)}}" style="{{box.style}}">
+{% endif %}#}
 <div class="card-canvas-box" style="{{box.style}}">
     {% if box.type == "text" %}
-    {{card[box.data.ref]}}
+        {{card[box.data.ref]}}
     {% endif %}
 </div>
 {% endfor %}

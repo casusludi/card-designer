@@ -2,7 +2,6 @@ import './CardTypeBoxView.scss';
 import React from 'react';
 import { CardTypeBox, CardTypeBoxType } from '../../../../services/Project';
 import { cssDimensionValue, createClassName, cssZIndexValue } from '../../../../utils';
-import path from 'path';
 
 type CardTypeBoxViewProps = {
     data: CardTypeBox
@@ -16,6 +15,8 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
 
     createBoxViewCSS() {
         return {
+            // react component style attr with TS dont want none or auto value : defined as string instead as valid value
+            pointerEvents: (this.props.data.lockInView?"none":"auto") as any,
             top: cssDimensionValue(this.props.data.top),
             bottom: cssDimensionValue(this.props.data.bottom),
             left: cssDimensionValue(this.props.data.left),
@@ -28,8 +29,7 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
     }
 
     createBoxViewRefCSS() {
-        const styles = {
-        }
+        const styles = {}
 
         switch (this.props.data.type) {
             case CardTypeBoxType.Text: return {
@@ -41,22 +41,33 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
                 fontWeight: this.props.data.data.weight,
                 textAlign: this.props.data.data.align,
             }
+            case CardTypeBoxType.Image: return {
+                ...styles,
+                backgroundImage: `url(${this.props.cardTypeBaseUri +'/'+ this.props.data.data.path})`,
+                backgroundRepeat: `no-repeat`,
+                backgroundSize: this.props.data.data.fit
+
+            }
         }
 
         return styles;
     }
 
+    onBoxClick(){
+        if(this.props.data.lockInView) return;
+        this.props.onSelect(this.props.data)
+    }
+
     render() {
         const box = this.props.data;
-        if(box.type == CardTypeBoxType.Image){
+        /*if(box.type == CardTypeBoxType.Image){
             console.log("cardTypeBaseUri",this.props.cardTypeBaseUri);
             console.log("filePath",this.props.cardTypeBaseUri +'/'+ box.data.path);
-        }
+        }*/
         return (
-            <div className={createClassName("CardTypeBoxView",{'CardTypeBoxView_selected':this.props.selected})} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
+            <div className={createClassName("CardTypeBoxView",{'CardTypeBoxView_selected':this.props.selected})} style={this.createBoxViewCSS()} onClick={this.onBoxClick.bind(this)}>
                 <div className="CardTypeBoxView__Ref" style={this.createBoxViewRefCSS()}>
                     {box.type == CardTypeBoxType.Text && `[${box.data.ref || "unknow"}]`}   
-                    {box.type == CardTypeBoxType.Image && this.props.cardTypeBaseUri && <img src={this.props.cardTypeBaseUri +'/'+ box.data.path} />} 
                 </div>
                 {box.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
                     style={{

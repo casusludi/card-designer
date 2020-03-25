@@ -3,7 +3,10 @@
 == Card Type Canvas
     - [✔] Add / Remove a box
     - Add / Remove a variant
-    - Image type box
+    - [✔] Image type box
+        - Debug path input
+        - Help for custom css : indicate this is background-image 
+        - dont autorise image path relative to card type parent folder => no ../
     - Convert config raw file in UI
     - [✔] Add z-index attribut to box
     - Improve color picker (add hexa)

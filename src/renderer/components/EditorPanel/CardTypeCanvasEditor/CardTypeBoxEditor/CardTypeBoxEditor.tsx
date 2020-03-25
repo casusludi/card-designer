@@ -1,5 +1,5 @@
 import React from "react"
-import { CardTypeBox, Dimension, FontStyle, FontWeight, CardTypeBoxType, TextAlign, Overflow } from "../../../../services/Project"
+import { CardTypeBox, Dimension, FontStyle, FontWeight, CardTypeBoxType, TextAlign, Overflow, ObjectFit } from "../../../../services/Project"
 import ActivableInput from "../../../Misc/ActivableInput"
 import "./CardTypeBoxEditor.scss";
 import Input from "../../../Misc/Input";
@@ -105,6 +105,7 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                         </React.Fragment>}
                         {box.type == CardTypeBoxType.Image && <React.Fragment>
                             <div className="ContentWithLine__Line">
+                               
                                 <PathInput type={PathInputType.File}
                                     label="Path : "
                                     labelOnTop={true}
@@ -113,7 +114,11 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                                     filters={[{ name: 'Images', extensions: ['jpg', 'png', 'svg', 'bmp', 'gif'] }]}
                                     
                                 />
-
+                               
+                            </div>
+                            <div className="ContentWithLine__Line">
+                                <Input label="Label" labelOnTop={true} type="text" defaultValue={box.data.label} onChange={value => onDataValueChange("label", value)} />
+                                <Select size={InputSize.Normal} label="Fit" labelOnTop={true} value={box.data.fit} options={_.map(ObjectFit, (o, k) => ({ label: o, value: o }))} onChange={value => onDataValueChange("fit", value)} />
                             </div>
                             <div className="ContentWithLine__Line">
                                 <Panel label="Custom CSS" className="CardTypeBoxEditor__CustomEditor">

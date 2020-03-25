@@ -21,6 +21,7 @@ import { remote } from "electron";
 import PopoverInput from "../../Misc/PopoverInput";
 import Button from "../../Misc/Button";
 import { APP_NAME } from "../../../utils/constants";
+import ToggleButton from "../../Misc/ToggleButton";
 
 type CardFaceCanvasProps = {
     label: string
@@ -156,7 +157,8 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     if (this.props.cardType.styles) {
                         override[pathToURL(this.props.cardType.styles)] = this.props.project.files[this.props.cardType.styles].content;
                     }
-                    return await serveHtml("cardtype-canvas-" + face, html, this.props.project.path, override)
+                    const htmlUrl = await serveHtml("cardtype-canvas-" + face, html, this.props.project.path, override)
+                    return `${htmlUrl}?rnd=${Date.now()}`
                 }
             }
         }
@@ -414,11 +416,19 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
 
         switch (box.type) {
             case CardTypeBoxType.Text:
-                return box.data.ref;
+                return box.data.ref || 'text';
             case CardTypeBoxType.Image:
-
-                return `image`;
+                return box.data.label || `image`;
         }
+    }
+
+    onBoxLockInViewChange(isLock:boolean){
+        if(!this.state.selectedBox) return;
+        const box:CardTypeBox = {
+            ...this.state.selectedBox,
+            lockInView:isLock
+        }
+        this.onBoxChange(box,this.state.selectedBox);
     }
 
     render() {
@@ -503,6 +513,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                         <div className="CardTypeCanvasEditor__BoxesActionBar_Fixe">
                             {selectedBox && <div className="CardTypeCanvasEditor__TypeShow"><i className={typeToIconFont[selectedBox.type]}></i><span>{_.capitalize(selectedBox.type)}</span></div>}
                             <div className="button-bar ">
+                                <ToggleButton key={selectedBoxKey} toggleFontIcon="fas fa-lock" fontIcon="fas fa-lock-open" disabled={!selectedBox} value={selectedBox?selectedBox.lockInView:false} onChange={this.onBoxLockInViewChange.bind(this)} />
                                 <Button fontIcon="fas fa-clone" disabled={!selectedBox} onClick={this.onDuplicateBoxButtonClick.bind(this)} />
                                 <Button fontIcon="fas fa-trash-alt" disabled={!selectedBox} onClick={this.onRemoveBoxButtonClick.bind(this)} />
                             </div>

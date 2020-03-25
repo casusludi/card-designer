@@ -16,7 +16,7 @@ export async function convertHtmlToPdf( html: string, base: string,overrides?:Se
 }
 
 export async function serveHtml(id:string,html:string, base:string,overrides?:ServeOverrides): Promise<string>{
-    return ipcRenderer.invoke("serve",id,html,base,overrides).then(() => `http://localhost:${getSharedVar('servePort')}/${id}?rnd=${Date.now()}`);
+    return ipcRenderer.invoke("serve",id,html,base,overrides)//.then(() => `http://localhost:${getSharedVar('servePort')}/${id}?rnd=${Date.now()}`);
 }
 
 export function openDevTools(){

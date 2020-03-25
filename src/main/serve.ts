@@ -3,7 +3,6 @@ import http from 'http';
 import uuidv1 from 'uuid/v1';
 import fs from 'fs';
 import * as path from 'path'
-import Cookies from 'cookies';
 //import puppeteer from 'puppeteer';
 
 export type ServeOverrides = { [key: string]: string }
@@ -19,34 +18,32 @@ function timeout(ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const COOKIE_NAME = 'cardmaker-id'
-
 export default async function makeServe(port: number): Promise<Serve> {
 
     const mapping: { [id: string]: { html: string, base: string, overrides: ServeOverrides } } = {};
 
-    const cookieNames = [COOKIE_NAME]
-
     const requestListener = function (req: any, res: any) {
-        var cookies = new Cookies(req, res, { keys: cookieNames })
 
-        let id = req.url.substring(1).split('?')[0];
+        const [mainUrlPart/*,paramUriPart*/] = req.url.split('?')
+
+        let id = mainUrlPart.slice(1,-1);
         const encoding = 'utf-8';
         let contentType = 'text/html';
         
         if (mapping[id]) {
-            cookies.set(COOKIE_NAME, id)
             res.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
-
             res.end(mapping[id].html, encoding);
             return;
         }
-        id = cookies.get(COOKIE_NAME);
+        id = id.split('/')[0];
+
 
         if (mapping[id]) {
+            const reqUrl = path.relative('/'+id,mainUrlPart);
             const base = mapping[id].base
             const overrides = mapping[id].overrides
-            const filePath = path.normalize(base + req.url);
+            const filePath = path.normalize(path.join(base , reqUrl));
+
             const extName = path.extname(filePath);
 
             switch (extName) {
@@ -105,6 +102,8 @@ export default async function makeServe(port: number): Promise<Serve> {
                 base,
                 overrides: overrides || {}
             }
+            return  `http://localhost:${port}/${id}/`
+            //return  `http://localhost:${port}/${id}/?rnd=${Date.now()}`
         },
         unserve(id: string) {
             delete mapping[id];
@@ -125,7 +124,7 @@ export default async function makeServe(port: number): Promise<Serve> {
                 }
             });
 
-            await pdfWin.loadURL(`http://localhost:${port}/${id}`);
+            await pdfWin.loadURL(`http://localhost:${port}/${id}/`);
             // add a delay of 100ms before print to pdf to get the page fully loaded and rendered (with all fonts loaded)
             // without this timeout, the pdf can be generated with no text or partials texts
             // event like 'did-finish-load' (return by the loadURL() promise) or 'ready-to-show' are not sufficient to ensure the correctly text display

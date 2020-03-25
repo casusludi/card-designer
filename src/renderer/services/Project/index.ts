@@ -5,7 +5,7 @@ import { Validator } from 'jsonschema';
 import projectSchema from './schemas/project.schema.json';
 import { EnumDictionary } from '../../../types';
 import { ProjectSourceType, getCachedData, createDataFile, getAvailableSources } from './Sources';
-import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog } from '../../utils';
+import { showOpenDialog, convertHtmlToPdf, writeFile, showSaveDialog, serveHtml } from '../../utils';
 import { renderSelectionToHtml } from './Render';
 import fse from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
@@ -136,6 +136,7 @@ export type Project = {
     isNew: boolean,
     modified: boolean,
     path: string,
+    baseUri:string | null,
     config: ProjectConfig,
     rawConfig: string,
     cardTypes: { [key: string]: ProjectCardType }
@@ -438,11 +439,15 @@ export async function loadProjectFromConfig(rawConfig: string, projectPath: stri
     const files = _.assign({}, cardTypeFiles, layoutsFiles)
 
     const name = _.upperFirst(path.basename(projectPath));
+
+    const baseUri = await serveHtml('project','No HTML',projectPath);
+
     const project: Project = {
         modified: false,
         name,
         isNew,
         path: projectPath,
+        baseUri,
         config,
         cardTypes: _.chain(cardTypes).map(o => o.cardType).keyBy(o => o.id).value(),
         layouts: _.chain(layouts).map(o => o.layout).keyBy(o => o.id).value(),

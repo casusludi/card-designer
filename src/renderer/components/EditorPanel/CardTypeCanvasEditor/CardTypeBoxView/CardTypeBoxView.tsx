@@ -7,7 +7,7 @@ import path from 'path';
 type CardTypeBoxViewProps = {
     data: CardTypeBox
     selected: boolean
-    absCardTypePath:string
+    cardTypeBaseUri:string | null
     onSelect: (box: CardTypeBox) => void
     onChange: (box: CardTypeBox) => void
 }
@@ -48,11 +48,15 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
 
     render() {
         const box = this.props.data;
+        if(box.type == CardTypeBoxType.Image){
+            console.log("cardTypeBaseUri",this.props.cardTypeBaseUri);
+            console.log("filePath",this.props.cardTypeBaseUri +'/'+ box.data.path);
+        }
         return (
             <div className={createClassName("CardTypeBoxView",{'CardTypeBoxView_selected':this.props.selected})} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
                 <div className="CardTypeBoxView__Ref" style={this.createBoxViewRefCSS()}>
                     {box.type == CardTypeBoxType.Text && `[${box.data.ref || "unknow"}]`}   
-                    {box.type == CardTypeBoxType.Image && <img src={path.join(this.props.absCardTypePath,box.data.path)} />} 
+                    {box.type == CardTypeBoxType.Image && this.props.cardTypeBaseUri && <img src={this.props.cardTypeBaseUri +'/'+ box.data.path} />} 
                 </div>
                 {box.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
                     style={{

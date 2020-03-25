@@ -9,7 +9,6 @@ import { cardTypeCanvasChanged } from "../../../redux/project";
 import RestrictedWebView from "../../Misc/RestrictedWebView";
 import { renderNJKToHtml } from "../../../services/Project/Render";
 import { serveHtml, pathToURL } from "../../../utils";
-import path from 'path';
 
 //@ts-ignore
 import CardTypeCanvasLayout from './CardTypeCanvasLayout.njk';
@@ -29,7 +28,7 @@ type CardFaceCanvasProps = {
     height: number
     advanced: boolean
     advancedUrl: string | null
-    absCardTypePath:string
+    cardTypeBaseUri:string | null
     boxes: Array<CardTypeBox>
     selectedBox: CardTypeBox | null
     onBoxChange: (box: CardTypeBox, prevBox: CardTypeBox) => void
@@ -46,7 +45,7 @@ function CardFaceCanvas(props: CardFaceCanvasProps) {
             }}>
                 {props.advanced && <RestrictedWebView url={props.advancedUrl} className="CardTypeCanvasEditor__AdvancedContent full-space" />}
                 <div className="full-space" onClick={() => props.onBGClick()}></div>
-                {props.boxes.map((box, i) => <CardTypeBoxView absCardTypePath={props.absCardTypePath} data={box} key={i} selected={box == props.selectedBox} onChange={(newBox) => props.onBoxChange(newBox, box)} onSelect={(selectedBox) => props.onBoxSelect(selectedBox, i)} />)}
+                {props.boxes.map((box, i) => <CardTypeBoxView cardTypeBaseUri={props.cardTypeBaseUri} data={box} key={i} selected={box == props.selectedBox} onChange={(newBox) => props.onBoxChange(newBox, box)} onSelect={(selectedBox) => props.onBoxSelect(selectedBox, i)} />)}
             </div>
             <div className="CardTypeCanvasEditor__CardBoxLabel">{props.label}</div>
         </div>
@@ -87,11 +86,12 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         currentTab: 0,
         cardTypeCanvas: this.props.cardType.canvas,
         advancedRectoUrl: null,
-        advancedVersoUrl: null
+        advancedVersoUrl: null,
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.throttledRenderAdvancedContent();
+
     }
 
     componentDidUpdate(prevProps: CardTypeCanvasEditorProps, prevState: CardTypeCanvasEditorState) {
@@ -441,7 +441,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
 
         const BoxTypeOptions = _.map(CardTypeBoxType, (o, k) => ({ label: <React.Fragment>Add {o} <i className={typeToIconFont[o]}></i></React.Fragment>, value: o }))
         
-
+        const cardTypeBaseUri = this.props.project.baseUri +'/'+ this.props.cardType.relBase;
         return (
             <div className="CardTypeCanvasEditor full-space">
                 <div className="CardTypeCanvasEditor__Header">
@@ -459,7 +459,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     <div className="CardTypeCanvasEditor__CanvasContent">
                         <CardFaceCanvas
                             label="Recto"
-                            absCardTypePath={this.props.cardType.absBase}
+                            cardTypeBaseUri={cardTypeBaseUri}
                             width={this.props.cardType.config.width}
                             height={this.props.cardType.config.height}
                             advanced={this.props.cardType.config.advanced}
@@ -473,7 +473,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                         {this.props.cardType.config.haveVerso &&
                             <CardFaceCanvas
                                 label="Verso"
-                                absCardTypePath={this.props.cardType.absBase}
+                                cardTypeBaseUri={cardTypeBaseUri}
                                 width={this.props.cardType.config.width}
                                 height={this.props.cardType.config.height}
                                 advanced={this.props.cardType.config.advanced}

@@ -215,7 +215,7 @@ function* saga_renderProjectSelection(action: any) {
                     }
                     const htmlUrl = yield call(serveHtml, "html-preview", html, project.path, overrides)
                     if(filter == RenderFilter.ALL || filter == RenderFilter.HTML){
-                        yield put(uiPreviewHtmlUrlChanged({ htmlUrl }));
+                        yield put(uiPreviewHtmlUrlChanged({ htmlUrl:`${htmlUrl}?rnd=${Date.now()}` }));
                     }
                     if(filter == RenderFilter.ALL || filter == RenderFilter.PDF){
 

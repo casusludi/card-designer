@@ -145,12 +145,12 @@ export async function renderSelectionToHtml(project: Project, selection: Project
         layoutTemplate,
         cards,
         {
-            base: cardType.base || '',
+            base: cardType.relBase || '',
             cardTypeWidth:cardType.config.width,
             cardTypeHeight:cardType.config.height,
         },
         {
-            base: layout.base,
+            base: layout.relBase,
             haveVerso:cardType.config.haveVerso,
             layoutCSSPath: layout.styles || '',
             templateCSSPath: cardType.config.advanced?(cardType.styles || ''):''

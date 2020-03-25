@@ -9,6 +9,7 @@ import { cardTypeCanvasChanged } from "../../../redux/project";
 import RestrictedWebView from "../../Misc/RestrictedWebView";
 import { renderNJKToHtml } from "../../../services/Project/Render";
 import { serveHtml, pathToURL } from "../../../utils";
+import path from 'path';
 
 //@ts-ignore
 import CardTypeCanvasLayout from './CardTypeCanvasLayout.njk';
@@ -28,6 +29,7 @@ type CardFaceCanvasProps = {
     height: number
     advanced: boolean
     advancedUrl: string | null
+    absCardTypePath:string
     boxes: Array<CardTypeBox>
     selectedBox: CardTypeBox | null
     onBoxChange: (box: CardTypeBox, prevBox: CardTypeBox) => void
@@ -44,7 +46,7 @@ function CardFaceCanvas(props: CardFaceCanvasProps) {
             }}>
                 {props.advanced && <RestrictedWebView url={props.advancedUrl} className="CardTypeCanvasEditor__AdvancedContent full-space" />}
                 <div className="full-space" onClick={() => props.onBGClick()}></div>
-                {props.boxes.map((box, i) => <CardTypeBoxView data={box} key={i} selected={box == props.selectedBox} onChange={(newBox) => props.onBoxChange(newBox, box)} onSelect={(selectedBox) => props.onBoxSelect(selectedBox, i)} />)}
+                {props.boxes.map((box, i) => <CardTypeBoxView absCardTypePath={props.absCardTypePath} data={box} key={i} selected={box == props.selectedBox} onChange={(newBox) => props.onBoxChange(newBox, box)} onSelect={(selectedBox) => props.onBoxSelect(selectedBox, i)} />)}
             </div>
             <div className="CardTypeCanvasEditor__CardBoxLabel">{props.label}</div>
         </div>
@@ -141,7 +143,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     CardTypeCanvasLayout,
                     [{}],
                     {
-                        base: this.props.cardType.base,
+                        base: this.props.cardType.relBase,
                     },
                     {
                         face,
@@ -255,7 +257,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         const boxesByVariant = this.getBoxesByVariant(boxes, this.state.selectedVariant);
         this.setState({
             selectedBox: box,
-            selectedBoxIndexInVariant: _.findIndex(boxesByVariant, box),
+            selectedBoxIndexInVariant: boxesByVariant.length -1,
             cardTypeCanvas: {
                 ...this.state.cardTypeCanvas,
                 boxes
@@ -358,7 +360,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
             }, [] as CardTypeBox[])
             this.setState({
                 selectedVariant: newVariant,
-                selectedBoxVariantIndex: _.findIndex(variants, newVariant),
+                //selectedBoxVariantIndex: _.findIndex(variants, newVariant),
                 cardTypeCanvas: {
                     ...this.state.cardTypeCanvas,
                     variants,
@@ -438,6 +440,8 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
         const boxVariantList = _.map([CARD_TYPE_DEFAULT_VARIANT, ...this.state.cardTypeCanvas.variants], (o, k) => ({ label: o.toString(), value: o }))
 
         const BoxTypeOptions = _.map(CardTypeBoxType, (o, k) => ({ label: <React.Fragment>Add {o} <i className={typeToIconFont[o]}></i></React.Fragment>, value: o }))
+        
+
         return (
             <div className="CardTypeCanvasEditor full-space">
                 <div className="CardTypeCanvasEditor__Header">
@@ -455,6 +459,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     <div className="CardTypeCanvasEditor__CanvasContent">
                         <CardFaceCanvas
                             label="Recto"
+                            absCardTypePath={this.props.cardType.absBase}
                             width={this.props.cardType.config.width}
                             height={this.props.cardType.config.height}
                             advanced={this.props.cardType.config.advanced}
@@ -468,6 +473,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                         {this.props.cardType.config.haveVerso &&
                             <CardFaceCanvas
                                 label="Verso"
+                                absCardTypePath={this.props.cardType.absBase}
                                 width={this.props.cardType.config.width}
                                 height={this.props.cardType.config.height}
                                 advanced={this.props.cardType.config.advanced}
@@ -487,7 +493,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                     <div className="CardTypeCanvasEditor__BoxesActionBar">
                         <div className="CardTypeCanvasEditor__SelectAdd CardTypeCanvasEditor__BoxesActionBar_Fixe">
                             <Select className="CardTypeCanvasEditor__BoxesActionBar_selectRef" id="CardTypeCanvasEditor__BoxesActionBar_selectRef" label="Box" labelOnTop={false} value={this.state.selectedBoxIndexInVariant} onChange={this.onSelectBoxChange.bind(this)} emptyOption={boxEmptyOption} options={boxSelectOptions} />
-                            <PopoverMenu opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} items={BoxTypeOptions} onSelect={(values) => this.onAddBoxSelect(values)} />
+                            <PopoverMenu opener={(show => <Button fontIcon="fas fa-plus" onClick={show} />)} items={BoxTypeOptions} onSelect={this.onAddBoxSelect.bind(this)} />
                         </div>
 
                         {selectedBox && <div className="CardTypeCanvasEditor__VariantPicker">
@@ -502,7 +508,7 @@ export class CardTypeCanvasEditor extends React.Component<CardTypeCanvasEditorPr
                             </div>
                         </div>
                     </div>
-                    <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} key={selectedBoxKey} onChange={this.onBoxChange.bind(this)} fonts={this.props.project.config.fonts} />
+                    <CardTypeBoxEditor className="CardTypeCanvasEditor__CardTypeBoxEditor" box={selectedBox} absCardTypePath={this.props.cardType.absBase} key={selectedBoxKey} onChange={this.onBoxChange.bind(this)} fonts={this.props.project.config.fonts} />
                 </div>
 
             </div>

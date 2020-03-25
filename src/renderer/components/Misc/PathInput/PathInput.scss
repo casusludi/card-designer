@@ -1,13 +1,13 @@
 @import "../../../styles/variables.scss";
 
-.FolderInput {
+.PathInput {
     display: flex;
     align-items: stretch;
     min-height: 28px;
     
 }
 
-.FolderInput__content {
+.PathInput__content {
     display: flex;
     align-items: stretch;
     position: relative;
@@ -15,25 +15,25 @@
     box-shadow: 0 1px 2px 0px #000000;
 }
 
-.FolderInput__label {
+.PathInput__label {
     align-self: center;
     padding-right: 5px;
 }
 
-.FolderInput__input {
+.PathInput__input {
     position: relative;
     flex: 1;
     border: 1px solid $medium-grey;
     padding: 0 5px;
 }
 
-.FolderInput__button {
+.PathInput__button {
     border-bottom: none;
     box-shadow: none;
 }
 
 
-.FolderInput_labeltop {
+.PathInput_labeltop {
     display: block;
     position: relative;
     & > label {

@@ -8,6 +8,7 @@
     - [✔] Add z-index attribut to box
     - Improve color picker (add hexa)
     - Improve Styles/weight/align with icons instead of select inputs
+    - Variants : support multi variants in a card field 
 
 == Global Config
     - Convert config raw file in UI

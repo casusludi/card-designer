@@ -8,7 +8,7 @@ import { ApplicationState } from "../../..";
 import { ProjectSourceType } from "../../../services/Project/Sources";
 import { prefProjectExportChanged } from "../../../redux/preferences";
 import _ from "lodash";
-import FolderInput from "../../Misc/FolderInput";
+import PathInput, { PathInputType } from "../../Misc/PathInput";
 import { replacer } from "../../../utils";
 import { remote } from "electron";
 import ProgressBar from "../../Misc/ProgressBar";
@@ -151,7 +151,7 @@ function ExportEditor(props: ExportEditorProps) {
                     <div className="ExportEditor__line">
                         <Select id="ExportEditor__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.preferences?.selectedLayoutId && props.project?.layouts[props.preferences.selectedLayoutId]} onChange={selectedLayoutChanged} options={_.map(props.project?.layouts, (o, k) => ({ label: k, value: o }))} />
                         <Select id="ExportEditor__SourceSelect-select" label="Source" labelOnTop={true} value={props.preferences?.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
-                        <FolderInput className="ExportEditor__FolderInput" label="Export Folder : " labelOnTop={true} path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
+                        <PathInput type={PathInputType.Folder} className="ExportEditor__FolderInput" label="Export Folder : " labelOnTop={true} path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
                     </div>
                     <div className="ExportEditor__line">
                         Card Types : 

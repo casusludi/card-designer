@@ -25,12 +25,12 @@ export enum RenderFilter {
 }
 
 export type ProjectConfigCardType = {
-    version:string
-    name:string
+    version: string
+    name: string
     template: string
     styles: string
     canvas: string
-    advanced:boolean
+    advanced: boolean
     haveVerso: boolean
     width: number
     height: number
@@ -38,8 +38,8 @@ export type ProjectConfigCardType = {
 }
 
 export type ProjectConfigLayout = {
-    version:string
-    name:string
+    version: string
+    name: string
     cardsPerPage: number
     template: string
     styles: string
@@ -53,7 +53,7 @@ export type ProjectDataItem = {
 
 export type ProjectConfig = {
     version: string,
-    fonts:string[],
+    fonts: string[],
     cardTypes: { [key: string]: string }
     layouts: { [key: string]: string }
     sources: {
@@ -81,7 +81,8 @@ export type ProjectSourceData = {
 
 export type ProjectCardType = {
     id: string
-    base: string
+    relBase: string
+    absBase:string
     config: ProjectConfigCardType
     rawConfig: string
     configPath: string
@@ -92,7 +93,8 @@ export type ProjectCardType = {
 
 export type ProjectLayout = {
     id: string
-    base: string
+    relBase: string
+    absBase:string
     config: ProjectConfigLayout
     rawConfig: string
     configPath: string
@@ -111,7 +113,8 @@ export interface ProjectTemplate {
     id: string
     template: string | null
     styles: string | null
-    base: string
+    relBase: string
+    absBase: string
 }
 
 export enum ProjectExportStatus {
@@ -152,7 +155,7 @@ export type ProjectSelection = {
     cardTypeId: string | undefined | null,
     layoutId: string | undefined | null,
     sourceType: ProjectSourceType | undefined | null
-    
+
     pages: ProjectPageSelection
 
 } | null | undefined
@@ -181,6 +184,8 @@ export enum CardTypeBoxType {
     Image = "image"
 }
 
+export type CardTypeBoxTypeAgregated = CardTypeBoxType.Text | CardTypeBoxType.Image;
+
 export enum FontWeight {
     Normal = "normal",
     Bold = "bold",
@@ -206,25 +211,34 @@ export enum Overflow {
     Hidden = "hidden",
 }
 
+export enum ObjectFit {
+    None = "none",
+    Fill = "fill",
+    Contain = "contain",
+    Cover = "cover",
+    ScaleDown = "scale-downfill"
+}
+
 export type CardTypeBoxTextData = {
     ref: string // | string[] // variable name
     color: string
-    font:string,
+    font: string,
     weight: FontWeight | number
     style: FontStyle
     align: TextAlign
     size: number
     lineHeight: number
-    overflow:Overflow,
-    custom:string
+    overflow: Overflow,
+    custom: string
 }
 
 export type CardTypeBoxImageData = {
-
-    custom:string
+    path: string
+    fit: ObjectFit
+    custom: string
 }
 
-export type Dimension = number | "auto" ;
+export type Dimension = number | "auto";
 
 type CardTypeBoxCore = {
     face: string
@@ -235,17 +249,17 @@ type CardTypeBoxCore = {
     right: Dimension
     width: Dimension
     height: Dimension
-    zIndex:number
+    zIndex: number
 }
 
 type CardTypeBoxText = CardTypeBoxCore & {
-    type:CardTypeBoxType.Text
-    data:CardTypeBoxTextData
+    type: CardTypeBoxType.Text
+    data: CardTypeBoxTextData
 }
 
 type CardTypeBoxImage = CardTypeBoxCore & {
-    type:CardTypeBoxType.Image
-    data:CardTypeBoxImageData
+    type: CardTypeBoxType.Image
+    data: CardTypeBoxImageData
 }
 
 export type CardTypeBox = CardTypeBoxText | CardTypeBoxImage
@@ -256,7 +270,7 @@ export type CardTypeCanvas = {
     variants: Array<string>
 }
 
-export async function loadCardTypeCanvas(canvasPath:string):Promise<CardTypeCanvas>{
+export async function loadCardTypeCanvas(canvasPath: string): Promise<CardTypeCanvas> {
     const rawConfig = (await fse.readFile(canvasPath)).toString();
     const config = JSON.parse(rawConfig);
     return config;
@@ -273,7 +287,7 @@ export async function loadCardTypeFromRawConfig(projectPath: string, rawConfig: 
     const config: ProjectConfigCardType = JSON.parse(rawConfig)
     config.base = path.dirname(configPath);
     const result = await loadTemplate(projectPath, config, id);
-    const canvas = await loadCardTypeCanvas(path.join(projectPath,config.base,config.canvas));
+    const canvas = await loadCardTypeCanvas(path.join(projectPath, config.base, config.canvas));
     return {
         cardType: {
             id,
@@ -345,7 +359,8 @@ async function loadTemplate(projectPath: string, config: ProjectConfigTemplate, 
             id,
             template: templatePathFromProject,
             styles: stylesPathFromProject,
-            base: config.base
+            relBase: config.base,
+            absBase: path.normalize(path.join(projectPath,config.base))
         },
         files
     }
@@ -392,12 +407,12 @@ export async function loadProjectFromPath(projectPath: string, isNew: boolean = 
     });
 }
 
-function getFilesFromLayoutsOrCardTypes(list:ProjectLayoutLoadResult[]|ProjectCardTypeLoadResult[]):ProjectFiles{
+function getFilesFromLayoutsOrCardTypes(list: ProjectLayoutLoadResult[] | ProjectCardTypeLoadResult[]): ProjectFiles {
     return _.chain(list)
-        .map((o:ProjectLayoutLoadResult|ProjectCardTypeLoadResult) => o.files)
-        .reduce<ProjectFiles>( (obj,o) => {
-            return _.assign(obj,o)
-        },{})
+        .map((o: ProjectLayoutLoadResult | ProjectCardTypeLoadResult) => o.files)
+        .reduce<ProjectFiles>((obj, o) => {
+            return _.assign(obj, o)
+        }, {})
         .value();
 }
 
@@ -420,7 +435,7 @@ export async function loadProjectFromConfig(rawConfig: string, projectPath: stri
     const cardTypeFiles = getFilesFromLayoutsOrCardTypes(cardTypes);
     const layoutsFiles = getFilesFromLayoutsOrCardTypes(layouts);
 
-    const files = _.assign({},cardTypeFiles,layoutsFiles)
+    const files = _.assign({}, cardTypeFiles, layoutsFiles)
 
     const name = _.upperFirst(path.basename(projectPath));
     const project: Project = {
@@ -429,8 +444,8 @@ export async function loadProjectFromConfig(rawConfig: string, projectPath: stri
         isNew,
         path: projectPath,
         config,
-        cardTypes: _.chain(cardTypes).map(o=> o.cardType).keyBy( o => o.id).value(),
-        layouts: _.chain(layouts).map(o=> o.layout).keyBy( o => o.id).value(),
+        cardTypes: _.chain(cardTypes).map(o => o.cardType).keyBy(o => o.id).value(),
+        layouts: _.chain(layouts).map(o => o.layout).keyBy(o => o.id).value(),
         files,
         rawConfig: rawConfig,
         availablesSources: getAvailableSources(config),
@@ -460,11 +475,11 @@ async function saveProjectAt(project: Project, projectPath: string): Promise<Pro
     const configRawData = JSON.stringify(project.config, null, 4);
     const filesToSave = _.map(project.files, f => writeFile(path.join(projectPath, f.path), f.content))
     _.each(project.cardTypes, o => {
-        filesToSave.push(writeFile(path.join(projectPath, o.configPath),o.rawConfig))
-        filesToSave.push(writeFile(path.join(projectPath, o.base,o.config.canvas),JSON.stringify(o.canvas,null,4)))
+        filesToSave.push(writeFile(path.join(projectPath, o.configPath), o.rawConfig))
+        filesToSave.push(writeFile(path.join(projectPath, o.relBase, o.config.canvas), JSON.stringify(o.canvas, null, 4)))
     })
     _.each(project.layouts, o => {
-        filesToSave.push(writeFile(path.join(projectPath, o.configPath),o.rawConfig))
+        filesToSave.push(writeFile(path.join(projectPath, o.configPath), o.rawConfig))
     })
     filesToSave.push(writeFile(configFilePath, configRawData))
     _.forIn(ProjectSourceType, (sourceType) => {
@@ -529,48 +544,64 @@ export async function createNewProjectFromTemplate(templatePath: string) {
 
 export const renderSelectionAsHtml = renderSelectionToHtml
 
-export function getDataBySourceTypeAndCardType(project:Project,sourceType:ProjectSourceType,cardTypeId:string) {
-    return  _.chain(project.data[sourceType]?.data).find( o => o.id == cardTypeId).value();
+export function getDataBySourceTypeAndCardType(project: Project, sourceType: ProjectSourceType, cardTypeId: string) {
+    return _.chain(project.data[sourceType]?.data).find(o => o.id == cardTypeId).value();
 }
 
-function createDefaultCanvasBoxData(type:CardTypeBoxType):CardTypeBoxData{
-    switch(type){
-        default:
-        case CardTypeBoxType.Text :
-            return {
-                ref:"",
-                color: "#000000",
-                font:"inherit",
-                weight: FontWeight.Normal,
-                style: FontStyle.Normal,
-                align: TextAlign.Left,
-                size: 12,
-                lineHeight: 1,
-                overflow:Overflow.Visible,
-                custom:""
-            } as CardTypeBoxTextData;
-        case CardTypeBoxType.Image : 
-            return {
+export function createDefaultCanvasBox(type: CardTypeBoxType, variant: string): CardTypeBox {
 
-            } as CardTypeBoxImageData
-    }
-}   
-
-export function createDefaultCanvasBox(type:CardTypeBoxType,variant:string):CardTypeBox{
-
-    return {
-        face:"recto",
-        variants:variant!=CARD_TYPE_DEFAULT_VARIANT?[variant]:[],
-        // @todo find a better way to cast CardTypeBoxType on CardTypeBoxType.Image and CardTypeBoxType.Text
-        type: type as any,
+    const core: CardTypeBoxCore = {
+        face: "recto",
+        variants: variant != CARD_TYPE_DEFAULT_VARIANT ? [variant] : [],
         top: 5,
         left: 5,
         bottom: "auto",
-        right:"auto",
-        width:"auto",
-        height:"auto",
+        right: "auto",
+        width: "auto",
+        height: "auto",
         zIndex: 10,
-        data: createDefaultCanvasBoxData(type)
     }
- 
+
+    switch (type) {
+        case CardTypeBoxType.Text:
+            return {
+                ...core,
+                top: 5,
+                left: 5,
+                bottom: "auto",
+                right: 5,
+                width: "auto",
+                height: "auto",
+                type,
+                data: {
+                    ref: "",
+                    color: "#000000",
+                    font: "inherit",
+                    weight: FontWeight.Normal,
+                    style: FontStyle.Normal,
+                    align: TextAlign.Center,
+                    size: 12,
+                    lineHeight: 1,
+                    overflow: Overflow.Visible,
+                    custom: ""
+                }
+            };
+        case CardTypeBoxType.Image:
+            return {
+                ...core,
+                top: 5,
+                left: 5,
+                bottom: "auto",
+                right: "auto",
+                width: 12,
+                height: 12,
+                type,
+                data: {
+                    path: "",
+                    fit: ObjectFit.None,
+                    custom: ""
+                }
+            };
+    }
+
 }

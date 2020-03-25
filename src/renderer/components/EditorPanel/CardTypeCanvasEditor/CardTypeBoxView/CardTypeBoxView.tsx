@@ -2,10 +2,12 @@ import './CardTypeBoxView.scss';
 import React from 'react';
 import { CardTypeBox, CardTypeBoxType } from '../../../../services/Project';
 import { cssDimensionValue, createClassName, cssZIndexValue } from '../../../../utils';
+import path from 'path';
 
 type CardTypeBoxViewProps = {
     data: CardTypeBox
     selected: boolean
+    absCardTypePath:string
     onSelect: (box: CardTypeBox) => void
     onChange: (box: CardTypeBox) => void
 }
@@ -49,7 +51,8 @@ export default class CardTypeBoxView extends React.Component<CardTypeBoxViewProp
         return (
             <div className={createClassName("CardTypeBoxView",{'CardTypeBoxView_selected':this.props.selected})} style={this.createBoxViewCSS()} onClick={() => this.props.onSelect(this.props.data)}>
                 <div className="CardTypeBoxView__Ref" style={this.createBoxViewRefCSS()}>
-                    {box.type == CardTypeBoxType.Text && `[${box.data.ref || "unknow"}]`}    
+                    {box.type == CardTypeBoxType.Text && `[${box.data.ref || "unknow"}]`}   
+                    {box.type == CardTypeBoxType.Image && <img src={path.join(this.props.absCardTypePath,box.data.path)} />} 
                 </div>
                 {box.top != "auto" && <div className="CardTypeBoxView__Line CardTypeBoxView__Line_top" 
                     style={{

@@ -53,19 +53,8 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
         }
     }
 
-    /*function onDataPathValueChange(name: string, value: string) {
-       console.log(props.absCardTypePath,value)
-       console.log("starts with : ",value.startsWith(props.absCardTypePath))
-        const relativePath = value.startsWith(props.absCardTypePath)? path.normalize(path.relative(props.absCardTypePath,value)).replace(/\\/g,"/"):value;
-        console.log(relativePath)
-        onDataValueChange(name, relativePath);
-    }*/
-
     function filterPath(value:string){
-        console.log(props.absCardTypePath,value)
-        console.log("starts with : ",value.startsWith(props.absCardTypePath))
         const relativePath = value.startsWith(props.absCardTypePath)? path.normalize(path.relative(props.absCardTypePath,value)).replace(/\\/g,"/"):value;
-        console.log(relativePath)
         return relativePath;
     }
 

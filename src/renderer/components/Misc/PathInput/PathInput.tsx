@@ -15,6 +15,7 @@ export type PathInputProps = {
     value:string
     className?:string
     onChange?: (path:string) => void
+    filterPath?:(path:string) => string
 }
 
 export type PathInputState = {
@@ -52,7 +53,7 @@ export default class PathInput extends React.Component<PathInputProps>{
             properties: this.getDialogProperties()
         })
         if (!result.canceled && result.filePaths.length > 0) {
-            const value = result.filePaths[0];
+            const value = this.props.filterPath?this.props.filterPath(result.filePaths[0]):result.filePaths[0];
             this.setState({
                 value
             })
@@ -62,7 +63,7 @@ export default class PathInput extends React.Component<PathInputProps>{
     }
 
     onInputChange(e: React.ChangeEvent<HTMLInputElement>){
-        const value = e.target.value;
+        const value = this.props.filterPath?this.props.filterPath(e.target.value):e.target.value;
         this.setState({
             value
         })

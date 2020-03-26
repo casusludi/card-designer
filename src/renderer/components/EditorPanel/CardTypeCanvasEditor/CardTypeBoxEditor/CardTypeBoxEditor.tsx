@@ -53,10 +53,20 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
         }
     }
 
-    function onDataPathValueChange(name: string, value: string) {
-       
+    /*function onDataPathValueChange(name: string, value: string) {
+       console.log(props.absCardTypePath,value)
+       console.log("starts with : ",value.startsWith(props.absCardTypePath))
         const relativePath = value.startsWith(props.absCardTypePath)? path.normalize(path.relative(props.absCardTypePath,value)).replace(/\\/g,"/"):value;
+        console.log(relativePath)
         onDataValueChange(name, relativePath);
+    }*/
+
+    function filterPath(value:string){
+        console.log(props.absCardTypePath,value)
+        console.log("starts with : ",value.startsWith(props.absCardTypePath))
+        const relativePath = value.startsWith(props.absCardTypePath)? path.normalize(path.relative(props.absCardTypePath,value)).replace(/\\/g,"/"):value;
+        console.log(relativePath)
+        return relativePath;
     }
 
     return (
@@ -110,7 +120,8 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                                     label="Path : "
                                     labelOnTop={true}
                                     value={box.data.path}
-                                    onChange={value => onDataPathValueChange("path", value)}
+                                    onChange={value => onDataValueChange("path", value)}
+                                    filterPath={filterPath}
                                     filters={[{ name: 'Images', extensions: ['jpg', 'png', 'svg', 'bmp', 'gif'] }]}
                                     
                                 />

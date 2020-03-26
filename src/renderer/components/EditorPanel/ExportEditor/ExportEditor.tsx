@@ -107,12 +107,15 @@ function ExportEditor(props: ExportEditorProps) {
         if (!props.preferences.selectedLayoutId) return;
         if (!props.preferences.selectedSourceType) return;
         if (!props.preferences.exportFolderPath) return;
-        props.dispatch(projectExport({
-            layoutId: props.preferences.selectedLayoutId,
-            sourceType: props.preferences.selectedSourceType,
-            exportFolderPath: props.preferences.exportFolderPath,
-            cardTypes: props.preferences.selectedCardTypes
-        }))
+        const exportFolderPath = replacer(props.preferences.exportFolderPath, pathVariables);
+        if(exportFolderPath){
+            props.dispatch(projectExport({
+                layoutId: props.preferences.selectedLayoutId,
+                sourceType: props.preferences.selectedSourceType,
+                exportFolderPath,
+                cardTypes: props.preferences.selectedCardTypes
+            }))
+        }
     }
 
     function canExport() {
@@ -128,7 +131,10 @@ function ExportEditor(props: ExportEditorProps) {
 
     function openFolderButtonOnclick() {
         if (props.preferences && props.preferences.exportFolderPath) {
-            remote.shell.openItem(props.preferences.exportFolderPath);
+            const exportFolderPath = replacer(props.preferences.exportFolderPath, pathVariables);
+            if(exportFolderPath){
+                remote.shell.openItem(exportFolderPath);
+            }
         }
     }
 
@@ -136,10 +142,10 @@ function ExportEditor(props: ExportEditorProps) {
         '${projectPath}': props.project?.path || '${projectPath}'
     }
 
-    function valueToName(path: string | null | undefined) {
-        if (_.isEmpty(path) || !path) return null;
+    function valueToName(path: string) {
+        if (_.isEmpty(path) || !path) return "";
         const ret = replacer(path, _.invert(pathVariables))
-        return ret;
+        return ret || "";
     }
 
     
@@ -151,7 +157,7 @@ function ExportEditor(props: ExportEditorProps) {
                     <div className="ExportEditor__line">
                         <Select id="ExportEditor__LayoutSelect-select" label="Layout" labelOnTop={true} value={props.preferences?.selectedLayoutId && props.project?.layouts[props.preferences.selectedLayoutId]} onChange={selectedLayoutChanged} options={_.map(props.project?.layouts, (o, k) => ({ label: k, value: o }))} />
                         <Select id="ExportEditor__SourceSelect-select" label="Source" labelOnTop={true} value={props.preferences?.selectedSourceType} onChange={selectedSourceTypeChanged} options={_.map(props.project.availablesSources, (o, k) => ({ label: o, value: o }))} />
-                        <PathInput type={PathInputType.Folder} className="ExportEditor__FolderInput" label="Export Folder : " labelOnTop={true} path={valueToName(props.preferences.exportFolderPath)} onChange={exportFolderPathChanged} />
+                        <PathInput type={PathInputType.Folder} className="ExportEditor__FolderInput" label="Export Folder : " labelOnTop={true} value={valueToName(props.preferences.exportFolderPath || "")} onChange={exportFolderPathChanged} />
                     </div>
                     <div className="ExportEditor__line">
                         Card Types : 

@@ -53,9 +53,9 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
         }
     }
 
-    function onDataPathValueChange(name: string, value: any) {
-
-        const relativePath = path.normalize(path.relative(props.absCardTypePath,value)).replace(/\\/g,"/");
+    function onDataPathValueChange(name: string, value: string) {
+       
+        const relativePath = value.startsWith(props.absCardTypePath)? path.normalize(path.relative(props.absCardTypePath,value)).replace(/\\/g,"/"):value;
         onDataValueChange(name, relativePath);
     }
 
@@ -109,7 +109,7 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                                 <PathInput type={PathInputType.File}
                                     label="Path : "
                                     labelOnTop={true}
-                                    path={box.data.path}
+                                    value={box.data.path}
                                     onChange={value => onDataPathValueChange("path", value)}
                                     filters={[{ name: 'Images', extensions: ['jpg', 'png', 'svg', 'bmp', 'gif'] }]}
                                     

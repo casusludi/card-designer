@@ -9,6 +9,8 @@ import { cardTypeRawConfigChanged } from '../../../redux/project';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import CardTypeCanvasEditor from '../CardTypeCanvasEditor';
+import { remote } from 'electron';
+import Button from '../../Misc/Button';
 
 export type CardTypeEditorProps = {
     // currently ProjectTemplate and ProjectLayout are identic. This change later
@@ -31,11 +33,22 @@ function CardTypeEditor(props: CardTypeEditorProps) {
         }
     }
 
+    function openCardTypeFolder() {
+		if(props.cardType?.absBase){
+			remote.shell.openItem(props.cardType.absBase)
+		}
+	}
+
     return (
         <React.Fragment>
             {props.cardType ?
                 <div className="CardTypeEditor full-space">
-                    <div className="CardTypeEditor__header"><span className="CardTypeEditor__header-label">{props.cardType.id}</span></div>
+                    <div className="CardTypeEditor__header">
+                        <span className="CardTypeEditor__header-label">
+                            {props.cardType.id}
+                            <Button fontIcon="far fa-folder-open" borderless={true} onClick={() => openCardTypeFolder()}/>
+                        </span>
+                    </div>
                     <TabNav className="CardTypeEditor__Tabs" headerPosition={TabNavHeaderPosition.TOP} >
                         <TabNavItem label="Canvas"><CardTypeCanvasEditor cardTypeCanvasId={props.cardType.id} cardType={props.cardType} project={props.project}/></TabNavItem>
                         <TabNavItem label="Config">

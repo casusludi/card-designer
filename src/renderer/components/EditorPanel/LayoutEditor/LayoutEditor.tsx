@@ -7,6 +7,8 @@ import './LayoutEditor.scss';
 import { projectLayoutRawConfigChanged } from '../../../redux/project';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { remote } from 'electron';
+import Button from '../../Misc/Button';
 
 export type LayoutEditorProps = {
     // currently ProjectTemplate and ProjectLayout are identic. This change later
@@ -32,11 +34,20 @@ export function LayoutEditor(props: LayoutEditorProps) {
         }
     }
 
+    function openLayoutFolder() {
+		if(props.layout?.absBase){
+			remote.shell.openItem(props.layout.absBase)
+		}
+	}
+
     return (
         <React.Fragment>
             {props.layout ?
                 <div className="LayoutEditor full-space">
-                    <div className="LayoutEditor__header"><span className="LayoutEditor__header-label">{props.layout.id}</span></div>
+                    <div className="LayoutEditor__header">
+                        <span className="LayoutEditor__header-label">{props.layout.id}</span>
+                        <Button fontIcon="far fa-folder-open" borderless={true} onClick={() => openLayoutFolder()}/>
+                    </div>
                     <TabNav className="LayoutEditor__Tabs" headerPosition={TabNavHeaderPosition.TOP} >
                         <TabNavItem label="Config">
                             <CodeEditor className="full-space" width={props.width} mode="json" onValidChange={onConfigChange} code={props.layout.rawConfig} instanceId={props.layout.configPath} path={props.layout.configPath} />

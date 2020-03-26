@@ -12,43 +12,72 @@ export type PathInputProps = {
     type:PathInputType
     defaultPath?:string
     filters?:FileFilter[]
-    path:string|null
+    value:string
     className?:string
-    onChange: (path:string) => void
+    onChange?: (path:string) => void
 }
 
-export default function PathInput(props:PathInputProps){
+export type PathInputState = {
+    value:string
+}
 
-    function getDialogProperties():any{
-        switch(props.type){
+export default class PathInput extends React.Component<PathInputProps>{
+
+    state:PathInputState = {
+        value:this.props.value
+    }
+
+    componentDidUpdate(prevProps:PathInputProps){
+        if(this.props.value != prevProps.value){
+            this.setState({
+                value:this.props.value
+            })
+        }
+    }
+
+    getDialogProperties():any{
+        switch(this.props.type){
             default:
             case PathInputType.Folder: return ['openDirectory','createDirectory','promptToCreate'];
             case PathInputType.File: return ['openFile ','promptToCreate'];
         }
     }
 
-    async function openExplorer(){
+    async openExplorer(){
 
         const result = await showOpenDialog({
             title:"Select Folder",
-            defaultPath: props.defaultPath,
-            filters: props.filters,
-            properties: getDialogProperties()
+            defaultPath: this.props.defaultPath,
+            filters: this.props.filters,
+            properties: this.getDialogProperties()
         })
         if (!result.canceled && result.filePaths.length > 0) {
-            const folderPath = result.filePaths[0];
-            props.onChange(folderPath);
+            const value = result.filePaths[0];
+            this.setState({
+                value
+            })
+            if(this.props.onChange)this.props.onChange(value);
         }
     
     }
 
-    return (
-        <div className={"PathInput"+(props.className?" "+props.className:"")+(props.labelOnTop?" PathInput_labeltop":"")}>
-            {props.label && <label className="PathInput__label" htmlFor={props.id} >{props.label}</label>}
-            <div className="PathInput__content">
-            <input className="PathInput__input" id={props.id} type="string" value={props.path || ""} onChange={(e)=>props.onChange(e.target.value)} />
-            <Button fontIcon="far fa-folder-open" className="PathInput__button" onClick={openExplorer} />
+    onInputChange(e: React.ChangeEvent<HTMLInputElement>){
+        const value = e.target.value;
+        this.setState({
+            value
+        })
+        if(this.props.onChange)this.props.onChange(value)
+    }
+
+    render(){
+        return (
+            <div className={"PathInput"+(this.props.className?" "+this.props.className:"")+(this.props.labelOnTop?" PathInput_labeltop":"")}>
+                {this.props.label && <label className="PathInput__label" htmlFor={this.props.id} >{this.props.label}</label>}
+                <div className="PathInput__content">
+                <input className="PathInput__input" id={this.props.id} type="string" value={this.state.value} onChange={this.onInputChange.bind(this)} />
+                <Button fontIcon="far fa-folder-open" className="PathInput__button" onClick={this.openExplorer.bind(this)} />
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 }

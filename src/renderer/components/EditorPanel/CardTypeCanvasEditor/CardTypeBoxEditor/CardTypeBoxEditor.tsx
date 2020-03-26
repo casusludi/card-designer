@@ -98,7 +98,7 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                             </div>
                             <div className="ContentWithLine__Line">
                                 <Panel label="Custom CSS" className="CardTypeBoxEditor__CustomEditor">
-                                    <CodeEditor instanceId={box.data} code={box.data.custom} onChange={value => onDataValueChange("custom", value)} />
+                                    <CodeEditor instanceId={box.data} code={box.data.custom} mode="text" onChange={value => onDataValueChange("custom", value)} />
                                 </Panel>
                             </div>
                         </React.Fragment>}
@@ -122,7 +122,7 @@ export default function CardTypeBoxEditor(props: CardTypeBoxEditorProps) {
                             </div>
                             <div className="ContentWithLine__Line">
                                 <Panel label="Custom CSS" className="CardTypeBoxEditor__CustomEditor">
-                                    <CodeEditor instanceId={box.data} code={box.data.custom} onChange={value => onDataValueChange("custom", value)} />
+                                    <CodeEditor instanceId={box.data} mode="text" code={box.data.custom} onChange={value => onDataValueChange("custom", value)} />
                                 </Panel>
                             </div>
                         </React.Fragment>}

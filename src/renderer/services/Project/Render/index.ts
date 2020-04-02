@@ -51,6 +51,8 @@ const metaVariables: MetaVariables = {
 export function getBoxStyleFromType(box:CardTypeBox,cardType:ProjectCardType,card:any):any{
     switch(box.type){
         case "text":
+
+    
             return `
                 color: ${box.data.color};
                 font-size: ${box.data.size?`${box.data.size}pt`:'inherit'};
@@ -140,7 +142,7 @@ export async function renderSelectionToHtml(project: Project, selection: Project
                         `;
                         return {
                             ...o,
-                            style:style.replace(/(\r\n|\n|\r| )/gm,"")
+                            style:style.replace(/(\r\n|\n|\r)/gm,"")
                         };
                     })
                     .value();

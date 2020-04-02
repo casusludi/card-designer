@@ -560,7 +560,7 @@ export function createDefaultCanvasBox(type: CardTypeBoxType, variant: string): 
         width: "auto",
         height: "auto",
         zIndex: 10,
-        lockInView: true
+        lockInView: false
     }
 
     switch (type) {

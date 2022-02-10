@@ -69,7 +69,7 @@
     "electron-builder": "^22.3.2",
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "sass-loader": "^8.0.2",
     "typescript": "^3.7.5",
     "webpack": "^4.41.5"
